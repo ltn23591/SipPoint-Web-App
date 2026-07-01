@@ -28,6 +28,18 @@ module.exports = {
         ],
       },
       colors: {
+        // Màu thương hiệu SipPoint mới được tích hợp
+        primary: {
+          DEFAULT: "#F59E0B", // Màu hổ phách (Amber)
+          light: "hsl(var(--primary-light))",
+          dark: "hsl(var(--primary-dark))",
+          foreground: "#FFFFFF",
+        },
+        secondary: {
+          DEFAULT: "#2C1503", // Màu nâu Espresso
+          foreground: "#FFFFFF",
+        },
+        // Giữ nguyên các cấu hình màu hệ thống hiện có
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -36,16 +48,6 @@ module.exports = {
           secondary: "hsl(var(--background-secondary))",
         },
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          light: "hsl(var(--primary-light))",
-          dark: "hsl(var(--primary-dark))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
         tertiary: {
           DEFAULT: "hsl(var(--tertiary))",
           foreground: "hsl(var(--tertiary-foreground))",

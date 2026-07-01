@@ -1,6 +1,8 @@
 export const ROUTE_PATH = {
   HOME: "/",
   NOT_FOUND: "*",
+  LOGIN: "/login",
+  REGISTER: "/register",
 };
 
 // Section anchors trên trang Home (one-page landing).
@@ -12,3 +14,4 @@ export const SECTION_ID = {
   FAQ: "faq",
   CONTACT: "contact",
 };
+
