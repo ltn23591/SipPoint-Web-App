@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { CODE_KEY } from "@/constants/application";
 
-const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL || "/api";
+const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL || "https://sippoint-be.onrender.com/api/v1";
 
 const REQUEST_TIMEOUT = 15 * 1000;
 
@@ -16,7 +16,6 @@ const apiCall = async (
   baseUrl = null,
   ...args
 ) => {
-  axios.defaults.baseURL = baseUrl ? baseUrl : VITE_APP_API_URL;
   const url = `${endpoint}`;
   const headers = {
     "Content-Type": "application/json",
@@ -26,6 +25,7 @@ const apiCall = async (
   try {
     const response = await axios({
       method,
+      baseURL: baseUrl ? baseUrl : VITE_APP_API_URL,
       url,
       data,
       headers,
@@ -34,16 +34,7 @@ const apiCall = async (
     return response;
   } catch (error) {
     if (error.response) {
-      switch (error.response.status) {
-        case CODE_KEY.BAD_REQUEST:
-          return error.response;
-        case CODE_KEY.UNAUTHORIZED_STATUS:
-          return error.response;
-        case CODE_KEY.REQUEST_ENTITY_TOO_LARGE:
-          return error.response;
-        default:
-          break;
-      }
+      throw error;
     }
 
     if (error.code === CODE_KEY.CANCEL) {
@@ -57,6 +48,7 @@ const apiCall = async (
     }
 
     console.error(error);
+    throw error;
   }
 };
 

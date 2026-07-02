@@ -3,6 +3,8 @@ export const ROUTE_PATH = {
   NOT_FOUND: "*",
   LOGIN: "/login",
   REGISTER: "/register",
+  VERIFY_OTP: "/verify-otp",
+  WELCOME: "/welcome",
 };
 
 // Section anchors trên trang Home (one-page landing).

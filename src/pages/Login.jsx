@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, Loader2, Lock, Mail } from "lucide-react"; // Thay Smartphone bằng Mail
+import { toast } from "react-toastify";
 import { AUTH_TEXT } from "@/constants/auth";
 import { AuthCard } from "@/components/common/AuthCard";
 import { authService } from "@/services/authService";
@@ -10,21 +11,18 @@ export default function Login() {
   const navigate = useNavigate();
   // Đổi state sang email
   const [formData, setFormData] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage({ type: "", text: "" }); 
 
     try {
-      // Truyền email vào logic giả lập
-      const response = await authService.login(formData.email);
-      setMessage({ type: "success", text: response.message });
+      const response = await authService.login(formData.email, formData.password);
+      toast.success(response.message || "Đăng nhập thành công!");
       setTimeout(() => navigate("/"), 1000);
     } catch (error) {
-      setMessage({ type: "error", text: error.message });
+      toast.error(error.message || "Đăng nhập thất bại. Vui lòng thử lại!");
     } finally {
       setIsLoading(false);
     }
@@ -40,12 +38,6 @@ export default function Login() {
           {AUTH_TEXT.TAB_REGISTER}
         </Link>
       </div>
-
-      {message.text && (
-        <div className={`mb-4 rounded-lg p-3 text-center text-sm font-medium ${message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
-          {message.text}
-        </div>
-      )}
 
       <form onSubmit={handleLogin} className="flex flex-col gap-5">
         {/* Ô nhập Email */}
