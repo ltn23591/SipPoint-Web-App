@@ -7,6 +7,8 @@ export const ROUTE_PATH = {
   WELCOME: "/welcome",
   MENU: "/menu",
   REWARDS: "/rewards",
+  ACCOUNT: "/account",
+  EDIT_PROFILE: "/account/edit",
 };
 
 // Section anchors trên trang Home (one-page landing).

@@ -10,6 +10,8 @@ import VerifyOtp from "@/pages/VerifyOtp"; // Import trang VerifyOtp
 import Welcome from "@/pages/Welcome"; // Import trang Welcome
 import Menu from "@/pages/Menu"; // Import trang Menu
 import RewardPoints from "@/pages/RewardPoints"; // Import trang RewardPoints
+import Account from "@/pages/Account";
+import EditProfile from "@/pages/EditProfile";
 
 export const router = createBrowserRouter([
   {
@@ -44,4 +46,12 @@ export const router = createBrowserRouter([
     path: ROUTE_PATH.REWARDS,
     element: <RewardPoints />
   },
+  {
+    path: ROUTE_PATH.ACCOUNT,
+    element: <Account />
+  },
+  {
+    path: ROUTE_PATH.EDIT_PROFILE,
+    element: <EditProfile />
+  }
 ]);
