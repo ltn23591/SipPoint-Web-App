@@ -4,7 +4,7 @@ import { API_METHOD } from "@/constants/application";
 export const menuService = {
   getCategories: async () => {
     try {
-      const response = await apiCall(API_METHOD.GET, "/category");
+      const response = await apiCall(API_METHOD.GET, "/categories");
       if (response && response.data?.success) {
         return response.data;
       }
