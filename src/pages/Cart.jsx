@@ -36,12 +36,14 @@ export default function Cart() {
 
   const updateQuantity = (index, delta) => {
     setCartItems((prev) => {
-      const updated = [...prev];
-      updated[index].qty += delta;
-      if (updated[index].qty <= 0) {
-        updated.splice(index, 1);
-      }
-      return updated;
+      return prev
+        .map((item, i) => {
+          if (i === index) {
+            return { ...item, qty: item.qty + delta };
+          }
+          return item;
+        })
+        .filter((item) => item.qty > 0);
     });
   };
 
