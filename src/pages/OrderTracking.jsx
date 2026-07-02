@@ -357,7 +357,7 @@ export default function OrderTracking() {
           </main>
         )}
 
-        <BottomNavBar activeTab="ORDERS" />
+        <BottomNavBar activeTab="TRACKING" />
       </div>
     </div>
   );
