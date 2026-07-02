@@ -12,6 +12,7 @@ export const ROUTE_PATH = {
   VOUCHERS: "/vouchers",
   ORDERS: "/orders",
   ORDER_DETAIL: "/orders/:orderId",
+  ORDER_TRACKING: "/order-tracking",
   CART: "/cart",
 };
 

@@ -71,6 +71,10 @@ export const router = createBrowserRouter([
     element: <OrderTracking />
   },
   {
+    path: ROUTE_PATH.ORDER_TRACKING,
+    element: <OrderTracking />
+  },
+  {
     path: ROUTE_PATH.CART,
     element: <Cart />
   }
