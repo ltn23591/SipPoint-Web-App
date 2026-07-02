@@ -17,8 +17,11 @@ const apiCall = async (
   ...args
 ) => {
   const url = `${endpoint}`;
+  const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
+
   const headers = {
     "Content-Type": "application/json",
+    ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     ...customHeaders,
   };
 
@@ -34,6 +37,15 @@ const apiCall = async (
     return response;
   } catch (error) {
     if (error.response) {
+      if (error.response.status === 401) {
+        // Clear local credentials on token expiration
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
+        
+        // Redirect to login page
+        window.location.href = "/login";
+      }
       throw error;
     }
 
