@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
+import { customerService } from "@/services/customerService";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ export default function Cart() {
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Load cart from localStorage
@@ -64,9 +66,34 @@ export default function Cart() {
     }, 500);
   };
 
-  const handleCheckout = () => {
-    // TODO: Integrate with order creation API
-    alert("Chức năng đặt món đang được phát triển!");
+  const handleCheckout = async () => {
+    if (cartItems.length === 0) return;
+    setIsSubmitting(true);
+    try {
+      const itemsPayload = cartItems.map(item => ({
+        productId: item.productId,
+        qty: item.qty,
+        variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
+        note: item.note || ''
+      }));
+
+      await customerService.createMyOrder({
+        items: itemsPayload,
+        voucherCode: voucherCode || undefined,
+        note: "Đặt hàng từ Web"
+      });
+
+      // Clear local cart
+      localStorage.removeItem("sippoint_cart");
+      setCartItems([]);
+      
+      // Navigate to order tracking
+      navigate(ROUTE_PATH.ORDERS);
+    } catch (error) {
+      alert(error.message || "Đặt món thất bại, vui lòng thử lại.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -224,9 +251,10 @@ export default function Cart() {
                 </div>
                 <button
                   onClick={handleCheckout}
-                  className="w-full bg-[#f59e0b] text-[#613b00] h-14 rounded-2xl font-bold text-[20px] shadow-[0px_8px_24px_rgba(245,158,11,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-3"
+                  disabled={isSubmitting}
+                  className="w-full bg-[#f59e0b] text-[#613b00] h-14 rounded-2xl font-bold text-[20px] shadow-[0px_8px_24px_rgba(245,158,11,0.3)] active:scale-[0.98] transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                 >
-                  Đặt món ngay
+                  {isSubmitting ? "Đang xử lý..." : "Đặt món ngay"}
                   <span className="material-symbols-outlined">shopping_cart_checkout</span>
                 </button>
               </div>
