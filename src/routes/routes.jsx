@@ -14,6 +14,8 @@ import Account from "@/pages/Account";
 import EditProfile from "@/pages/EditProfile";
 import MyVouchers from "@/pages/MyVouchers";
 import OrderTracking from "@/pages/OrderTracking";
+import OrderHistory from "@/pages/OrderHistory";
+import LuckyWheel from "@/pages/LuckyWheel";
 import Cart from "@/pages/Cart";
 
 export const router = createBrowserRouter([
@@ -30,7 +32,7 @@ export const router = createBrowserRouter([
     element: <Login /> 
   },
   { 
-    path: ROUTE_PATH.REGISTER, // Đảm bảo bạn đã khai báo REGISTER trong routePaths
+    path: ROUTE_PATH.REGISTER,
     element: <Register /> 
   },
   { 
@@ -63,7 +65,19 @@ export const router = createBrowserRouter([
   },
   {
     path: ROUTE_PATH.ORDERS,
+    element: <OrderHistory />
+  },
+  {
+    path: ROUTE_PATH.ORDER_DETAIL,
     element: <OrderTracking />
+  },
+  {
+    path: ROUTE_PATH.ORDER_TRACKING,
+    element: <OrderTracking />
+  },
+  {
+    path: ROUTE_PATH.LUCKY_WHEEL,
+    element: <LuckyWheel />
   },
   {
     path: ROUTE_PATH.CART,
