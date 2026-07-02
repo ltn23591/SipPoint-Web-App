@@ -27,4 +27,17 @@ export const customerService = {
       throw new Error(apiErrorData?.message || "Lỗi cập nhật thông tin");
     }
   },
+
+  getMyVouchers: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/customers/me/vouchers");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy danh sách voucher thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy danh sách voucher");
+    }
+  },
 };
