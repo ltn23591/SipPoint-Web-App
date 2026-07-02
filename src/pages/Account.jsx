@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
+import BottomNavBar from "@/components/layout/BottomNavBar";
 
 export default function Account() {
   const navigate = useNavigate();
@@ -186,24 +187,7 @@ export default function Account() {
         </main>
 
         {/* Bottom Navigation Bar */}
-        <nav className="fixed bottom-0 max-w-md mx-auto left-0 right-0 w-full z-10 flex justify-around items-center px-2 py-2 h-16 bg-white border-t border-zinc-100 shadow-[0px_-4px_12px_rgba(59,31,10,0.04)]">
-          <Link to={ROUTE_PATH.MENU} className="flex flex-col items-center justify-center text-zinc-500 px-4 py-1.5 hover:bg-zinc-50 rounded-xl transition-all active:scale-90 duration-150">
-            <span className="material-symbols-outlined">local_cafe</span>
-            <span className="text-[11px] font-semibold mt-0.5">Thực đơn</span>
-          </Link>
-          <a className="flex flex-col items-center justify-center text-zinc-500 px-4 py-1.5 hover:bg-zinc-50 rounded-xl transition-all active:scale-90 duration-150" href="#">
-            <span className="material-symbols-outlined">receipt_long</span>
-            <span className="text-[11px] font-semibold mt-0.5">Đơn hàng</span>
-          </a>
-          <Link to={ROUTE_PATH.REWARDS} className="flex flex-col items-center justify-center text-zinc-500 px-4 py-1.5 hover:bg-zinc-50 rounded-xl transition-all active:scale-90 duration-150">
-            <span className="material-symbols-outlined">redeem</span>
-            <span className="text-[11px] font-semibold mt-0.5">Điểm thưởng</span>
-          </Link>
-          <Link to={ROUTE_PATH.ACCOUNT} className="flex flex-col items-center justify-center bg-[#ffcdae]/50 text-[#7a553c] rounded-xl px-4 py-1.5 active:scale-90 transition-transform duration-150">
-            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
-            <span className="text-[11px] font-semibold mt-0.5">Tài khoản</span>
-          </Link>
-        </nav>
+        <BottomNavBar activeTab="ACCOUNT" />
       </div>
     </div>
   );
