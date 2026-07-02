@@ -107,7 +107,7 @@ export default function MyVouchers() {
                     </div>
                     <div className="flex items-center justify-between mt-2">
                       <span className={`font-medium text-[12px] ${v.isUsed ? 'text-[#867461]' : 'text-[#ba1a1a]'}`}>
-                        {v.isUsed ? 'Đã sử dụng' : \`HSD: \${new Date(v.expiryDate).toLocaleDateString('vi-VN')}\`}
+                        {v.isUsed ? 'Đã sử dụng' : `HSD: ${new Date(v.expiryDate).toLocaleDateString('vi-VN')}`}
                       </span>
                       <button disabled={v.isUsed} className={`px-3 py-1.5 rounded-full font-medium text-[12px] shadow-[0px_4px_12px_rgba(59,31,10,0.06)] transition-transform ${v.isUsed ? 'bg-[#e2e2e2] text-[#534434] cursor-not-allowed' : 'bg-[#f59e0b] text-[#613b00] active:scale-95'}`}>
                         {v.isUsed ? 'Đã dùng' : 'Dùng ngay'}
