@@ -79,7 +79,7 @@ export default function Cart() {
         note: item.note || ''
       }));
 
-      await customerService.createMyOrder({
+      const result = await customerService.createMyOrder({
         items: itemsPayload,
         voucherCode: voucherCode || undefined,
         note: "Đặt hàng từ Web"
@@ -88,8 +88,8 @@ export default function Cart() {
       // Clear local cart in storage
       localStorage.removeItem("sippoint_cart");
       
-      // Navigate to order tracking immediately
-      navigate(ROUTE_PATH.ORDERS);
+      // Navigate to order tracking of this specific order immediately
+      navigate(ROUTE_PATH.ORDER_DETAIL.replace(":orderId", result._id || result.id));
     } catch (error) {
       alert(error.message || "Đặt món thất bại, vui lòng thử lại.");
     } finally {
