@@ -95,5 +95,18 @@ export const authService = {
   logout: () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+  },
+
+  getMe: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/auth/me");
+      if (response && response.status === 200 && response.data?.success) {
+        return response.data.user || response.data.data || response.data;
+      }
+      throw new Error(response?.data?.message || "Lấy thông tin người dùng thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy thông tin");
+    }
   }
 };

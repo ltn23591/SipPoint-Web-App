@@ -9,6 +9,7 @@ import Register from "@/pages/Register"; // Import trang Register
 import VerifyOtp from "@/pages/VerifyOtp"; // Import trang VerifyOtp
 import Welcome from "@/pages/Welcome"; // Import trang Welcome
 import Menu from "@/pages/Menu"; // Import trang Menu
+import RewardPoints from "@/pages/RewardPoints"; // Import trang RewardPoints
 
 export const router = createBrowserRouter([
   {
@@ -38,5 +39,9 @@ export const router = createBrowserRouter([
   { 
     path: ROUTE_PATH.NOT_FOUND, 
     element: <NotFound /> 
+  },
+  {
+    path: ROUTE_PATH.REWARDS,
+    element: <RewardPoints />
   },
 ]);
