@@ -41,6 +41,15 @@ export default function Menu() {
       }
     };
     fetchData();
+
+    // Initialize cart count from localStorage
+    try {
+      const savedCart = localStorage.getItem("sippoint_cart");
+      if (savedCart) {
+        const cart = JSON.parse(savedCart);
+        setCartCount(cart.reduce((sum, c) => sum + c.qty, 0));
+      }
+    } catch (e) { /* ignore */ }
   }, []);
 
   const handleCategoryClick = (id) => {
@@ -93,7 +102,32 @@ export default function Menu() {
   };
 
   const handleAddToCart = () => {
-    setCartCount(prev => prev + quantity);
+    const cartItem = {
+      productId: activeProduct._id,
+      name: activeProduct.name,
+      image: activeProduct.image,
+      price: activeProduct.price,
+      qty: quantity,
+      variants: [
+        ...(selectedSize ? [{ variantId: selectedSize._id, name: selectedSize.name, priceAdjustment: selectedSize.priceAdjustment }] : []),
+        ...selectedToppings.map(t => ({ variantId: t._id, name: t.name, priceAdjustment: t.priceAdjustment }))
+      ],
+      variantPriceSum: (selectedSize?.priceAdjustment || 0) + selectedToppings.reduce((s, t) => s + (t.priceAdjustment || 0), 0),
+      note: note,
+    };
+
+    const savedCart = localStorage.getItem("sippoint_cart");
+    const cart = savedCart ? JSON.parse(savedCart) : [];
+    // Check if same product + same variants already exists
+    const existingIdx = cart.findIndex(c => c.productId === cartItem.productId && JSON.stringify(c.variants) === JSON.stringify(cartItem.variants));
+    if (existingIdx >= 0) {
+      cart[existingIdx].qty += quantity;
+    } else {
+      cart.push(cartItem);
+    }
+    localStorage.setItem("sippoint_cart", JSON.stringify(cart));
+
+    setCartCount(cart.reduce((sum, c) => sum + c.qty, 0));
     toast.success(`Đã thêm ${quantity} x ${activeProduct.name} vào giỏ hàng!`);
     handleCloseDetail();
   };
@@ -161,14 +195,14 @@ export default function Menu() {
             <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
             <span className="font-semibold text-[13px]">Bàn B05</span>
           </div>
-          <button className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 transition-colors active:scale-95 duration-200">
+          <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined text-[#534434]">shopping_bag</span>
             {cartCount > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center font-bold">
                 {cartCount}
               </span>
             )}
-          </button>
+          </Link>
         </header>
 
         <main className="pt-4 px-4 flex-1">
