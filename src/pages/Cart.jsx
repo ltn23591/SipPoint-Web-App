@@ -85,11 +85,10 @@ export default function Cart() {
         note: "Đặt hàng từ Web"
       });
 
-      // Clear local cart
+      // Clear local cart in storage
       localStorage.removeItem("sippoint_cart");
-      setCartItems([]);
       
-      // Navigate to order tracking
+      // Navigate to order tracking immediately
       navigate(ROUTE_PATH.ORDERS);
     } catch (error) {
       alert(error.message || "Đặt món thất bại, vui lòng thử lại.");
