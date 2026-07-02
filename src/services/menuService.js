@@ -26,5 +26,18 @@ export const menuService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Lỗi lấy danh sách món ăn");
     }
+  },
+
+  getProductById: async (id) => {
+    try {
+      const response = await apiCall(API_METHOD.GET, `/product/${id}`);
+      if (response && response.data?.success) {
+        return response.data;
+      }
+      throw new Error(response?.data?.message || "Lấy chi tiết món ăn thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy chi tiết món ăn");
+    }
   }
 };
