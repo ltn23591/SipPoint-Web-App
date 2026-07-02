@@ -13,6 +13,7 @@ import RewardPoints from "@/pages/RewardPoints"; // Import trang RewardPoints
 import Account from "@/pages/Account";
 import EditProfile from "@/pages/EditProfile";
 import MyVouchers from "@/pages/MyVouchers";
+import OrderTracking from "@/pages/OrderTracking";
 
 export const router = createBrowserRouter([
   {
@@ -58,5 +59,9 @@ export const router = createBrowserRouter([
   {
     path: ROUTE_PATH.VOUCHERS,
     element: <MyVouchers />
+  },
+  {
+    path: ROUTE_PATH.ORDERS,
+    element: <OrderTracking />
   }
 ]);

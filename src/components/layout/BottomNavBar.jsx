@@ -19,10 +19,10 @@ export default function BottomNavBar({ activeTab }) {
         <span className="material-symbols-outlined" style={getIconStyle('MENU')}>local_cafe</span>
         <span className="text-[11px] font-semibold mt-0.5">Thực đơn</span>
       </Link>
-      <a href="#" className={getTabClass('ORDERS')}>
+      <Link to={ROUTE_PATH.ORDERS} className={getTabClass('ORDERS')}>
         <span className="material-symbols-outlined" style={getIconStyle('ORDERS')}>receipt_long</span>
         <span className="text-[11px] font-semibold mt-0.5">Đơn hàng</span>
-      </a>
+      </Link>
       <Link to={ROUTE_PATH.REWARDS} className={getTabClass('REWARDS')}>
         <span className="material-symbols-outlined" style={getIconStyle('REWARDS')}>redeem</span>
         <span className="text-[11px] font-semibold mt-0.5">Điểm SipPoint</span>

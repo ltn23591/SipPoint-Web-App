@@ -40,4 +40,30 @@ export const customerService = {
       throw new Error(apiErrorData?.message || "Lỗi lấy danh sách voucher");
     }
   },
+
+  getMyOrders: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/customers/me/orders");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy danh sách đơn hàng thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy danh sách đơn hàng");
+    }
+  },
+
+  getMyOrderById: async (orderId) => {
+    try {
+      const response = await apiCall(API_METHOD.GET, `/customers/me/orders/${orderId}`);
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy chi tiết đơn hàng thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy chi tiết đơn hàng");
+    }
+  },
 };
