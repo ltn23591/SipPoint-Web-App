@@ -66,4 +66,17 @@ export const customerService = {
       throw new Error(apiErrorData?.message || "Lỗi lấy chi tiết đơn hàng");
     }
   },
+
+  createMyOrder: async (data) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/customers/me/orders", data);
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Đặt đơn hàng thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi đặt đơn hàng");
+    }
+  },
 };
