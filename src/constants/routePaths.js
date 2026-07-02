@@ -11,6 +11,7 @@ export const ROUTE_PATH = {
   EDIT_PROFILE: "/account/edit",
   VOUCHERS: "/vouchers",
   ORDERS: "/orders",
+  LUCKY_WHEEL: "/lucky-wheel",
   CART: "/cart",
 };
 

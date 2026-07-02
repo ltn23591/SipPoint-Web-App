@@ -134,10 +134,10 @@ export default function RewardPoints() {
               <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c]">Đổi quà</p>
             </div>
             <div className="grid grid-rows-2 gap-[16px]">
-              <div className="bento-card bg-[#ffffff] rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10">
+              <Link to={ROUTE_PATH.LUCKY_WHEEL} className="bento-card bg-[#ffffff] rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 cursor-pointer hover:bg-[#f3f3f4]">
                 <span className="material-symbols-outlined text-[#7c563d]">toys</span>
                 <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c]">Vòng quay</p>
-              </div>
+              </Link>
               <Link to={ROUTE_PATH.VOUCHERS} className="bento-card bg-[#ffffff] rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 cursor-pointer hover:bg-[#f3f3f4]">
                 <span className="material-symbols-outlined text-[#7c563d]">confirmation_number</span>
                 <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c]">Voucher của tôi</p>
