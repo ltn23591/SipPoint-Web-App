@@ -1,43 +1,95 @@
-import { MOCK_AUTH_DATA } from "@/data/mockAuth";
-import { MOCK_USER } from "@/constants/auth"; // Lấy thông tin email từ constants
+import apiCall from "@/apis/config";
+import { API_METHOD } from "@/constants/application";
 
 export const authService = {
-  // Thay đổi tham số phone thành email
-  login: async (email) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        // Chuyển tất cả về chữ thường để so sánh cho chính xác
-        if (email.toLowerCase() === MOCK_USER.email.toLowerCase()) {
-          const mockUser = { 
-            fullname: "Nguyễn Văn A", 
-            email: MOCK_USER.email 
-          };
-          
-          // Giả lập lưu phiên đăng nhập
-          localStorage.setItem("user", JSON.stringify(mockUser));
-          localStorage.setItem("token", MOCK_AUTH_DATA.successResponse.data.token);
-          
-          resolve(MOCK_AUTH_DATA.successResponse);
-        } else {
-          reject(MOCK_AUTH_DATA.errorResponse);
-        }
-      }, 1000);
-    });
+  login: async (email, password) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/auth/customer/login", {
+        loginIdentifier: email,
+        password,
+      });
+
+      if (response && response.status === 200 && response.data?.success) {
+        const userData = response.data.data; 
+        const token = response.data.token;
+        localStorage.setItem("user", JSON.stringify(userData || { email }));
+        localStorage.setItem("token", token);
+        return {
+          success: true,
+          message: response.data.message || "Đăng nhập thành công!",
+          data: response.data
+        };
+      } else {
+        const err = new Error(response?.data?.message || "Đăng nhập thất bại!");
+        err.cause = response?.data;
+        throw err;
+      }
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      const err = new Error(apiErrorData?.message || error.message || "Đăng nhập thất bại!");
+      err.cause = apiErrorData;
+      throw err;
+    }
   },
 
   register: async (userData) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Giả lập lưu phiên đăng nhập sau khi tạo tài khoản
-        localStorage.setItem("user", JSON.stringify(userData));
-        
-        resolve({
+    try {
+      const payload = {
+        fullName: userData.fullname,
+        email: userData.email,
+        phone: userData.phone,
+        password: userData.password,
+      };
+
+      const response = await apiCall(API_METHOD.POST, "/auth/customer/register", payload);
+
+      if (response && (response.status === 200 || response.status === 210 || response.status === 201) && response.data?.success) {
+        return {
           success: true,
-          message: "Tạo tài khoản thành công!",
-          data: MOCK_AUTH_DATA.successResponse.data
-        });
-      }, 1000);
-    });
+          message: response.data.message || "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+          data: response.data
+        };
+      } else {
+        const err = new Error(response?.data?.message || "Đăng ký thất bại!");
+        err.cause = response?.data;
+        throw err;
+      }
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      const err = new Error(apiErrorData?.message || error.message || "Đăng ký thất bại!");
+      err.cause = apiErrorData;
+      throw err;
+    }
+  },
+
+  verifyOtp: async ({ email, otp }) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/auth/customer/verify-email", {
+        email,
+        otp,
+      });
+
+      if (response && response.status === 200 && response.data?.success) {
+        const userData = response.data.data;
+        const token = response.data.token;
+        localStorage.setItem("user", JSON.stringify(userData || { email }));
+        localStorage.setItem("token", token);
+        return {
+          success: true,
+          message: response.data.message || "Xác thực tài khoản thành công!",
+          data: response.data
+        };
+      } else {
+        const err = new Error(response?.data?.message || "Xác thực OTP thất bại!");
+        err.cause = response?.data;
+        throw err;
+      }
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      const err = new Error(apiErrorData?.message || error.message || "Xác thực OTP thất bại!");
+      err.cause = apiErrorData;
+      throw err;
+    }
   },
 
   logout: () => {

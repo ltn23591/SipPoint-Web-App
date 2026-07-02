@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, Loader2, Lock, Mail, Smartphone, User } from "lucide-react";
+import { toast } from "react-toastify";
 import { AUTH_TEXT } from "@/constants/auth";
 import { AuthCard } from "@/components/common/AuthCard";
 import { authService } from "@/services/authService";
@@ -10,20 +11,18 @@ export default function Register() {
   const navigate = useNavigate();
   // Thêm email vào state
   const [formData, setFormData] = useState({ fullname: "", email: "", phone: "", password: "" });
-  const [message, setMessage] = useState({ type: "", text: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setMessage({ type: "", text: "" });
 
     try {
       const response = await authService.register(formData);
-      setMessage({ type: "success", text: response.message });
-      setTimeout(() => navigate("/login"), 1500); // Chuyển về login
+      toast.success(response.message || "Đăng ký thành công!");
+      setTimeout(() => navigate("/verify-otp", { state: { email: formData.email } }), 1500); // Chuyển sang trang xác thực OTP
     } catch (error) {
-      setMessage({ type: "error", text: error.message });
+      toast.error(error.message || "Đăng ký thất bại. Vui lòng thử lại!");
     } finally {
       setIsLoading(false);
     }
@@ -39,12 +38,6 @@ export default function Register() {
           {AUTH_TEXT.TAB_REGISTER}
         </div>
       </div>
-
-      {message.text && (
-        <div className={`mb-4 rounded-lg p-3 text-center text-sm font-medium ${message.type === "success" ? "bg-green-50 text-green-700" : "bg-red-50 text-red-600"}`}>
-          {message.text}
-        </div>
-      )}
 
       <form onSubmit={handleRegister} className="flex flex-col gap-4">
         {/* Họ và tên */}
