@@ -8,6 +8,7 @@ import Login from "@/pages/Login";    // Import trang Login
 import Register from "@/pages/Register"; // Import trang Register
 import VerifyOtp from "@/pages/VerifyOtp"; // Import trang VerifyOtp
 import Welcome from "@/pages/Welcome"; // Import trang Welcome
+import Menu from "@/pages/Menu"; // Import trang Menu
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ export const router = createBrowserRouter([
   { 
     path: ROUTE_PATH.VERIFY_OTP, 
     element: <VerifyOtp /> 
+  },
+  { 
+    path: ROUTE_PATH.MENU, 
+    element: <Menu /> 
   },
   { 
     path: ROUTE_PATH.NOT_FOUND, 

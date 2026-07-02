@@ -5,6 +5,7 @@ export const ROUTE_PATH = {
   REGISTER: "/register",
   VERIFY_OTP: "/verify-otp",
   WELCOME: "/welcome",
+  MENU: "/menu",
 };
 
 // Section anchors trên trang Home (one-page landing).
