@@ -11,6 +11,8 @@ export const ROUTE_PATH = {
   EDIT_PROFILE: "/account/edit",
   VOUCHERS: "/vouchers",
   ORDERS: "/orders",
+  ORDER_DETAIL: "/orders/:orderId",
+  ORDER_TRACKING: "/order-tracking",
   LUCKY_WHEEL: "/lucky-wheel",
   CART: "/cart",
 };
@@ -24,4 +26,3 @@ export const SECTION_ID = {
   FAQ: "faq",
   CONTACT: "contact",
 };
-

@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 
 export default function OrderTracking() {
+  const { orderId } = useParams();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [countdown, setCountdown] = useState(272); // 4m32s = 272s default
 
-  // Fetch the latest order
-  const fetchLatestOrder = async () => {
+  // Fetch order details (either specific or latest)
+  const fetchOrderDetails = async () => {
     try {
-      const ordersRes = await customerService.getMyOrders();
-      // Ensure orders is an array and filter out inactive ones if possible, or grab the latest order
-      const ordersList = ordersRes?.orders || ordersRes || [];
-      if (ordersList.length > 0) {
-        // Sort by createdAt descending
-        const sorted = [...ordersList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        setOrder(sorted[0]);
+      if (orderId) {
+        const orderData = await customerService.getMyOrderById(orderId);
+        setOrder(orderData);
       } else {
-        setOrder(null);
+        const ordersRes = await customerService.getMyOrders();
+        const ordersList = ordersRes?.orders || ordersRes || [];
+        if (ordersList.length > 0) {
+          const sorted = [...ordersList].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setOrder(sorted[0]);
+        } else {
+          setOrder(null);
+        }
       }
     } catch (error) {
       console.error("Lỗi lấy thông tin đơn hàng:", error);
@@ -30,11 +34,11 @@ export default function OrderTracking() {
   };
 
   useEffect(() => {
-    fetchLatestOrder();
+    fetchOrderDetails();
     // Poll every 5 seconds to track order status in real time
-    const interval = setInterval(fetchLatestOrder, 5000);
+    const interval = setInterval(fetchOrderDetails, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [orderId]);
 
   // Countdown timer effect
   useEffect(() => {
@@ -357,7 +361,7 @@ export default function OrderTracking() {
           </main>
         )}
 
-        <BottomNavBar activeTab="ORDERS" />
+        <BottomNavBar activeTab="TRACKING" />
       </div>
     </div>
   );
