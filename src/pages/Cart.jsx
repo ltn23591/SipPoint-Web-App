@@ -7,23 +7,23 @@ import { customerService } from "@/services/customerService";
 export default function Cart() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    const savedCart = localStorage.getItem("sippoint_cart");
+    if (savedCart) {
+      try {
+        return JSON.parse(savedCart);
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
+  });
   const [voucherCode, setVoucherCode] = useState("");
   const [voucherDiscount, setVoucherDiscount] = useState(0);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Load cart from localStorage
-    const savedCart = localStorage.getItem("sippoint_cart");
-    if (savedCart) {
-      try {
-        setCartItems(JSON.parse(savedCart));
-      } catch (e) {
-        setCartItems([]);
-      }
-    }
-
     // Check login status
     const token = localStorage.getItem("accessToken");
     setIsLoggedIn(!!token);

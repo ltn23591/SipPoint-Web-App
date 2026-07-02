@@ -15,8 +15,8 @@ export default function BottomNavBar({ activeTab }) {
 
   return (
     <nav className="fixed bottom-0 max-w-md mx-auto left-0 right-0 w-full z-10 flex justify-around items-center px-2 py-2 h-16 bg-white border-t border-zinc-100 shadow-[0px_-4px_12px_rgba(59,31,10,0.04)]">
-      <Link to={ROUTE_PATH.MENU} className={getTabClass('MENU')}>
-        <span className="material-symbols-outlined" style={getIconStyle('MENU')}>local_cafe</span>
+      <Link to={ROUTE_PATH.HOME} className={getTabClass('HOME')}>
+        <span className="material-symbols-outlined" style={getIconStyle('HOME')}>local_cafe</span>
         <span className="text-[11px] font-semibold mt-0.5">Thực đơn</span>
       </Link>
       <Link to={ROUTE_PATH.ORDERS} className={getTabClass('ORDERS')}>
