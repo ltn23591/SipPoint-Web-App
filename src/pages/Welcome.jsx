@@ -19,7 +19,7 @@ export default function Welcome() {
   };
 
   const handleGuestClick = () => {
-    navigate(ROUTE_PATH.HOME);
+    navigate(ROUTE_PATH.MENU);
   };
 
   return (
