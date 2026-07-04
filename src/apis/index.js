@@ -12,3 +12,16 @@ export const ContactApi = {
     return apiCall(API_METHOD.POST, endpoint, payload);
   },
 };
+
+export const AiApi = {
+  chat: (payload) => {
+    const endpoint = `/ai/chat`;
+    return apiCall(API_METHOD.POST, endpoint, payload);
+  },
+  recommendTopProduct: () => {
+    const endpoint = `/ai/recommend-top-product`;
+    return apiCall(API_METHOD.GET, endpoint);
+  },
+};
+
+

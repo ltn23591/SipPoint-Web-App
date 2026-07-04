@@ -2,6 +2,7 @@ import { Outlet } from "react-router";
 
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
+import { ChatbotAI } from "../common/ChatbotAI";
 
 export function LandingLayout() {
   return (
@@ -11,6 +12,8 @@ export function LandingLayout() {
         <Outlet />
       </main>
       <Footer />
+      <ChatbotAI />
     </div>
   );
 }
+

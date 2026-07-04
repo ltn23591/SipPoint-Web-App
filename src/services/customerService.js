@@ -79,4 +79,40 @@ export const customerService = {
       throw new Error(apiErrorData?.message || "Lỗi đặt đơn hàng");
     }
   },
+
+  uploadAvatar: async (file) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const response = await apiCall(
+        API_METHOD.POST,
+        "/upload/cloudinary/file",
+        formData,
+        { "Content-Type": "multipart/form-data" }
+      );
+      if (response && response.data?.success) {
+        return response.data.data; // Cloudinary result
+      }
+      throw new Error(response?.data?.message || "Upload Cloudinary thất bại");
+    } catch (error) {
+      console.warn("Cloudinary upload failed, attempting local upload...", error);
+      // Fallback to local
+      const formData = new FormData();
+      formData.append("image", file);
+      const response = await apiCall(
+        API_METHOD.POST,
+        "/upload/local",
+        formData,
+        { "Content-Type": "multipart/form-data" }
+      );
+      if (response && response.data?.success) {
+        const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL || "https://sippoint-be.onrender.com/api/v1";
+        const host = VITE_APP_API_URL.replace("/api/v1", "");
+        return { secure_url: host + response.data.data.url };
+      }
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi tải ảnh đại diện");
+    }
+  },
 };
+
