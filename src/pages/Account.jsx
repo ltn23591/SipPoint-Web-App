@@ -38,16 +38,24 @@ export default function Account() {
         `}} />
         
         {/* TopAppBar */}
-        <header className="w-full top-0 sticky shadow-sm z-40 bg-[#f9f9f9] shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
-          <div className="flex items-center justify-between px-[20px] h-16 w-full mx-auto">
-            <div className="flex items-center gap-2 hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200 cursor-pointer p-2 rounded-full">
-              <span className="material-symbols-outlined text-[#855300]" style={{ fontVariationSettings: "'FILL' 1" }}>coffee</span>
-            </div>
-            <h1 className="font-bold text-[32px] leading-[40px] tracking-tight text-[#855300]">SipPoint</h1>
-            <Link to={ROUTE_PATH.EDIT_PROFILE} className="w-8 h-8 rounded-full overflow-hidden bg-[#e8e8e8] border-2 border-[#f59e0b] hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200 cursor-pointer">
-              <img alt="User Profile" className="w-full h-full object-cover" src={profile?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuBjhcC1CkAjxTbgxRtdCVpolezg2wWxa2fIyWW9LtaDQycVmijepXf5-SAAMtxnEfzDuN8B1DiFnlGSh0fYbfTLnVYT6euR4pt1NpuQJMRRdalaA1BvYYn9-uk79bk5ClhYQMRQdkZAXE3aOhcQUB9C3ko4fT0lWZab7bpVTzmCte7oEjSn1VvduhrCEPPyknMB3FGQIlqeO_SUaoPsyOVut6Vczo71rBBnD46wsMaCkETu-WOA1P3P1duwFc9_l1B2uHyGe8is0j4"} />
-            </Link>
+        <header className="sticky top-0 left-0 w-full z-40 flex justify-between items-center px-4 h-16 bg-white/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#855300] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              coffee
+            </span>
+            <span className="font-bold text-[18px] leading-none text-[#855300] tracking-wide">
+              SipPoint
+            </span>
           </div>
+
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 text-[#7a553c] rounded-full shadow-sm">
+            <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
+            <span className="font-semibold text-[13px]">Bàn B05</span>
+          </div>
+
+          <Link to={ROUTE_PATH.EDIT_PROFILE} className="w-8 h-8 rounded-full overflow-hidden bg-[#e8e8e8] border-2 border-[#f59e0b] hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200 cursor-pointer">
+            <img alt="User Profile" className="w-full h-full object-cover" src={profile?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuBjhcC1CkAjxTbgxRtdCVpolezg2wWxa2fIyWW9LtaDQycVmijepXf5-SAAMtxnEfzDuN8B1DiFnlGSh0fYbfTLnVYT6euR4pt1NpuQJMRRdalaA1BvYYn9-uk79bk5ClhYQMRQdkZAXE3aOhcQUB9C3ko4fT0lWZab7bpVTzmCte7oEjSn1VvduhrCEPPyknMB3FGQIlqeO_SUaoPsyOVut6Vczo71rBBnD46wsMaCkETu-WOA1P3P1duwFc9_l1B2uHyGe8is0j4"} />
+          </Link>
         </header>
 
         {/* Main Content Canvas */}
@@ -112,7 +120,7 @@ export default function Account() {
             <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] px-1 uppercase tracking-wider">Bảo mật & Đăng nhập</h3>
             <div className="bg-[#ffffff] rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] overflow-hidden border border-[#d8c3ad]/30">
               {/* Change Password */}
-              <div className="flex items-center justify-between p-4 border-b border-[#d8c3ad]/20 hover:bg-[#f3f3f4] transition-colors cursor-pointer active:bg-[#e8e8e8]">
+              <div className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] transition-colors cursor-pointer active:bg-[#e8e8e8]">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#ede3b8] flex items-center justify-center text-[#4a4424]">
                     <span className="material-symbols-outlined">lock</span>
@@ -121,61 +129,9 @@ export default function Account() {
                 </div>
                 <span className="material-symbols-outlined text-[#534434] text-[20px]">chevron_right</span>
               </div>
-              {/* FaceID */}
-              <div className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] transition-colors cursor-pointer active:bg-[#e8e8e8]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#ede3b8] flex items-center justify-center text-[#4a4424]">
-                    <span className="material-symbols-outlined">face</span>
-                  </div>
-                  <div>
-                    <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] block">Đăng nhập FaceID</span>
-                    <span className="font-normal text-[14px] leading-[20px] text-[#534434]">Cho phép đăng nhập nhanh</span>
-                  </div>
-                </div>
-                <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                  <input className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-[#dadada] transition-all duration-300 z-10" id="toggle2" name="toggle2" type="checkbox" />
-                  <label className="toggle-label block overflow-hidden h-6 rounded-full bg-[#dadada] cursor-pointer transition-all duration-300" htmlFor="toggle2"></label>
-                </div>
-              </div>
             </div>
           </section>
 
-          {/* Section: Info & Legal */}
-          <section className="flex flex-col gap-[8px]">
-            <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] px-1 uppercase tracking-wider">Pháp lý & Thông tin</h3>
-            <div className="bg-[#ffffff] rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] overflow-hidden border border-[#d8c3ad]/30">
-              <div className="flex items-center justify-between p-4 border-b border-[#d8c3ad]/20 hover:bg-[#f3f3f4] transition-colors cursor-pointer active:bg-[#e8e8e8]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#eeeeee] flex items-center justify-center text-[#534434]">
-                    <span className="material-symbols-outlined">description</span>
-                  </div>
-                  <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c]">Điều khoản dịch vụ</span>
-                </div>
-                <span className="material-symbols-outlined text-[#534434] text-[20px]">chevron_right</span>
-              </div>
-              <div className="flex items-center justify-between p-4 border-b border-[#d8c3ad]/20 hover:bg-[#f3f3f4] transition-colors cursor-pointer active:bg-[#e8e8e8]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#eeeeee] flex items-center justify-center text-[#534434]">
-                    <span className="material-symbols-outlined">shield_lock</span>
-                  </div>
-                  <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c]">Chính sách quyền riêng tư</span>
-                </div>
-                <span className="material-symbols-outlined text-[#534434] text-[20px]">chevron_right</span>
-              </div>
-              <div className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] transition-colors cursor-pointer active:bg-[#e8e8e8]">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#eeeeee] flex items-center justify-center text-[#534434]">
-                    <span className="material-symbols-outlined">info</span>
-                  </div>
-                  <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c]">Giới thiệu về SipPoint</span>
-                </div>
-                <div className="flex items-center gap-2 text-[#534434]">
-                  <span className="font-normal text-[14px] leading-[20px]">v1.2.4</span>
-                  <span className="material-symbols-outlined text-[20px]">chevron_right</span>
-                </div>
-              </div>
-            </div>
-          </section>
 
           {/* Logout Button */}
           <div className="mt-4">

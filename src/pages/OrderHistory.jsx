@@ -75,19 +75,33 @@ export default function OrderHistory() {
         `}} />
 
         {/* Top App Bar */}
-        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex items-center px-4 h-16 bg-white/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
-          <h1 className="font-bold text-[20px] text-[#855300] tracking-wide">
-            Đơn hàng của tôi
-          </h1>
+        <header className="sticky top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#855300] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              coffee
+            </span>
+            <span className="font-bold text-[18px] leading-none text-[#855300] tracking-wide">
+              SipPoint
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 text-[#7a553c] rounded-full shadow-sm">
+            <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
+            <span className="font-semibold text-[13px]">Bàn B05</span>
+          </div>
+
+          <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 transition-colors active:scale-95 duration-200">
+            <span className="material-symbols-outlined text-[#534434]">shopping_bag</span>
+          </Link>
         </header>
 
         {isLoading ? (
-          <div className="flex-1 flex justify-center items-center py-20 mt-16">
+          <div className="flex-1 flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#855300]" />
           </div>
         ) : orders.length === 0 ? (
           /* Empty State */
-          <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center">
+          <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 text-center">
             <span className="material-symbols-outlined text-zinc-300 text-[64px] mb-4">receipt_long</span>
             <h2 className="text-lg font-bold text-zinc-800">Chưa có đơn hàng nào</h2>
             <p className="text-sm text-zinc-500 mt-2 max-w-xs">
@@ -98,7 +112,7 @@ export default function OrderHistory() {
             </Link>
           </div>
         ) : (
-          <main className="pt-20 px-4 space-y-4 flex-1">
+          <main className="pt-4 px-4 space-y-4 flex-1">
             {orders.map((order) => (
               <div 
                 key={order._id}

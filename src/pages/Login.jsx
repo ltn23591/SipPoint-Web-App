@@ -20,7 +20,7 @@ export default function Login() {
     try {
       const response = await authService.login(formData.email, formData.password);
       toast.success(response.message || "Đăng nhập thành công!");
-      setTimeout(() => navigate("/"), 1000);
+      setTimeout(() => navigate("/menu"), 1000);
     } catch (error) {
       toast.error(error.message || "Đăng nhập thất bại. Vui lòng thử lại!");
     } finally {

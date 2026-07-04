@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
+import { toast } from "react-toastify";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export default function EditProfile() {
     avatar: ""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -39,8 +41,46 @@ export default function EditProfile() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleAvatarClick = () => {
+    document.getElementById("avatarInput").click();
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    const toastId = toast.loading("Đang tải ảnh đại diện lên...");
+    try {
+      const uploadResult = await customerService.uploadAvatar(file);
+      const url = uploadResult.secure_url || uploadResult.url;
+      
+      setFormData((prev) => ({ ...prev, avatar: url }));
+      toast.update(toastId, {
+        render: "Tải ảnh đại diện lên thành công!",
+        type: "success",
+        isLoading: false,
+        autoClose: 2000
+      });
+    } catch (err) {
+      console.error(err);
+      toast.update(toastId, {
+        render: err.message || "Tải ảnh đại diện thất bại!",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isUploading) {
+      toast.warn("Vui lòng đợi ảnh tải lên hoàn tất!");
+      return;
+    }
     setIsLoading(true);
     setError(null);
     try {
@@ -48,16 +88,19 @@ export default function EditProfile() {
         fullName: formData.fullName,
         phone: formData.phone,
         email: formData.email,
-        dateOfBirth: formData.dateOfBirth
+        dateOfBirth: formData.dateOfBirth,
+        avatar: formData.avatar
       });
-      alert("Cập nhật thông tin thành công!");
-      navigate(ROUTE_PATH.ACCOUNT);
+      toast.success("Cập nhật thông tin thành công!");
+      setTimeout(() => navigate(ROUTE_PATH.ACCOUNT), 1000);
     } catch (err) {
       setError(err.message);
+      toast.error(err.message || "Cập nhật thất bại.");
     } finally {
       setIsLoading(false);
     }
   };
+
 
   return (
     <div className="bg-[#f9f9f9] text-[#1a1c1c] w-full min-h-screen flex flex-col items-center font-sans pb-[64px]">
@@ -86,13 +129,29 @@ export default function EditProfile() {
           
           {/* Profile Picture Edit */}
           <section className="flex flex-col items-center justify-center gap-[8px]">
-            <div className="relative w-24 h-24 rounded-full bg-[#e2e2e2] shadow-[0px_4px_12px_rgba(59,31,10,0.06)] border-4 border-[#f9f9f9] overflow-hidden group">
+            <div 
+              onClick={handleAvatarClick}
+              className="relative w-24 h-24 rounded-full bg-[#e2e2e2] shadow-[0px_4px_12px_rgba(59,31,10,0.06)] border-4 border-[#f9f9f9] overflow-hidden group cursor-pointer"
+            >
               <img alt="Profile Picture" className="w-full h-full object-cover" src={formData.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuAYpAeE9XgC3WiDAHrX9uWku-HPkl4NdL7T8qML3dZhr9Y1xj1_QB2WFXstqIzkMsM38UYq2uze4JPEnRTPmRfP8Istbn4Mk3ezl0b9fYg1ulr1NyH4AiNHB4WBySW5XwWWu8PN9Pw4anp5PGioFx56-Ddt4rnE3EJYBDAtHCDYv6xCnvOICZSMvNIjU8cVAaGO8y3Zs0UEK15xAaaA_9zJYL3JnM1rXJI23wcOF3FFjz6W2T0jtYulDTNXTYxFIBU6ifWQymNirw4"} />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <span className="material-symbols-outlined text-white" style={{ fontVariationSettings: "'FILL' 1" }}>photo_camera</span>
               </div>
             </div>
-            <button className="text-[#855300] font-semibold text-[14px] leading-[20px] hover:underline decoration-[#855300] underline-offset-4">Thay đổi ảnh đại diện</button>
+            <input 
+              type="file" 
+              id="avatarInput" 
+              accept="image/*" 
+              className="hidden" 
+              onChange={handleAvatarChange} 
+            />
+            <button 
+              type="button"
+              onClick={handleAvatarClick}
+              className="text-[#855300] font-semibold text-[14px] leading-[20px] hover:underline decoration-[#855300] underline-offset-4"
+            >
+              Thay đổi ảnh đại diện
+            </button>
           </section>
 
           {/* Form Fields */}

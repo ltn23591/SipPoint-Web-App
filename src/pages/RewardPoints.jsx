@@ -89,17 +89,27 @@ export default function RewardPoints() {
         `}} />
 
         {/* Top App Bar */}
-        <header className="fixed max-w-md mx-auto top-0 left-0 right-0 w-full z-50 flex justify-between items-center px-[16px] h-16 bg-[#f9f9f9]/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
-          <div className="flex items-center gap-3">
-            <span className="material-symbols-outlined text-[#855300]" style={{ fontVariationSettings: "'FILL' 1" }}>coffee</span>
-            <h1 className="font-bold text-[22px] leading-[28px] text-[#855300]">SipPoint</h1>
+        <header className="sticky top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+          <div className="flex items-center gap-2">
+            <span className="material-symbols-outlined text-[#855300] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              coffee
+            </span>
+            <span className="font-bold text-[18px] leading-none text-[#855300] tracking-wide">
+              SipPoint
+            </span>
           </div>
-          <button className="active:scale-95 transition-all duration-200 p-2 rounded-full hover:bg-[#f3f3f4]">
+
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 text-[#7a553c] rounded-full shadow-sm">
+            <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
+            <span className="font-semibold text-[13px]">Bàn B05</span>
+          </div>
+
+          <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 transition-colors active:scale-95 duration-200">
             <span className="material-symbols-outlined text-[#534434]">shopping_bag</span>
-          </button>
+          </Link>
         </header>
 
-        <main className="pt-20 px-[20px] flex flex-col gap-[24px]">
+        <main className="pt-4 px-[20px] flex flex-col gap-[24px]">
           {/* Hero Section: Wallet Balance */}
           <section ref={containerRef} className="relative overflow-hidden rounded-xl bg-[#613f27] p-6 text-white shadow-[0px_8px_24px_rgba(59,31,10,0.1)]">
             <div className="absolute -top-12 -right-12 w-48 h-48 bg-[#855300] opacity-20 rounded-full blur-3xl"></div>

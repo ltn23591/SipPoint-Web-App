@@ -66,7 +66,7 @@ export default function VerifyOtp() {
             const response = await authService.verifyOtp({ email, otp });
             toast.success(response.message || 'Xác thực thành công!');
             setIsSuccess(true);
-            setTimeout(() => navigate('/'), 1500);
+            setTimeout(() => navigate('/menu'), 1500);
         } catch (error) {
             toast.error(error.message || 'Mã OTP không hợp lệ!');
             setIsLoading(false);
