@@ -276,7 +276,7 @@ export function ChatbotAI() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Hỏi SipPoint AI..."
-              className="flex-1 px-4 py-2 rounded-xl text-sm border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-850 dark:text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+              className="flex-1 px-4 py-2 rounded-xl text-sm border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-850 dark:text-on-surface focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
               disabled={isLoading}
             />
             <button

@@ -23,8 +23,8 @@ export default function Welcome() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f9f9f9] flex justify-center selection:bg-[#f59e0b]/30">
-      <div className="relative min-h-screen w-full max-w-md flex flex-col bg-white shadow-xl overflow-x-hidden font-sans text-[#1a1c1c]">
+    <div className="min-h-screen w-full bg-[#f9f9f9] dark:bg-[#131313] flex justify-center selection:bg-[#f59e0b]/30 transition-colors duration-300">
+      <div className="relative min-h-screen w-full max-w-md flex flex-col bg-white dark:bg-[#131313] shadow-xl dark:shadow-none overflow-x-hidden font-sans text-[#1a1c1c] dark:text-on-surface pb-0 transition-colors duration-300">
         {/* CSS Styles injection for custom animations, scrollbars and fonts */}
         <style dangerouslySetInnerHTML={{ __html: `
           @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
@@ -51,15 +51,15 @@ export default function Welcome() {
         `}} />
 
         {/* Hero Background Section */}
-        <div className="relative h-[45vh] w-full overflow-hidden bg-gradient-to-b from-black/50 via-white/20 to-white">
+        <div className="relative h-[45vh] w-full overflow-hidden bg-gradient-to-b from-black/50 via-white/20 to-white dark:from-black/70 dark:via-black/20 dark:to-[#131313]">
           {/* Table Identifier Floating */}
           <div className="absolute inset-0 max-w-md mx-auto w-full pointer-events-none">
             <div className="absolute top-5 left-5 z-10 pointer-events-auto">
-              <div className="bg-[#855300] px-4 py-2 rounded-full shadow-[0px_8px_24px_rgba(59,31,10,0.15)] flex items-center gap-2 border border-[#855300]/10">
-                <span className="material-symbols-outlined text-white text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+              <div className="bg-[#855300] dark:bg-primary-container px-4 py-2 rounded-full shadow-[0px_8px_24px_rgba(59,31,10,0.15)] dark:shadow-none flex items-center gap-2 border border-[#855300]/10">
+                <span className="material-symbols-outlined text-white dark:text-on-primary-container text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                   table_restaurant
                 </span>
-                <span className="font-semibold text-[14px] leading-none text-white tracking-wide">
+                <span className="font-semibold text-[14px] leading-none text-white dark:text-on-primary-container tracking-wide">
                   Bàn B05
                 </span>
               </div>
@@ -72,10 +72,10 @@ export default function Welcome() {
           <div>
             {/* Welcome Card */}
             <div className="mb-6 transition-all duration-700 delay-100 transform ease-out">
-              <div className="text-[32px] font-bold text-[#1a1c1c] leading-tight tracking-tight">
-                Chào mừng bạn<br />đến với <span className="text-[#855300] italic font-serif">SipPoint</span>
+              <div className="text-[32px] font-bold text-[#1a1c1c] dark:text-on-surface leading-tight tracking-tight">
+                Chào mừng bạn<br />đến với <span className="text-[#855300] dark:text-primary italic font-serif">SipPoint</span>
               </div>
-              <p className="mt-2 text-[16px] leading-[24px] text-[#534434] max-w-[85%] font-medium">
+              <p className="mt-2 text-[16px] leading-[24px] text-[#534434] dark:text-on-surface-variant max-w-[85%] font-medium">
                 Thưởng thức hương vị cà phê thủ công ngay tại chỗ ngồi của bạn.
               </p>
             </div>
@@ -85,7 +85,7 @@ export default function Welcome() {
               {/* Primary Action Card (Amber Filled) */}
               <button 
                 onClick={handleLoginClick}
-                className={`active-scale group relative overflow-hidden bg-[#f59e0b] p-6 rounded-[24px] shadow-[0px_8px_24px_rgba(245,158,11,0.25)] flex flex-col items-start text-left border-2 border-[#f59e0b] transition-all cursor-pointer ${
+                className={`active-scale group relative overflow-hidden bg-[#f59e0b] dark:bg-primary-container p-6 rounded-[24px] shadow-[0px_8px_24px_rgba(245,158,11,0.25)] dark:shadow-none flex flex-col items-start text-left border-2 border-[#f59e0b] dark:border-primary-container transition-all cursor-pointer ${
                   animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
                 }`}
                 style={{ 
@@ -98,29 +98,29 @@ export default function Welcome() {
                 }}
               >
                 {/* Blur Circle design */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-[#613b00]/10 rounded-full -mr-12 -mt-12 blur-2xl transition-transform duration-500 group-hover:scale-110" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-[#613b00]/10 dark:bg-on-primary-container/10 rounded-full -mr-12 -mt-12 blur-2xl transition-transform duration-500 group-hover:scale-110" />
                 
                 <div className="flex justify-between w-full items-start mb-4 relative z-10">
-                  <div className="w-12 h-12 rounded-full bg-[#613b00]/10 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-[#613b00] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+                  <div className="w-12 h-12 rounded-full bg-[#613b00]/10 dark:bg-on-primary-container/20 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-[#613b00] dark:text-on-primary-container text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
                       person_add
                     </span>
                   </div>
-                  <div className="bg-[#613b00] text-[#f59e0b] px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                  <div className="bg-[#613b00] dark:bg-on-primary-container text-[#f59e0b] dark:text-primary-container px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm">
                     Khuyên dùng
                   </div>
                 </div>
 
                 <div className="space-y-1 relative z-10">
-                  <h2 className="text-[22px] leading-[28px] text-[#613b00] font-bold">
+                  <h2 className="text-[22px] leading-[28px] text-[#613b00] dark:text-on-primary-container font-bold">
                     Đăng nhập / Đăng ký
                   </h2>
-                  <p className="text-[14px] leading-[20px] text-[#613b00]/80 flex items-center gap-1 font-medium">
+                  <p className="text-[14px] leading-[20px] text-[#613b00]/80 dark:text-on-primary-container/80 flex items-center gap-1 font-medium">
                     Tích điểm ngay hôm nay
                   </p>
                 </div>
 
-                <div className="mt-6 flex items-center gap-2 text-[14px] font-semibold text-[#613b00] group-hover:translate-x-1 transition-transform">
+                <div className="mt-6 flex items-center gap-2 text-[14px] font-semibold text-[#613b00] dark:text-on-primary-container group-hover:translate-x-1 transition-transform">
                   <span>Bắt đầu ngay</span>
                   <span className="material-symbols-outlined text-[16px] font-bold">
                     arrow_forward
@@ -131,7 +131,7 @@ export default function Welcome() {
               {/* Guest Action Card (Outlined) */}
               <button 
                 onClick={handleGuestClick}
-                className={`active-scale group p-6 rounded-[24px] border-2 border-[#d8c3ad] bg-[#f3f3f4] hover:bg-[#eeeeee] transition-all flex flex-col items-start text-left cursor-pointer ${
+                className={`active-scale group p-6 rounded-[24px] border-2 border-[#d8c3ad] dark:border-outline-variant bg-[#f3f3f4] dark:bg-surface-container hover:bg-[#eeeeee] dark:hover:bg-surface-container-high transition-all flex flex-col items-start text-left cursor-pointer ${
                   animate ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
                 }`}
                 style={{ 
@@ -143,22 +143,22 @@ export default function Welcome() {
                   transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)'
                 }}
               >
-                <div className="w-12 h-12 rounded-full bg-[#d8c3ad]/20 flex items-center justify-center mb-4">
-                  <span className="material-symbols-outlined text-[#867461] text-[24px]">
+                <div className="w-12 h-12 rounded-full bg-[#d8c3ad]/20 dark:bg-outline-variant/30 flex items-center justify-center mb-4">
+                  <span className="material-symbols-outlined text-[#867461] dark:text-on-surface-variant text-[24px]">
                     no_accounts
                   </span>
                 </div>
 
                 <div className="space-y-1">
-                  <h2 className="text-[20px] leading-[28px] text-[#1a1c1c] font-semibold">
+                  <h2 className="text-[20px] leading-[28px] text-[#1a1c1c] dark:text-on-surface font-semibold">
                     Tiếp tục không đăng nhập
                   </h2>
-                  <p className="text-[14px] leading-[20px] text-[#534434] font-medium">
+                  <p className="text-[14px] leading-[20px] text-[#534434] dark:text-on-surface-variant font-medium">
                     Xem thực đơn và gọi món trực tiếp dưới tên khách.
                   </p>
                 </div>
 
-                <div className="mt-6 flex items-center gap-2 text-[14px] font-semibold text-[#534434] group-hover:translate-x-1 transition-transform">
+                <div className="mt-6 flex items-center gap-2 text-[14px] font-semibold text-[#534434] dark:text-on-surface-variant group-hover:translate-x-1 transition-transform">
                   <span>Tiếp tục</span>
                   <span className="material-symbols-outlined text-[16px]">
                     chevron_right
@@ -170,10 +170,10 @@ export default function Welcome() {
 
           {/* Social Proof/Atmospheric Quote */}
           <div className="mt-12 text-center px-4 opacity-60">
-            <span className="material-symbols-outlined text-[#855300] mb-2 text-[24px]">
+            <span className="material-symbols-outlined text-[#855300] dark:text-primary mb-2 text-[24px]">
               format_quote
             </span>
-            <p className="text-[12px] leading-[16px] italic text-[#534434] font-medium">
+            <p className="text-[12px] leading-[16px] italic text-[#534434] dark:text-on-surface-variant font-medium">
               "Cà phê không chỉ là đồ uống, đó là một trải nghiệm tâm hồn."
             </p>
           </div>

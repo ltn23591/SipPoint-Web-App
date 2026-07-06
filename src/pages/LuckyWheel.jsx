@@ -65,8 +65,8 @@ export default function LuckyWheel() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f9f9f9] flex justify-center selection:bg-[#ffb95f]">
-      <div className="bg-[#f9f9f9] text-[#1a1c1c] relative min-h-screen w-full max-w-md flex flex-col shadow-xl overflow-x-hidden font-sans pb-24">
+    <div className="min-h-screen w-full bg-[#f9f9f9] dark:bg-[#131313] flex justify-center selection:bg-[#ffb95f]">
+      <div className="bg-[#f9f9f9] dark:bg-[#131313] text-[#1a1c1c] dark:text-[#e5e2e1] relative min-h-screen w-full max-w-md flex flex-col shadow-xl dark:shadow-none overflow-x-hidden font-sans pb-24">
         
         {/* Custom Keyframe Styles */}
         <style dangerouslySetInnerHTML={{ __html: `
@@ -103,25 +103,25 @@ export default function LuckyWheel() {
           }
         `}} />
 
-        {/* Top App Bar */}
-        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-[#f9f9f9]/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+        {/* Top App Bar - Đã Fix Header màu Nâu Tách biệt hoàn toàn với Nền Xám */}
+        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-[#f9f9f9]/95 dark:bg-[#1A0F06]/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none dark:border-b dark:border-white/5">
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 transition-colors active:scale-95 duration-200">
-              <span className="material-symbols-outlined text-[#855300]">arrow_back</span>
+            <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors active:scale-95 duration-200">
+              <span className="material-symbols-outlined text-[#855300] dark:text-[#ffc174]">arrow_back</span>
             </button>
-            <h1 className="font-bold text-[20px] text-[#855300] tracking-wide">Vòng Quay May Mắn</h1>
+            <h1 className="font-bold text-[20px] text-[#855300] dark:text-[#ffc174] tracking-wide">Vòng Quay May Mắn</h1>
           </div>
-          <Link to={ROUTE_PATH.CART} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 transition-colors">
-            <span className="material-symbols-outlined text-[#534434]">shopping_bag</span>
+          <Link to={ROUTE_PATH.CART} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-zinc-100 dark:hover:bg-white/10 transition-colors">
+            <span className="material-symbols-outlined text-[#534434] dark:text-[#e5e2e1]">shopping_bag</span>
           </Link>
         </header>
 
         <main className="pt-20 px-5 flex flex-col items-center flex-1">
           {/* Ticker Section */}
-          <div className="w-full bg-[#ffcdae]/30 rounded-full py-2.5 px-4 mb-6 flex items-center gap-2 overflow-hidden border border-[#d8c3ad]/20">
-            <span className="material-symbols-outlined text-[#7c563d] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>campaign</span>
+          <div className="w-full bg-[#ffcdae]/30 dark:bg-[#f59e0b]/10 rounded-full py-2.5 px-4 mb-6 flex items-center gap-2 overflow-hidden border border-[#d8c3ad]/20 dark:border-[#f59e0b]/20">
+            <span className="material-symbols-outlined text-[#7c563d] dark:text-[#f59e0b] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>campaign</span>
             <div className="relative h-5 flex-1 overflow-hidden">
-              <p key={tickerText} className="ticker-item-animated absolute inset-0 text-[12px] font-semibold text-[#7a553c] whitespace-nowrap">
+              <p key={tickerText} className="ticker-item-animated absolute inset-0 text-[12px] font-semibold text-[#7a553c] dark:text-[#f59e0b] whitespace-nowrap">
                 {tickerText}
               </p>
             </div>
@@ -129,16 +129,16 @@ export default function LuckyWheel() {
 
           {/* Hero Headline */}
           <div className="text-center mb-6">
-            <h2 className="font-bold text-[22px] text-[#1a1c1c] mb-1">Thử vận may, nhận ngay quà khủng!</h2>
-            <p className="text-[14px] text-[#534434]">Quay bánh xe để rinh hàng ngàn ưu đãi hấp dẫn từ SipPoint</p>
+            <h2 className="font-bold text-[22px] text-[#1a1c1c] dark:text-[#e5e2e1] mb-1">Thử vận may, nhận ngay quà khủng!</h2>
+            <p className="text-[14px] text-[#534434] dark:text-[#d8c3ad]">Quay bánh xe để rinh hàng ngàn ưu đãi hấp dẫn từ SipPoint</p>
           </div>
 
           {/* Lucky Wheel Canvas */}
           <div className="relative w-full aspect-square max-w-[300px] mb-6 flex items-center justify-center">
             {/* Pointer */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 z-20 -mt-2.5">
-              <div className="w-8 h-10 bg-[#855300] rounded-b-full shadow-lg flex items-start justify-center pt-1 border-2 border-[#ffddb8]">
-                <div className="w-2 h-2 bg-white rounded-full"></div>
+              <div className="w-8 h-10 bg-[#855300] dark:bg-[#f59e0b] rounded-b-full shadow-lg flex items-start justify-center pt-1 border-2 border-[#ffddb8] dark:border-[#ffc174]">
+                <div className="w-2 h-2 bg-white dark:bg-[#613b00] rounded-full"></div>
               </div>
             </div>
 
@@ -148,7 +148,7 @@ export default function LuckyWheel() {
                 transform: `rotate(${wheelRotation}deg)`, 
                 transition: spinning ? "transform 4s cubic-bezier(0.15, 0, 0.15, 1)" : "none"
               }} 
-              className="w-full h-full rounded-full shadow-[0px_8px_24px_rgba(59,31,10,0.15)] bg-[#e2e2e2] overflow-hidden flex items-center justify-center"
+              className="w-full h-full rounded-full shadow-[0px_8px_24px_rgba(59,31,10,0.15)] dark:shadow-none bg-[#e2e2e2] dark:bg-[#201f1f] overflow-hidden flex items-center justify-center border-4 border-white/50 dark:border-[#2a2a2a]"
             >
               <img 
                 alt="Lucky Wheel" 
@@ -159,9 +159,9 @@ export default function LuckyWheel() {
 
             {/* Center Cap */}
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-full border border-white/40 flex items-center justify-center shadow-xl">
-                <div className="w-10 h-10 bg-[#855300] rounded-full flex items-center justify-center border-2 border-[#ffddb8]">
-                  <span className="material-symbols-outlined text-white text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+              <div className="w-14 h-14 bg-white/20 dark:bg-black/40 backdrop-blur-md rounded-full border border-white/40 dark:border-white/10 flex items-center justify-center shadow-xl">
+                <div className="w-10 h-10 bg-[#855300] dark:bg-[#f59e0b] rounded-full flex items-center justify-center border-2 border-[#ffddb8] dark:border-[#ffc174]">
+                  <span className="material-symbols-outlined text-white dark:text-[#613b00] text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
                 </div>
               </div>
             </div>
@@ -169,55 +169,55 @@ export default function LuckyWheel() {
 
           {/* Spin Control Button */}
           <div className="flex flex-col items-center gap-3 w-full max-w-xs mb-8">
-            <div className="bg-[#e8e8e8] px-4 py-2 rounded-xl">
-              <p className="font-semibold text-[14px] text-[#855300]">Lượt quay miễn phí: <span className="font-bold">{freeSpins}</span></p>
+            <div className="bg-[#e8e8e8] dark:bg-[#2a2a2a] px-4 py-2 rounded-xl whitespace-nowrap">
+              <p className="font-semibold text-[14px] text-[#855300] dark:text-[#ffc174]">Lượt quay miễn phí: <span className="font-bold">{freeSpins}</span></p>
             </div>
             <button 
               onClick={handleSpin}
               disabled={spinning || freeSpins <= 0}
-              className="shimmer-effect w-full bg-[#f59e0b] text-[#613b00] h-14 rounded-xl font-bold text-[18px] shadow-[0px_4px_12px_rgba(245,158,11,0.3)] active:scale-95 transition-all duration-200 disabled:opacity-50"
+              className="shimmer-effect w-full bg-[#f59e0b] dark:bg-[#f59e0b] text-[#613b00] dark:text-[#613b00] h-14 rounded-xl font-bold text-[18px] shadow-[0px_4px_12px_rgba(245,158,11,0.3)] dark:shadow-none active:scale-95 transition-all duration-200 disabled:opacity-50"
             >
               {spinning ? "Đang quay..." : "Quay ngay"}
             </button>
-            <p className="text-[12px] text-[#534434] text-center px-4">
+            <p className="text-[12px] text-[#534434] dark:text-[#d8c3ad] text-center px-4">
               Mỗi hóa đơn thanh toán trên 50k sẽ được nhận thêm 1 lượt quay may mắn.
             </p>
           </div>
 
           {/* Prizes Grid */}
           <div className="w-full grid grid-cols-2 gap-3 mb-6">
-            <div className="bg-[#f3f3f4]/50 p-4 rounded-xl shadow-sm border border-[#d8c3ad]/10 flex flex-col items-start">
-              <span className="material-symbols-outlined text-[#7c563d] mb-2">redeem</span>
-              <p className="font-semibold text-[14px] text-[#1a1c1c]">Voucher 50%</p>
-              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Giải Nhất</p>
+            <div className="bg-[#f3f3f4]/50 dark:bg-[#201f1f] p-4 rounded-xl shadow-sm dark:shadow-none border border-[#d8c3ad]/10 dark:border-[#534434]/50 flex flex-col items-start">
+              <span className="material-symbols-outlined text-[#7c563d] dark:text-[#ffc174] mb-2">redeem</span>
+              <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-[#e5e2e1]">Voucher 50%</p>
+              <p className="text-[10px] text-zinc-400 dark:text-[#d8c3ad] uppercase tracking-wider font-semibold">Giải Nhất</p>
             </div>
-            <div className="bg-[#f3f3f4]/50 p-4 rounded-xl shadow-sm border border-[#d8c3ad]/10 flex flex-col items-start">
-              <span className="material-symbols-outlined text-[#7c563d] mb-2">local_cafe</span>
-              <p className="font-semibold text-[14px] text-[#1a1c1c]">Ly Latte miễn phí</p>
-              <p className="text-[10px] text-zinc-400 uppercase tracking-wider font-semibold">Giải Nhì</p>
+            <div className="bg-[#f3f3f4]/50 dark:bg-[#201f1f] p-4 rounded-xl shadow-sm dark:shadow-none border border-[#d8c3ad]/10 dark:border-[#534434]/50 flex flex-col items-start">
+              <span className="material-symbols-outlined text-[#7c563d] dark:text-[#ffc174] mb-2">local_cafe</span>
+              <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-[#e5e2e1]">Ly Latte miễn phí</p>
+              <p className="text-[10px] text-zinc-400 dark:text-[#d8c3ad] uppercase tracking-wider font-semibold">Giải Nhì</p>
             </div>
-            <div className="col-span-2 bg-[#ffddb8]/20 p-4 rounded-xl shadow-sm border border-[#ffddb8]/30 flex items-center justify-between">
+            <div className="col-span-2 bg-[#ffddb8]/20 dark:bg-[#f59e0b]/10 p-4 rounded-xl shadow-sm dark:shadow-none border border-[#ffddb8]/30 dark:border-[#f59e0b]/20 flex items-center justify-between">
               <div>
-                <p className="font-bold text-[16px] text-[#2a1700]">Ưu đãi hôm nay</p>
-                <p className="text-[13px] text-[#653e00]">Quay bánh xe, rinh ngàn quà tặng!</p>
+                <p className="font-bold text-[16px] text-[#2a1700] dark:text-[#ffc174]">Ưu đãi hôm nay</p>
+                <p className="text-[13px] text-[#653e00] dark:text-[#f59e0b]">Quay bánh xe, rinh ngàn quà tặng!</p>
               </div>
-              <span className="material-symbols-outlined text-[#855300] text-[40px] opacity-25">celebration</span>
+              <span className="material-symbols-outlined text-[#855300] dark:text-[#f59e0b] text-[40px] opacity-25">celebration</span>
             </div>
           </div>
         </main>
 
         {/* Result Modal */}
         <div className={`fixed inset-0 z-[100] flex items-center justify-center px-4 transition-opacity duration-300 ${showModal ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-          <div className="absolute inset-0 bg-[#1a1c1c]/40 backdrop-blur-sm" onClick={handleCloseModal}></div>
-          <div className={`relative bg-[#f9f9f9] p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center border border-[#d8c3ad]/30 transform transition-transform duration-300 ${showModal ? "scale-100" : "scale-90"}`}>
-            <div className="w-20 h-20 bg-[#ffcdae] rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
-              <span className="material-symbols-outlined text-[#613b00] text-[40px]">card_giftcard</span>
+          <div className="absolute inset-0 bg-[#1a1c1c]/40 dark:bg-black/70 backdrop-blur-sm" onClick={handleCloseModal}></div>
+          <div className={`relative bg-[#f9f9f9] dark:bg-[#201f1f] p-8 rounded-3xl shadow-2xl w-full max-w-sm text-center border border-[#d8c3ad]/30 dark:border-[#534434]/50 transform transition-transform duration-300 ${showModal ? "scale-100" : "scale-90"}`}>
+            <div className="w-20 h-20 bg-[#ffcdae] dark:bg-[#f59e0b]/20 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg dark:shadow-none">
+              <span className="material-symbols-outlined text-[#613b00] dark:text-[#f59e0b] text-[40px]">card_giftcard</span>
             </div>
-            <h3 className="font-bold text-[24px] text-[#1a1c1c] mb-2">Chúc mừng!</h3>
-            <p className="text-[16px] text-[#534434] mb-6">Bạn đã trúng <span className="font-bold text-[#855300]">{prize}</span></p>
+            <h3 className="font-bold text-[24px] text-[#1a1c1c] dark:text-[#e5e2e1] mb-2">Chúc mừng!</h3>
+            <p className="text-[16px] text-[#534434] dark:text-[#d8c3ad] mb-6">Bạn đã trúng <span className="font-bold text-[#855300] dark:text-[#ffc174]">{prize}</span></p>
             <button 
               onClick={handleCloseModal}
-              className="w-full bg-[#7c563d] text-white h-12 rounded-xl font-bold active:scale-95 transition-all"
+              className="w-full bg-[#7c563d] dark:bg-[#f59e0b] text-white dark:text-[#613b00] h-12 rounded-xl font-bold active:scale-95 transition-all"
             >
               Tuyệt vời
             </button>

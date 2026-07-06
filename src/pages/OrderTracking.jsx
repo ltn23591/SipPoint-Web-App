@@ -104,8 +104,8 @@ export default function OrderTracking() {
   const hero = getHeroInfo();
 
   return (
-    <div className="min-h-screen w-full bg-[#f9f9f9] flex justify-center">
-      <div className="bg-[#f9f9f9] text-[#1a1c1c] relative min-h-screen w-full max-w-md flex flex-col shadow-xl overflow-x-hidden font-sans pb-24">
+    <div className="min-h-screen w-full bg-[#f9f9f9] dark:bg-surface-dim flex justify-center transition-colors duration-300">
+      <div className="bg-[#f9f9f9] dark:bg-surface-dim text-[#1a1c1c] dark:text-on-surface relative min-h-screen w-full max-w-md flex flex-col shadow-xl dark:shadow-none overflow-x-hidden font-sans pb-24 transition-colors duration-300">
         <style dangerouslySetInnerHTML={{ __html: `
           @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
           .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -127,7 +127,7 @@ export default function OrderTracking() {
         `}} />
 
         {/* Top App Bar */}
-        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/95 dark:bg-surface/90 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none dark:border-b dark:border-white/5 transition-colors duration-300">
           <div className="flex items-center gap-3">
             <Link to={ROUTE_PATH.MENU} className="p-2 -ml-2 hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200 rounded-full">
               <span className="material-symbols-outlined text-[#855300]">arrow_back</span>
@@ -143,8 +143,8 @@ export default function OrderTracking() {
               )}
             </div>
           </div>
-          <button className="p-2 hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200 rounded-full">
-            <span className="material-symbols-outlined text-[#855300]">help_outline</span>
+          <button className="p-2 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200 rounded-full">
+            <span className="material-symbols-outlined text-[#855300] dark:text-on-primary">help_outline</span>
           </button>
         </header>
 
@@ -155,8 +155,8 @@ export default function OrderTracking() {
         ) : !order ? (
           <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center">
             <span className="material-symbols-outlined text-zinc-300 text-[64px] mb-4">receipt_long</span>
-            <h2 className="text-lg font-bold text-zinc-800">Không có đơn hàng nào</h2>
-            <p className="text-sm text-zinc-500 mt-2 max-w-xs">
+            <h2 className="text-lg font-bold text-zinc-800 dark:text-on-surface">Không có đơn hàng nào</h2>
+            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-xs">
               Bạn hiện không có đơn hàng nào đang thực hiện hoặc chưa từng đặt đơn nào.
             </p>
             <Link to={ROUTE_PATH.MENU} className="mt-6 px-6 py-2.5 bg-[#855300] text-white rounded-full font-semibold text-sm active:scale-95 transition-transform shadow-md">

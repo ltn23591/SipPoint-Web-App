@@ -98,8 +98,8 @@ export default function Cart() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#f9f9f9] flex justify-center selection:bg-[#f59e0b]/30">
-      <div className="bg-[#f9f9f9] text-[#1a1c1c] relative min-h-screen w-full max-w-md flex flex-col shadow-xl overflow-x-hidden font-sans">
+    <div className="min-h-screen w-full bg-[#f9f9f9] dark:bg-surface-dim flex justify-center selection:bg-[#f59e0b]/30 transition-colors duration-300">
+      <div className="bg-[#f9f9f9] dark:bg-surface-dim text-[#1a1c1c] dark:text-on-surface relative min-h-screen w-full max-w-md flex flex-col shadow-xl dark:shadow-none overflow-x-hidden font-sans transition-colors duration-300">
         <style dangerouslySetInnerHTML={{ __html: `
           @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
           .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
@@ -108,7 +108,7 @@ export default function Cart() {
         `}} />
 
         {/* Top Navigation */}
-        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-[#f9f9f9]/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+        <header className="fixed top-0 max-w-md mx-auto left-0 right-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-[#f9f9f9]/95 dark:bg-surface/90 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none dark:border-b dark:border-white/5 transition-colors duration-300">
           <div className="flex items-center gap-3">
             <button onClick={() => navigate(-1)} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200">
               <span className="material-symbols-outlined text-[#855300]">arrow_back</span>
@@ -116,7 +116,7 @@ export default function Cart() {
             <h1 className="font-bold text-[22px] text-[#855300]">Giỏ hàng</h1>
           </div>
           {cartItems.length > 0 && (
-            <button onClick={clearCart} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#f3f3f4] transition-colors">
+            <button onClick={clearCart} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#f3f3f4] dark:hover:bg-surface-muted transition-colors">
               <span className="material-symbols-outlined text-[#855300]">delete_outline</span>
             </button>
           )}
@@ -126,8 +126,8 @@ export default function Cart() {
           /* Empty Cart State */
           <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center">
             <span className="material-symbols-outlined text-zinc-300 text-[64px] mb-4">shopping_cart</span>
-            <h2 className="text-lg font-bold text-zinc-800">Giỏ hàng trống</h2>
-            <p className="text-sm text-zinc-500 mt-2 max-w-xs">
+            <h2 className="text-lg font-bold text-zinc-800 dark:text-on-surface">Giỏ hàng trống</h2>
+            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-xs">
               Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá thực đơn ngay!
             </p>
             <Link to={ROUTE_PATH.MENU} className="mt-6 px-6 py-2.5 bg-[#855300] text-white rounded-full font-semibold text-sm active:scale-95 transition-transform shadow-md">
@@ -156,20 +156,20 @@ export default function Cart() {
                 <h2 className="font-semibold text-[20px] text-[#1a1c1c] mb-2">Sản phẩm đã chọn</h2>
 
                 {cartItems.map((item, index) => (
-                  <div key={index} className="bg-white p-4 rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] flex gap-4 items-center">
+                  <div key={index} className="bg-white dark:bg-surface-container-high p-4 rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none border border-zinc-100 dark:border-outline-variant/10 flex gap-4 items-center">
                     <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#e8e8e8]">
                       <img className="w-full h-full object-cover" src={item.image || "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=200&auto=format&fit=crop"} alt={item.name} />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[14px] text-[#1a1c1c] truncate">{item.name}</h3>
-                      <p className="text-[12px] text-[#534434]">
+                      <h3 className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface truncate">{item.name}</h3>
+                      <p className="text-[12px] text-[#534434] dark:text-on-surface-variant">
                         {item.variants?.map(v => v.name).join(", ") || "Mặc định"}
                       </p>
                       <p className="text-[#855300] font-bold mt-1 text-[14px]">
                         {((item.price + (item.variantPriceSum || 0)) * item.qty).toLocaleString("vi-VN")}đ
                       </p>
                     </div>
-                    <div className="flex flex-col items-center gap-2 bg-[#eeeeee] rounded-full py-1 px-1">
+                    <div className="flex flex-col items-center gap-2 bg-[#eeeeee] dark:bg-surface-container rounded-full py-1 px-1">
                       <button onClick={() => updateQuantity(index, -1)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm active:scale-90 transition-transform">
                         <span className="material-symbols-outlined text-sm">remove</span>
                       </button>
@@ -189,7 +189,7 @@ export default function Cart() {
                   <div className="relative flex-1">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#534434]">confirmation_number</span>
                     <input
-                      className="w-full bg-[#ffcdae]/30 border-none rounded-xl py-3 pl-10 pr-4 text-[14px] focus:ring-2 focus:ring-[#855300]/20 text-[#1a1c1c] placeholder:text-[#534434]/60"
+                      className="w-full rounded-xl py-3 pl-10 pr-4 text-[14px] bg-[#ffcdae]/30 dark:bg-surface-container dark:text-on-surface placeholder:text-[#534434]/60 dark:placeholder:text-on-surface-variant focus:ring-2 focus:ring-[#855300]/20 dark:focus:ring-primary-container outline-none"
                       placeholder="Nhập mã khuyến mãi"
                       type="text"
                       value={voucherCode}
@@ -207,7 +207,7 @@ export default function Cart() {
               </section>
 
               {/* Order Summary */}
-              <section className="bg-[#f3f3f4] rounded-2xl p-5 space-y-3">
+              <section className="bg-[#f3f3f4] dark:bg-surface-container rounded-2xl p-5 space-y-3">
                 <h2 className="font-semibold text-[20px] text-[#1a1c1c] mb-2">Chi tiết thanh toán</h2>
                 <div className="flex justify-between items-center text-[#534434]">
                   <span className="text-[14px]">Tạm tính</span>
@@ -225,13 +225,13 @@ export default function Cart() {
               </section>
 
               {/* Payment Method Mini-card */}
-              <section className="mt-6 p-4 bg-white border border-[#d8c3ad]/20 rounded-xl flex items-center gap-3">
+              <section className="mt-6 p-4 bg-white dark:bg-surface-container-high border border-[#d8c3ad]/20 dark:border-outline-variant/10 rounded-xl flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#ede3b8]/20 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[#665f3d]" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
                 </div>
                 <div className="flex-1">
-                  <p className="text-[12px] text-[#534434]">Phương thức thanh toán</p>
-                  <p className="font-semibold text-[14px] text-[#1a1c1c]">Tiền mặt</p>
+                  <p className="text-[12px] text-[#534434] dark:text-on-surface-variant">Phương thức thanh toán</p>
+                  <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface">Tiền mặt</p>
                 </div>
                 <button className="text-[#855300] font-bold text-[12px]">Thay đổi</button>
               </section>
@@ -242,8 +242,8 @@ export default function Cart() {
               <div className="flex flex-col gap-4">
                 <div className="flex justify-between items-end mb-1">
                   <div className="flex flex-col">
-                    <span className="text-[12px] text-[#534434]">Tổng thanh toán</span>
-                    <span className="text-[#855300] font-bold text-[24px]">{total.toLocaleString("vi-VN")}đ</span>
+                      <span className="text-[12px] text-[#534434] dark:text-on-surface-variant">Tổng thanh toán</span>
+                      <span className="text-[#855300] font-bold text-[24px]">{total.toLocaleString("vi-VN")}đ</span>
                   </div>
                   <div className="flex items-center gap-1 text-[#4a4424] bg-[#ede3b8] rounded-full px-3 py-1">
                     <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
