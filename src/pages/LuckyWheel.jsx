@@ -168,7 +168,7 @@ export default function LuckyWheel() {
           </div>
 
           {/* Spin Control Button */}
-          <div className="flex flex-col items-center gap-3 w-full max-w-xs mb-8">
+          <div className="flex flex-col items-center gap-3 w-full max-w-[320px] mb-8">
             <div className="bg-[#e8e8e8] dark:bg-[#2a2a2a] px-4 py-2 rounded-xl whitespace-nowrap">
               <p className="font-semibold text-[14px] text-[#855300] dark:text-[#ffc174]">Lượt quay miễn phí: <span className="font-bold">{freeSpins}</span></p>
             </div>

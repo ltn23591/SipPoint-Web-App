@@ -123,15 +123,19 @@ export default function Account() {
                     Giao diện tối
                   </span>
                 </div>
-                <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                <div className="relative inline-block w-12 mr-2 align-middle select-none">
                   <input 
                     checked={isDarkMode}
                     onChange={toggleTheme}
-                    className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-[#dadada] transition-all duration-300 z-10" 
+                    className="peer sr-only" 
                     id="theme-toggle" 
                     type="checkbox" 
                   />
-                  <label className="toggle-label block overflow-hidden h-6 rounded-full bg-[#f59e0b] cursor-pointer transition-all duration-300" htmlFor="theme-toggle"></label>
+                  <label 
+                    className="block w-12 h-6 rounded-full bg-[#e8e8e8] dark:bg-surface-container cursor-pointer transition-colors duration-300 peer-checked:bg-[#f59e0b] dark:peer-checked:bg-[#f59e0b]" 
+                    htmlFor="theme-toggle"
+                  ></label>
+                  <span className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-300 peer-checked:translate-x-6 shadow-sm border border-zinc-200 dark:border-zinc-700 pointer-events-none"></span>
                 </div>
               </div>
 
@@ -143,9 +147,18 @@ export default function Account() {
                   </div>
                   <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] dark:text-on-surface">Thông báo</span>
                 </div>
-                <div className="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
-                  <input defaultChecked className="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-[#dadada] transition-all duration-300 z-10" id="noti-toggle" type="checkbox" />
-                  <label className="toggle-label block overflow-hidden h-6 rounded-full bg-[#f59e0b] cursor-pointer transition-all duration-300" htmlFor="noti-toggle"></label>
+                <div className="relative inline-block w-12 mr-2 align-middle select-none">
+                  <input 
+                    defaultChecked 
+                    className="peer sr-only" 
+                    id="noti-toggle" 
+                    type="checkbox" 
+                  />
+                  <label 
+                    className="block w-12 h-6 rounded-full bg-[#e8e8e8] dark:bg-surface-container cursor-pointer transition-colors duration-300 peer-checked:bg-[#f59e0b] dark:peer-checked:bg-[#f59e0b]" 
+                    htmlFor="noti-toggle"
+                  ></label>
+                  <span className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-300 peer-checked:translate-x-6 shadow-sm border border-zinc-200 dark:border-zinc-700 pointer-events-none"></span>
                 </div>
               </div>
 

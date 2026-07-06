@@ -132,12 +132,12 @@ export default function OrderTracking() {
             <Link to={ROUTE_PATH.MENU} className="p-2 -ml-2 hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200 rounded-full">
               <span className="material-symbols-outlined text-[#855300]">arrow_back</span>
             </Link>
-            <div className="flex flex-col">
-              <h1 className="font-bold text-[18px] text-[#855300] leading-tight">
+            <div className="flex flex-col min-w-0">
+              <h1 className="font-bold text-[18px] text-[#855300] leading-tight truncate">
                 {order ? `#${order.code || order.orderNumber}` : "Theo dõi đơn hàng"}
               </h1>
               {order && (
-                <p className="text-[12px] text-[#534434]">
+                <p className="text-[12px] text-[#534434] truncate">
                   {new Date(order.createdAt).toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })} • {order.tableId?.name ? `Bàn ${order.tableId.name}` : "Mang đi"}
                 </p>
               )}
@@ -153,10 +153,10 @@ export default function OrderTracking() {
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#855300]" />
           </div>
         ) : !order ? (
-          <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center">
+          <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center w-full">
             <span className="material-symbols-outlined text-zinc-300 text-[64px] mb-4">receipt_long</span>
             <h2 className="text-lg font-bold text-zinc-800 dark:text-on-surface">Không có đơn hàng nào</h2>
-            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-xs">
+            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-[280px] w-full">
               Bạn hiện không có đơn hàng nào đang thực hiện hoặc chưa từng đặt đơn nào.
             </p>
             <Link to={ROUTE_PATH.MENU} className="mt-6 px-6 py-2.5 bg-[#855300] text-white rounded-full font-semibold text-sm active:scale-95 transition-transform shadow-md">

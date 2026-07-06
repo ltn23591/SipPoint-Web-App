@@ -165,7 +165,7 @@ export function ChatbotAI() {
   ];
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
+    <div className="fixed bottom-20 right-6 z-50 flex flex-col items-end font-sans">
       {/* Cửa sổ Chatbot */}
       {isOpen && (
         <div className="mb-4 w-[360px] sm:w-[400px] h-[520px] rounded-2xl bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md border border-amber-100 dark:border-zinc-800 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 animate-slide-up">
@@ -276,7 +276,7 @@ export function ChatbotAI() {
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               placeholder="Hỏi SipPoint AI..."
-              className="flex-1 px-4 py-2 rounded-xl text-sm border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-850 dark:text-on-surface focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+              className="flex-1 px-4 py-2 rounded-xl text-sm border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 dark:text-on-surface focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
               disabled={isLoading}
             />
             <button

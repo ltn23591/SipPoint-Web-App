@@ -104,7 +104,7 @@ export default function OrderHistory() {
           <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 text-center">
             <span className="material-symbols-outlined text-zinc-300 dark:text-outline text-[64px] mb-4">receipt_long</span>
             <h2 className="text-lg font-bold text-zinc-800 dark:text-on-surface w-full">Chưa có đơn hàng nào</h2>
-            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-xs w-full">
+            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-[280px] w-full">
               Lịch sử mua sắm của bạn hiện đang trống. Hãy trải nghiệm thức uống của SipPoint ngay nào!
             </p>
             <Link to={ROUTE_PATH.MENU} className="mt-6 px-6 py-2.5 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container rounded-full font-semibold text-sm active:scale-95 transition-transform shadow-md">

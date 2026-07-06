@@ -31,7 +31,7 @@ export function Footer() {
     <footer className="border-t border-border bg-background-secondary">
       <div className="container py-12">
         <div className="grid gap-10 md:grid-cols-[1.5fr_repeat(3,1fr)]">
-          <div className="max-w-xs">
+          <div className="max-w-[320px]">
             <Logo />
             <p className="mt-4 text-sm text-muted-foreground">
               {APP_DESCRIPTION}

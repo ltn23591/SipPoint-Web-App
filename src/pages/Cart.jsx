@@ -124,10 +124,10 @@ export default function Cart() {
 
         {cartItems.length === 0 ? (
           /* Empty Cart State */
-          <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center">
+          <div className="flex-1 flex flex-col justify-center items-center py-20 px-6 mt-16 text-center w-full">
             <span className="material-symbols-outlined text-zinc-300 text-[64px] mb-4">shopping_cart</span>
             <h2 className="text-lg font-bold text-zinc-800 dark:text-on-surface">Giỏ hàng trống</h2>
-            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-xs">
+            <p className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2 max-w-[280px] w-full">
               Bạn chưa thêm sản phẩm nào vào giỏ hàng. Hãy khám phá thực đơn ngay!
             </p>
             <Link to={ROUTE_PATH.MENU} className="mt-6 px-6 py-2.5 bg-[#855300] text-white rounded-full font-semibold text-sm active:scale-95 transition-transform shadow-md">

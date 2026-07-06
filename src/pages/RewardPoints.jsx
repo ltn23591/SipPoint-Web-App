@@ -140,7 +140,9 @@ export default function RewardPoints() {
           {/* Quick Actions: Asymmetric Bento Grid */}
           <section className="grid grid-cols-2 gap-[16px]">
             <div className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-4 flex flex-col justify-between h-32 border border-[#d8c3ad]/10 dark:border-outline-variant/10">
-              <span className="material-symbols-outlined text-[#855300] dark:text-primary-container bg-[#ffddb8]/30 dark:bg-secondary-container/30 w-10 h-10 flex items-center justify-center rounded-lg">card_giftcard</span>
+              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-[#ffddb8]/30 dark:bg-secondary-container/30 shrink-0">
+                <span className="material-symbols-outlined text-[#855300] dark:text-primary-container">card_giftcard</span>
+              </div>
               <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c] dark:text-on-surface">Đổi quà</p>
             </div>
             <div className="grid grid-rows-2 gap-[16px]">
