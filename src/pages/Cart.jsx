@@ -18,7 +18,7 @@ export default function Cart() {
     return [];
   });
   const [voucherCode, setVoucherCode] = useState("");
-  const [voucherDiscount] = useState(0);
+  const voucherDiscount = 0;
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
