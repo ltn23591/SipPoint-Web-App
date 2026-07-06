@@ -84,9 +84,9 @@ export default function VerifyOtp() {
     const displaySec = seconds < 10 ? `0${seconds}` : seconds;
 
     return (
-        <div className="bg-[#f9f9f9] text-[#1a1c1c] font-sans min-h-screen flex flex-col items-center">
+            <div className="bg-[#f9f9f9] dark:bg-surface-dim text-[#1a1c1c] dark:text-on-surface font-sans min-h-screen flex flex-col items-center transition-colors duration-300">
             {/* TopAppBar */}
-            <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-[#f9f9f9]/95 backdrop-blur-md shadow-sm">
+                <header className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-[#f9f9f9]/95 dark:bg-surface/90 backdrop-blur-md shadow-sm dark:shadow-none transition-colors duration-300">
                 <button
                     onClick={() => navigate(-1)}
                     className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#f3f3f4] transition-colors active:scale-95 duration-200"
@@ -150,7 +150,7 @@ export default function VerifyOtp() {
                                 handleInputChange(e.target.value, idx)
                             }
                             onKeyDown={(e) => handleKeyDown(e, idx)}
-                            className="otp-input w-full aspect-square text-center font-bold text-2xl bg-[#ede3b8]/35 border-none rounded-xl text-[#855300] focus:ring-2 focus:ring-[#f59e0b] focus:bg-white transition-all outline-none"
+                            className="otp-input w-full aspect-square text-center font-bold text-2xl bg-[#ede3b8]/35 dark:bg-surface-container dark:text-on-surface border-none rounded-xl focus:ring-2 focus:ring-[#f59e0b] dark:focus:ring-primary focus:bg-white dark:focus:bg-surface-container-high transition-all outline-none"
                             autoComplete="one-time-code"
                         />
                     ))}

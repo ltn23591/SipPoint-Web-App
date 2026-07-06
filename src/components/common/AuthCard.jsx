@@ -4,8 +4,8 @@ import { AUTH_TEXT } from "@/constants/auth";
 export function AuthCard({ children }) {
   return (
     // Căn giữa màn hình và giới hạn chiều rộng max-w-md cho giao diện mobile/webapp trên PC
-    <div className="min-h-screen w-full bg-[#f9f9f9] flex justify-center">
-      <div className="flex min-h-screen w-full max-w-md flex-col bg-white shadow-xl">
+    <div className="min-h-screen w-full bg-[#f9f9f9] dark:bg-surface-dim flex justify-center transition-colors duration-300">
+      <div className="flex min-h-screen w-full max-w-md flex-col bg-white dark:bg-surface-dim shadow-xl dark:shadow-none transition-colors duration-300">
         
         {/* Phần ảnh nền trải rộng phía trên */}
         <div className="relative h-[35vh] w-full shrink-0">
@@ -29,7 +29,7 @@ export function AuthCard({ children }) {
         </div>
 
         {/* Phần form, bo góc phía trên */}
-        <div className="-mt-8 flex flex-1 flex-col rounded-t-[2rem] bg-white px-8 pt-8 pb-8 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] z-10">
+        <div className="-mt-8 flex flex-1 flex-col rounded-t-[2rem] bg-white dark:bg-surface-container-high px-8 pt-8 pb-8 shadow-[0_-10px_20px_rgba(0,0,0,0.05)] dark:shadow-none text-[#1a1c1c] dark:text-on-surface z-10">
           {children}
         </div>
       </div>

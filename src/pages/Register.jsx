@@ -30,8 +30,8 @@ export default function Register() {
 
   return (
     <AuthCard>
-      <div className="mb-8 flex w-full rounded-xl bg-zinc-100 p-1">
-        <Link to="/login" className="flex-1 rounded-lg py-2 text-center text-sm font-semibold text-zinc-500 hover:text-zinc-700 transition-all">
+      <div className="mb-8 flex w-full rounded-xl bg-zinc-100 dark:bg-surface-container p-1 transition-colors duration-300">
+        <Link to="/login" className="flex-1 rounded-lg py-2 text-center text-sm font-semibold text-zinc-500 dark:text-on-surface-variant hover:text-zinc-700 dark:hover:text-on-surface transition-all">
           {AUTH_TEXT.TAB_LOGIN}
         </Link>
         <div className="flex-1 rounded-lg bg-secondary py-2 text-center text-sm font-semibold text-white shadow-sm">
@@ -42,37 +42,37 @@ export default function Register() {
       <form onSubmit={handleRegister} className="flex flex-col gap-4">
         {/* Họ và tên */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-bold text-secondary">{AUTH_TEXT.LABEL_FULLNAME}</label>
+          <label className="text-sm font-bold text-[#1a1c1c] dark:text-on-surface">{AUTH_TEXT.LABEL_FULLNAME}</label>
           <div className="relative flex items-center">
-            <User className="absolute left-3 h-5 w-5 text-zinc-400" />
-            <input required disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_FULLNAME} onChange={(e) => setFormData({...formData, fullname: e.target.value})} />
+            <User className="absolute left-3 h-5 w-5 text-zinc-400 dark:text-on-surface-variant" />
+            <input required disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] dark:bg-surface-container dark:text-on-surface py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary dark:focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_FULLNAME} onChange={(e) => setFormData({...formData, fullname: e.target.value})} />
           </div>
         </div>
 
         {/* Email mới thêm */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-bold text-secondary">{AUTH_TEXT.LABEL_EMAIL}</label>
+          <label className="text-sm font-bold text-[#1a1c1c] dark:text-on-surface">{AUTH_TEXT.LABEL_EMAIL}</label>
           <div className="relative flex items-center">
-            <Mail className="absolute left-3 h-5 w-5 text-zinc-400" />
-            <input required type="email" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_EMAIL} onChange={(e) => setFormData({...formData, email: e.target.value})} />
+            <Mail className="absolute left-3 h-5 w-5 text-zinc-400 dark:text-on-surface-variant" />
+            <input required type="email" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] dark:bg-surface-container dark:text-on-surface py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary dark:focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_EMAIL} onChange={(e) => setFormData({...formData, email: e.target.value})} />
           </div>
         </div>
 
         {/* Số điện thoại */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-bold text-secondary">{AUTH_TEXT.LABEL_PHONE}</label>
+          <label className="text-sm font-bold text-[#1a1c1c] dark:text-on-surface">{AUTH_TEXT.LABEL_PHONE}</label>
           <div className="relative flex items-center">
-            <Smartphone className="absolute left-3 h-5 w-5 text-zinc-400" />
-            <input required type="tel" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_PHONE} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+            <Smartphone className="absolute left-3 h-5 w-5 text-zinc-400 dark:text-on-surface-variant" />
+            <input required type="tel" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] dark:bg-surface-container dark:text-on-surface py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary dark:focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_PHONE} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
           </div>
         </div>
 
         {/* Mật khẩu */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-bold text-secondary">{AUTH_TEXT.LABEL_PASSWORD}</label>
+          <label className="text-sm font-bold text-[#1a1c1c] dark:text-on-surface">{AUTH_TEXT.LABEL_PASSWORD}</label>
           <div className="relative flex items-center">
-            <Lock className="absolute left-3 h-5 w-5 text-zinc-400" />
-            <input required type="password" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_PASSWORD} onChange={(e) => setFormData({...formData, password: e.target.value})} />
+            <Lock className="absolute left-3 h-5 w-5 text-zinc-400 dark:text-on-surface-variant" />
+            <input required type="password" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] dark:bg-surface-container dark:text-on-surface py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary dark:focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_PASSWORD} onChange={(e) => setFormData({...formData, password: e.target.value})} />
           </div>
         </div>
 

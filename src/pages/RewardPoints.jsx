@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
@@ -70,8 +70,8 @@ export default function RewardPoints() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full bg-[#f9f9f9] flex justify-center selection:bg-[#f59e0b]/30">
-      <div className="relative min-h-screen w-full max-w-md flex flex-col bg-[#f9f9f9] shadow-xl overflow-x-hidden font-sans text-[#1a1c1c] pb-[64px]">
+    <div className="min-h-screen w-full bg-[#f9f9f9] dark:bg-surface-dim flex justify-center selection:bg-[#f59e0b]/30 transition-colors duration-300">
+      <div className="relative min-h-screen w-full max-w-md flex flex-col bg-[#f9f9f9] dark:bg-surface-dim shadow-xl dark:shadow-none overflow-x-hidden font-sans text-[#1a1c1c] dark:text-on-surface pb-[64px] transition-colors duration-300">
         <style dangerouslySetInnerHTML={{ __html: `
           @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
           .material-symbols-outlined {
@@ -89,23 +89,23 @@ export default function RewardPoints() {
         `}} />
 
         {/* Top App Bar */}
-        <header className="sticky top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/95 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
+        <header className="sticky top-0 left-0 w-full z-50 flex justify-between items-center px-4 h-16 bg-white/95 dark:bg-surface/90 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none dark:border-b dark:border-white/5 transition-colors duration-300">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#855300] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
+            <span className="material-symbols-outlined text-[#855300] dark:text-primary-container text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
               coffee
             </span>
-            <span className="font-bold text-[18px] leading-none text-[#855300] tracking-wide">
+            <span className="font-bold text-[18px] leading-none text-[#855300] dark:text-on-surface tracking-wide">
               SipPoint
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 text-[#7a553c] rounded-full shadow-sm">
+          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 dark:bg-secondary-container text-[#7a553c] dark:text-on-secondary-container rounded-full shadow-sm">
             <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
             <span className="font-semibold text-[13px]">Bàn B05</span>
           </div>
 
-          <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 transition-colors active:scale-95 duration-200">
-            <span className="material-symbols-outlined text-[#534434]">shopping_bag</span>
+          <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200">
+            <span className="material-symbols-outlined text-[#534434] dark:text-on-surface">shopping_bag</span>
           </Link>
         </header>
 
@@ -139,18 +139,20 @@ export default function RewardPoints() {
 
           {/* Quick Actions: Asymmetric Bento Grid */}
           <section className="grid grid-cols-2 gap-[16px]">
-            <div className="bento-card bg-[#ffffff] rounded-xl p-4 flex flex-col justify-between h-32 border border-[#d8c3ad]/10">
-              <span className="material-symbols-outlined text-[#855300] bg-[#ffddb8]/30 w-10 h-10 flex items-center justify-center rounded-lg">card_giftcard</span>
-              <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c]">Đổi quà</p>
+            <div className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-4 flex flex-col justify-between h-32 border border-[#d8c3ad]/10 dark:border-outline-variant/10">
+              <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-[#ffddb8]/30 dark:bg-secondary-container/30 shrink-0">
+                <span className="material-symbols-outlined text-[#855300] dark:text-primary-container">card_giftcard</span>
+              </div>
+              <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c] dark:text-on-surface">Đổi quà</p>
             </div>
             <div className="grid grid-rows-2 gap-[16px]">
-              <Link to={ROUTE_PATH.LUCKY_WHEEL} className="bento-card bg-[#ffffff] rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 cursor-pointer hover:bg-[#f3f3f4]">
-                <span className="material-symbols-outlined text-[#7c563d]">toys</span>
-                <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c]">Vòng quay</p>
+              <Link to={ROUTE_PATH.LUCKY_WHEEL} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
+                <span className="material-symbols-outlined text-[#7c563d] dark:text-primary-container">toys</span>
+                <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c] dark:text-on-surface">Vòng quay</p>
               </Link>
-              <Link to={ROUTE_PATH.VOUCHERS} className="bento-card bg-[#ffffff] rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 cursor-pointer hover:bg-[#f3f3f4]">
-                <span className="material-symbols-outlined text-[#7c563d]">confirmation_number</span>
-                <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c]">Voucher của tôi</p>
+              <Link to={ROUTE_PATH.VOUCHERS} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
+                <span className="material-symbols-outlined text-[#7c563d] dark:text-primary-container">confirmation_number</span>
+                <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c] dark:text-on-surface">Voucher của tôi</p>
               </Link>
             </div>
           </section>
@@ -160,40 +162,40 @@ export default function RewardPoints() {
             <img className="absolute inset-0 w-full h-full object-cover" alt="Banner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAImyKbnfWPMenv7rz05P77FNtDyCFootwyRPMCIm4pAZx_9ud_-d_WCtJlG9au6jc4lvifVd9llc_oPNXXs4jgYCfiusK95P1ESKWOFVlawqNniEcrNS2fhQu7t4IlAW35b66RqKM33enJuZt1YmZHsccZtUd0nFZnkmYgFw_02V2YjwXXjLCzNfrTjZn-KVB8JBcPhG_tYa-20E6aSAbJUDXh4sZtAU-uTsakDY_5Dwn8Fv8QRNasN0qGvQ8X5D9wuDZe3NkZ" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#ffcdae]/90 via-[#ffcdae]/40 to-transparent"></div>
             <div className="relative z-10 px-6 max-w-[60%]">
-              <p className="font-semibold text-[20px] leading-[28px] text-[#7a553c] leading-tight">Nhân đôi điểm thưởng tuần này!</p>
+              <p className="font-semibold text-[20px] leading-[28px] text-[#7a553c] dark:text-on-surface leading-tight">Nhân đôi điểm thưởng tuần này!</p>
             </div>
           </section>
 
           {/* Transaction List */}
           <section className="flex flex-col gap-[16px] mb-8">
             <div className="flex justify-between items-center">
-              <h2 className="font-semibold text-[20px] leading-[28px] text-[#1a1c1c]">Lịch sử điểm</h2>
-              <button className="text-[#855300] font-semibold text-[14px] leading-[20px] hover:underline transition-all">Xem tất cả</button>
+              <h2 className="font-semibold text-[20px] leading-[28px] text-[#1a1c1c] dark:text-on-surface">Lịch sử điểm</h2>
+              <button className="text-[#855300] dark:text-primary-container font-semibold text-[14px] leading-[20px] hover:underline transition-all">Xem tất cả</button>
             </div>
             <div className="space-y-[8px]">
               {isLoading ? (
                 <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#855300]" />
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#855300] dark:border-primary-container" />
                 </div>
               ) : pointHistories.length === 0 ? (
-                <p className="text-center text-[#534434] text-sm py-4">Chưa có lịch sử điểm.</p>
+                <p className="text-center text-[#534434] dark:text-on-surface-variant text-sm py-4">Chưa có lịch sử điểm.</p>
               ) : (
                 pointHistories.map((tx) => (
-                  <div key={tx._id} className="flex items-center justify-between p-4 rounded-xl bg-[#f3f3f4]/50 border border-[#d8c3ad]/10">
+                  <div key={tx._id} className="flex items-center justify-between p-4 rounded-xl bg-[#f3f3f4]/50 dark:bg-surface-container border border-[#d8c3ad]/10 dark:border-outline-variant/10">
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.pointsChange > 0 ? 'bg-[#f59e0b]/10' : 'bg-[#ffdad6]/20'}`}>
-                        <span className={`material-symbols-outlined text-sm ${tx.pointsChange > 0 ? 'text-[#855300]' : 'text-[#ba1a1a]'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.pointsChange > 0 ? 'bg-[#f59e0b]/10 dark:bg-primary-container/20' : 'bg-[#ffdad6]/20 dark:bg-error-container/20'}`}>
+                        <span className={`material-symbols-outlined text-sm ${tx.pointsChange > 0 ? 'text-[#855300] dark:text-primary-container' : 'text-[#ba1a1a] dark:text-error'}`} style={{ fontVariationSettings: "'FILL' 1" }}>
                           {tx.pointsChange > 0 ? 'add_circle' : 'remove_circle'}
                         </span>
                       </div>
                       <div>
-                        <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c]">{tx.title}</p>
-                        <p className="font-medium text-[12px] leading-[16px] text-[#534434]">
+                        <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c] dark:text-on-surface">{tx.title}</p>
+                        <p className="font-medium text-[12px] leading-[16px] text-[#534434] dark:text-on-surface-variant">
                           {new Date(tx.createdAt).toLocaleString("vi-VN", { dateStyle: 'short', timeStyle: 'short' })}
                         </p>
                       </div>
                     </div>
-                    <span className={`font-semibold text-[20px] leading-[28px] ${tx.pointsChange > 0 ? 'text-[#855300]' : 'text-[#ba1a1a]'}`}>
+                    <span className={`font-semibold text-[20px] leading-[28px] ${tx.pointsChange > 0 ? 'text-[#855300] dark:text-primary-container' : 'text-[#ba1a1a] dark:text-error'}`}>
                       {tx.pointsChange > 0 ? '+' : ''}{tx.pointsChange}đ
                     </span>
                   </div>
