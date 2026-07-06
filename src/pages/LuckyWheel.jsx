@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import BottomNavBar from "@/components/layout/BottomNavBar";
@@ -40,7 +40,7 @@ export default function LuckyWheel() {
 
     // Determine prize based on angle
     const normalizedAngle = (360 - (newRotation % 360)) % 360;
-    let wonPrize = "Voucher 20%";
+    let wonPrize;
     if (normalizedAngle >= 0 && normalizedAngle < 45) wonPrize = "Free Latte";
     else if (normalizedAngle >= 45 && normalizedAngle < 90) wonPrize = "Voucher 50%";
     else if (normalizedAngle >= 90 && normalizedAngle < 135) wonPrize = "50 Điểm Thưởng";

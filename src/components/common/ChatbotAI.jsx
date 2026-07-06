@@ -18,21 +18,22 @@ export function ChatbotAI() {
       sid = "session_" + Math.random().toString(36).substring(2, 15);
       localStorage.setItem("chatbot_session_id", sid);
     }
-    setSessionId(sid);
-
     // Lấy tin nhắn cũ nếu có
     const savedMessages = localStorage.getItem(`chat_history_${sid}`);
-    if (savedMessages) {
-      setMessages(JSON.parse(savedMessages));
-    } else {
-      // Tin nhắn chào mừng mặc định
-      const welcomeMessage = {
-        role: "model",
-        text: "Dạ, SipPoint xin chào bạn! Em là trợ lý ảo AI hỗ trợ tư vấn đồ uống và điểm thành viên. Quán đang có nhiều khuyến mãi hấp dẫn lắm ạ, em có thể giúp gì cho bạn hôm nay?",
-        timestamp: new Date().toISOString(),
-      };
-      setMessages([welcomeMessage]);
-    }
+    setTimeout(() => {
+      setSessionId(sid);
+      if (savedMessages) {
+        setMessages(JSON.parse(savedMessages));
+      } else {
+        // Tin nhắn chào mừng mặc định
+        const welcomeMessage = {
+          role: "model",
+          text: "Dạ, SipPoint xin chào bạn! Em là trợ lý ảo AI hỗ trợ tư vấn đồ uống và điểm thành viên. Quán đang có nhiều khuyến mãi hấp dẫn lắm ạ, em có thể giúp gì cho bạn hôm nay?",
+          timestamp: new Date().toISOString(),
+        };
+        setMessages([welcomeMessage]);
+      }
+    }, 0);
   }, []);
 
   // Tự động cuộn xuống tin nhắn mới nhất

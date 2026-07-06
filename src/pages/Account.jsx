@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
@@ -23,7 +23,9 @@ export default function Account() {
     fetchProfile();
 
     // Kiểm tra xem trình duyệt hiện tại đang ở chế độ dark hay sáng để hiển thị nút cho đúng
-    setIsDarkMode(document.documentElement.classList.contains("dark"));
+    setTimeout(() => {
+      setIsDarkMode(document.documentElement.classList.contains("dark"));
+    }, 0);
   }, []);
 
   const handleLogout = () => {

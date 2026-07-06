@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
@@ -34,10 +34,14 @@ export default function OrderTracking() {
   };
 
   useEffect(() => {
-    fetchOrderDetails();
+    const timer = setTimeout(fetchOrderDetails, 0);
     // Poll every 5 seconds to track order status in real time
     const interval = setInterval(fetchOrderDetails, 5000);
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timer);
+      clearInterval(interval);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
 
   // Countdown timer effect

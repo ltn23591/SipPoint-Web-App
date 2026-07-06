@@ -1,18 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link } from "react-router";
 import { toast } from "react-toastify";
 import { menuService } from "@/services/menuService";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 
 export default function Menu() {
-  const navigate = useNavigate();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const [cartCount, setCartCount] = useState(0);
+  const [cartCount, setCartCount] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem("sippoint_cart");
+      if (savedCart) {
+        const cart = JSON.parse(savedCart);
+        return cart.reduce((sum, c) => sum + c.qty, 0);
+      }
+    } catch {
+      // ignore
+    }
+    return 0;
+  });
 
   // States for Product Detail Bottom Sheet
   const [isSheetOpen, setIsSheetOpen] = useState(false);
@@ -41,15 +51,6 @@ export default function Menu() {
       }
     };
     fetchData();
-
-    // Initialize cart count from localStorage
-    try {
-      const savedCart = localStorage.getItem("sippoint_cart");
-      if (savedCart) {
-        const cart = JSON.parse(savedCart);
-        setCartCount(cart.reduce((sum, c) => sum + c.qty, 0));
-      }
-    } catch (e) { /* ignore */ }
   }, []);
 
   const handleCategoryClick = (id) => {

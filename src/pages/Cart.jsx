@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
-import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
 
 export default function Cart() {
@@ -12,21 +11,23 @@ export default function Cart() {
     if (savedCart) {
       try {
         return JSON.parse(savedCart);
-      } catch (e) {
+      } catch {
         return [];
       }
     }
     return [];
   });
   const [voucherCode, setVoucherCode] = useState("");
-  const [voucherDiscount, setVoucherDiscount] = useState(0);
+  const [voucherDiscount] = useState(0);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Check login status
     const token = localStorage.getItem("accessToken");
-    setIsLoggedIn(!!token);
+    setTimeout(() => {
+      setIsLoggedIn(!!token);
+    }, 0);
   }, []);
 
   // Persist cart to localStorage whenever it changes
