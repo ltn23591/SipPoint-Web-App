@@ -93,7 +93,7 @@ export const router = createBrowserRouter([
       {
         path: ROUTE_PATH.CART,
         element: <Cart />
-      }
+      },
     ]
   }
 ]);
