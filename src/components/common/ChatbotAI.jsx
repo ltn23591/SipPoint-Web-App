@@ -12,28 +12,58 @@ export function ChatbotAI() {
   // Khởi tạo sessionId duy nhất để lưu trữ lịch sử
   const [sessionId, setSessionId] = useState("");
 
-  useEffect(() => {
-    let sid = localStorage.getItem("chatbot_session_id");
-    if (!sid) {
-      sid = "session_" + Math.random().toString(36).substring(2, 15);
-      localStorage.setItem("chatbot_session_id", sid);
+  const initializeSession = () => {
+    // Lấy thông tin user hiện hành (nếu có) để phân biệt session
+    const userStr = localStorage.getItem("user");
+    let userId = "guest";
+    if (userStr) {
+      try {
+        const userObj = JSON.parse(userStr);
+        userId = userObj._id || userObj.email || "guest";
+      } catch (e) {
+        // bỏ qua
+      }
+    }
+
+    const sessionKey = `chatbot_session_id_${userId}`;
+    let sid;
+    if (userId !== "guest") {
+      sid = userId;
+    } else {
+      sid = localStorage.getItem(sessionKey);
+      if (!sid) {
+        sid = "session_guest_" + Math.random().toString(36).substring(2, 15);
+        localStorage.setItem(sessionKey, sid);
+      }
     }
     // Lấy tin nhắn cũ nếu có
     const savedMessages = localStorage.getItem(`chat_history_${sid}`);
-    setTimeout(() => {
-      setSessionId(sid);
-      if (savedMessages) {
-        setMessages(JSON.parse(savedMessages));
-      } else {
-        // Tin nhắn chào mừng mặc định
-        const welcomeMessage = {
-          role: "model",
-          text: "Dạ, SipPoint xin chào bạn! Em là trợ lý ảo AI hỗ trợ tư vấn đồ uống và điểm thành viên. Quán đang có nhiều khuyến mãi hấp dẫn lắm ạ, em có thể giúp gì cho bạn hôm nay?",
-          timestamp: new Date().toISOString(),
-        };
-        setMessages([welcomeMessage]);
-      }
-    }, 0);
+    setSessionId(sid);
+    if (savedMessages) {
+      setMessages(JSON.parse(savedMessages));
+    } else {
+      // Tin nhắn chào mừng mặc định
+      const welcomeMessage = {
+        role: "model",
+        text: "Dạ, SipPoint xin chào bạn! Em là trợ lý ảo AI hỗ trợ tư vấn đồ uống và điểm thành viên. Quán đang có nhiều khuyến mãi hấp dẫn lắm ạ, em có thể giúp gì cho bạn hôm nay?",
+        timestamp: new Date().toISOString(),
+      };
+      setMessages([welcomeMessage]);
+    }
+  };
+
+  useEffect(() => {
+    initializeSession();
+    
+    // Lắng nghe sự kiện đăng nhập/đăng xuất để tải lại phiên chat
+    const handleAuthChange = () => {
+      initializeSession();
+    };
+    window.addEventListener("authChange", handleAuthChange);
+    
+    return () => {
+      window.removeEventListener("authChange", handleAuthChange);
+    };
   }, []);
 
   // Tự động cuộn xuống tin nhắn mới nhất

@@ -14,6 +14,7 @@ export const authService = {
         const token = response.data.token;
         localStorage.setItem("user", JSON.stringify(userData || { email }));
         localStorage.setItem("token", token);
+        window.dispatchEvent(new Event("authChange"));
         return {
           success: true,
           message: response.data.message || "Đăng nhập thành công!",
@@ -74,6 +75,7 @@ export const authService = {
         const token = response.data.token;
         localStorage.setItem("user", JSON.stringify(userData || { email }));
         localStorage.setItem("token", token);
+        window.dispatchEvent(new Event("authChange"));
         return {
           success: true,
           message: response.data.message || "Xác thực tài khoản thành công!",
@@ -95,6 +97,7 @@ export const authService = {
   logout: () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
+    window.dispatchEvent(new Event("authChange"));
   },
 
   getMe: async () => {
