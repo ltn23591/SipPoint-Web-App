@@ -21,6 +21,7 @@ export default function Cart() {
   const voucherDiscount = 0;
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("CASH"); // CASH or TRANSFER
 
   useEffect(() => {
     // Check login status
@@ -71,26 +72,57 @@ export default function Cart() {
 
   const handleCheckout = async () => {
     if (cartItems.length === 0) return;
+
+    const itemsPayload = cartItems.map(item => ({
+      productId: item.productId,
+      qty: item.qty,
+      variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
+      note: item.note || ''
+    }));
+
     setIsSubmitting(true);
     try {
-      const itemsPayload = cartItems.map(item => ({
-        productId: item.productId,
-        qty: item.qty,
-        variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
-        note: item.note || ''
-      }));
-
       const result = await customerService.createMyOrder({
         items: itemsPayload,
         voucherCode: voucherCode || undefined,
+        paymentMethod: paymentMethod,
         note: "Đặt hàng từ Web"
       });
 
       // Clear local cart in storage
       localStorage.removeItem("sippoint_cart");
       
-      // Navigate to order tracking of this specific order immediately
-      navigate(ROUTE_PATH.ORDER_DETAIL.replace(":orderId", result._id || result.id));
+      const orderId = result._id || result.id;
+
+      if (paymentMethod === "TRANSFER") {
+        const sepayData = await customerService.createSepayPayment({
+          amount: total,
+          orderId: result.code || orderId,
+          orderInfo: `Thanh toan don hang ${result.code || orderId}`,
+          returnUrl: `${window.location.origin}${ROUTE_PATH.ORDER_DETAIL.replace(":orderId", orderId)}`
+        });
+
+        if (sepayData && sepayData.checkoutURL && sepayData.checkoutFormfields) {
+          // Tạo một form ẩn và tự động submit (vì SePay yêu cầu POST request)
+          const form = document.createElement("form");
+          form.method = "POST";
+          form.action = sepayData.checkoutURL;
+
+          Object.keys(sepayData.checkoutFormfields).forEach(key => {
+            const hiddenField = document.createElement("input");
+            hiddenField.type = "hidden";
+            hiddenField.name = key;
+            hiddenField.value = sepayData.checkoutFormfields[key];
+            form.appendChild(hiddenField);
+          });
+
+          document.body.appendChild(form);
+          form.submit();
+          return; // Dừng lại ở đây vì form đang được submit
+        }
+      }
+      
+      navigate(ROUTE_PATH.ORDER_DETAIL.replace(":orderId", orderId));
     } catch (error) {
       alert(error.message || "Đặt món thất bại, vui lòng thử lại.");
     } finally {
@@ -232,9 +264,16 @@ export default function Cart() {
                 </div>
                 <div className="flex-1">
                   <p className="text-[12px] text-[#534434] dark:text-on-surface-variant">Phương thức thanh toán</p>
-                  <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface">Tiền mặt</p>
+                  <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface">
+                    {paymentMethod === "CASH" ? "Tiền mặt" : "Chuyển khoản / Quét QR"}
+                  </p>
                 </div>
-                <button className="text-[#855300] font-bold text-[12px]">Thay đổi</button>
+                <button
+                  onClick={() => setPaymentMethod(prev => prev === "CASH" ? "TRANSFER" : "CASH")}
+                  className="text-[#855300] font-bold text-[12px]"
+                >
+                  Thay đổi
+                </button>
               </section>
             </main>
 
@@ -248,7 +287,7 @@ export default function Cart() {
                   </div>
                   <div className="flex items-center gap-1 text-[#4a4424] bg-[#ede3b8] rounded-full px-3 py-1">
                     <span className="material-symbols-outlined text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>payments</span>
-                    <span className="text-[12px] font-bold">Tiền mặt</span>
+                    <span className="text-[12px] font-bold">{paymentMethod === "CASH" ? "Tiền mặt" : "Quét QR"}</span>
                   </div>
                 </div>
                 <button

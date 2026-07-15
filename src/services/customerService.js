@@ -114,5 +114,19 @@ export const customerService = {
       throw new Error(apiErrorData?.message || "Lỗi tải ảnh đại diện");
     }
   },
+
+  createSepayPayment: async (data) => {
+    try {
+      // Gọi API /payment/sepay/create 
+      const response = await apiCall(API_METHOD.POST, "/payment/sepay/create", data);
+      if (response && response.data?.status === 'success') {
+        return response.data.data; // trả về { checkoutURL, checkoutFormfields }
+      }
+      throw new Error(response?.data?.message || "Tạo giao dịch SePay thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi tạo giao dịch SePay");
+    }
+  }
 };
 
