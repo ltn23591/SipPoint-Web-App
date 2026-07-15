@@ -82,15 +82,26 @@ export default function Cart() {
 
     setIsSubmitting(true);
     try {
-      const result = await customerService.createMyOrder({
+      const tableId = localStorage.getItem("tableId");
+      
+      const payload = {
         items: itemsPayload,
         voucherCode: voucherCode || undefined,
         paymentMethod: paymentMethod,
         note: "Đặt hàng từ Web"
-      });
+      };
 
-      // Clear local cart in storage
+      if (tableId) {
+        payload.tableId = tableId;
+        payload.type = "dine_in";
+      }
+
+      const result = await customerService.createMyOrder(payload);
+
+      // Clear local cart and table info in storage
       localStorage.removeItem("sippoint_cart");
+      localStorage.removeItem("tableId");
+      localStorage.removeItem("zoneId");
       
       const orderId = result._id || result.id;
 
