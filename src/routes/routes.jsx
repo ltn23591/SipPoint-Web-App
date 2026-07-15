@@ -1,5 +1,5 @@
-import { createBrowserRouter, Outlet } from "react-router";
-import { ChatbotAI } from "@/components/common/ChatbotAI";
+import { createBrowserRouter } from "react-router";
+import { AppLayout } from "@/components/common/AppLayout";
 import { ROUTE_PATH } from "@/constants/routePaths";
 
 import Login from "@/pages/Login";    // Import trang Login
@@ -17,14 +17,7 @@ import LuckyWheel from "@/pages/LuckyWheel";
 import Cart from "@/pages/Cart";
 import NotFound from "@/pages/NotFound";
 
-function AppLayout() {
-  return (
-    <>
-      <Outlet />
-      <ChatbotAI />
-    </>
-  );
-}
+
 
 export const router = createBrowserRouter([
   {
