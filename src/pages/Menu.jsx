@@ -292,8 +292,12 @@ export default function Menu() {
               {filteredProducts.map((p) => (
                 <div
                   key={p._id}
-                  onClick={() => handleOpenDetail(p._id)}
-                  className="bg-white dark:bg-surface-container-high rounded-2xl overflow-hidden shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-lg border border-zinc-100 dark:border-none flex flex-col hover:shadow-md transition-shadow cursor-pointer dark:hover:bg-surface-bright"
+                  onClick={() => {
+                    if (p.stock > 0) handleOpenDetail(p._id);
+                  }}
+                  className={`bg-white dark:bg-surface-container-high rounded-2xl overflow-hidden shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-lg border border-zinc-100 dark:border-none flex flex-col transition-shadow ${
+                    p.stock <= 0 ? 'opacity-75' : 'cursor-pointer hover:shadow-md dark:hover:bg-surface-bright'
+                  }`}
                 >
                   <div className="relative h-32 bg-zinc-50 dark:bg-surface-container-low">
                     {p.image ? (
@@ -310,7 +314,7 @@ export default function Menu() {
                       </div>
                     )}
                     {p.stock <= 0 && (
-                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 dark:bg-error-container text-white dark:text-on-error-container text-[10px] font-bold rounded">
+                      <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 dark:bg-error-container text-white dark:text-on-error-container text-[10px] font-bold rounded shadow-sm">
                         Hết hàng
                       </span>
                     )}
@@ -325,13 +329,13 @@ export default function Menu() {
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleOpenDetail(p._id);
+                        if (p.stock > 0) handleOpenDetail(p._id);
                       }}
                       disabled={p.stock <= 0}
-                      className="mt-auto w-full py-2 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container rounded-xl text-[13px] font-semibold active:scale-95 transition-transform flex items-center justify-center gap-1 hover:bg-[#855300]/95 disabled:opacity-50"
+                      className="mt-auto w-full py-2 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container rounded-xl text-[13px] font-semibold active:scale-95 transition-transform flex items-center justify-center gap-1 hover:bg-[#855300]/95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                     >
                       <span className="material-symbols-outlined text-[18px]">add</span>
-                      Thêm
+                      {p.stock <= 0 ? "Hết" : "Thêm"}
                     </button>
                   </div>
                 </div>
@@ -506,14 +510,22 @@ export default function Menu() {
                         <span className="material-symbols-outlined text-[20px]">add</span>
                       </button>
                     </div>
-                    {/* Add to Cart Button */}
                     <button 
                       onClick={handleAddToCart}
-                      className="flex-1 bg-[#855300] dark:bg-primary-container h-12 rounded-full flex items-center justify-center gap-2 text-white dark:text-on-primary-container text-[15px] font-bold active:scale-[0.98] transition-all hover:bg-[#855300]/95 dark:hover:bg-primary shadow-md"
+                      disabled={activeProduct.stock <= 0}
+                      className={`flex-1 h-12 rounded-full flex items-center justify-center gap-2 text-[15px] font-bold transition-all shadow-md ${
+                        activeProduct.stock <= 0 
+                          ? "bg-zinc-200 dark:bg-surface-container-highest text-zinc-400 dark:text-on-surface-variant cursor-not-allowed" 
+                          : "bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container active:scale-[0.98] hover:bg-[#855300]/95 dark:hover:bg-primary"
+                      }`}
                     >
-                      <span>Thêm vào giỏ</span>
-                      <span className="w-1 h-1 bg-white/40 dark:bg-on-primary-container/40 rounded-full" />
-                      <span>{totalPrice.toLocaleString("vi-VN")}đ</span>
+                      <span>{activeProduct.stock <= 0 ? "Đã hết hàng" : "Thêm vào giỏ"}</span>
+                      {activeProduct.stock > 0 && (
+                        <>
+                          <span className="w-1 h-1 bg-white/40 dark:bg-on-primary-container/40 rounded-full" />
+                          <span>{totalPrice.toLocaleString("vi-VN")}đ</span>
+                        </>
+                      )}
                     </button>
                   </div>
                 </>
