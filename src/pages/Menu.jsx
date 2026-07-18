@@ -8,6 +8,7 @@ import BottomNavBar from "@/components/layout/BottomNavBar";
 export default function Menu() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [globalToppings, setGlobalToppings] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -37,12 +38,14 @@ export default function Menu() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [categoriesRes, productsRes] = await Promise.all([
+        const [categoriesRes, productsRes, toppingsRes] = await Promise.all([
           menuService.getCategories(),
           menuService.getProducts(),
+          menuService.getToppings(),
         ]);
         setCategories(categoriesRes.data || []);
         setProducts(productsRes.data || []);
+        setGlobalToppings(toppingsRes.data || []);
       } catch (error) {
         console.error(error);
         toast.error(error.message || "Lỗi tải danh mục hoặc món ăn");
@@ -111,14 +114,24 @@ export default function Menu() {
       qty: quantity,
       variants: [
         ...(selectedSize ? [{ variantId: selectedSize._id, name: selectedSize.name, priceAdjustment: selectedSize.priceAdjustment }] : []),
-        ...selectedToppings.map(t => ({ variantId: t._id, name: t.name, priceAdjustment: t.priceAdjustment }))
       ],
-      variantPriceSum: (selectedSize?.priceAdjustment || 0) + selectedToppings.reduce((s, t) => s + (t.priceAdjustment || 0), 0),
+      toppings: selectedToppings.map(t => ({ toppingId: t._id, name: t.name, price: t.price })),
+      variantPriceSum: (selectedSize?.priceAdjustment || 0) + selectedToppings.reduce((s, t) => s + (t.price || 0), 0),
       note: note,
+      stock: activeProduct.stock || 0,
     };
 
     const savedCart = localStorage.getItem("sippoint_cart");
     const cart = savedCart ? JSON.parse(savedCart) : [];
+    
+    const currentStock = activeProduct.stock || 0;
+    const totalQtyInCart = cart.filter(c => c.productId === cartItem.productId).reduce((sum, c) => sum + c.qty, 0);
+
+    if (totalQtyInCart + quantity > currentStock) {
+      toast.error(`Rất tiếc! Số lượng vượt quá tồn kho (chỉ còn ${currentStock} sản phẩm).`);
+      return;
+    }
+
     // Check if same product + same variants already exists
     const existingIdx = cart.findIndex(c => c.productId === cartItem.productId && JSON.stringify(c.variants) === JSON.stringify(cartItem.variants));
     if (existingIdx >= 0) {
@@ -138,7 +151,7 @@ export default function Menu() {
     if (!activeProduct) return 0;
     const base = activeProduct.price || 0;
     const sizeAdjustment = selectedSize ? (selectedSize.priceAdjustment || 0) : 0;
-    const toppingsAdjustment = selectedToppings.reduce((sum, t) => sum + (t.priceAdjustment || 0), 0);
+    const toppingsAdjustment = selectedToppings.reduce((sum, t) => sum + (t.price || 0), 0);
     return base + sizeAdjustment + toppingsAdjustment;
   };
 
@@ -323,9 +336,16 @@ export default function Menu() {
                     <h4 className="font-semibold text-[14px] text-zinc-900 dark:text-on-surface line-clamp-1 mb-1">
                       {p.name}
                     </h4>
-                    <p className="text-[14px] text-[#855300] dark:text-primary-container font-bold mb-3">
-                      {p.price.toLocaleString("vi-VN")}đ
-                    </p>
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="text-[14px] text-[#855300] dark:text-primary-container font-bold">
+                        {p.price.toLocaleString("vi-VN")}đ
+                      </p>
+                      {(p.stock || 0) > 0 && (
+                        <span className="text-[11px] font-medium text-zinc-500 bg-zinc-100 dark:bg-surface-container-highest px-1.5 py-0.5 rounded">
+                          Còn: {p.stock}
+                        </span>
+                      )}
+                    </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
@@ -403,9 +423,14 @@ export default function Menu() {
                         <h2 className="text-[22px] font-bold text-zinc-900 dark:text-on-surface leading-tight">
                           {activeProduct.name}
                         </h2>
-                        <p className="text-[20px] font-bold text-[#855300] dark:text-primary-container">
-                          {activeProduct.price?.toLocaleString("vi-VN")}đ
-                        </p>
+                        <div className="flex items-center gap-3">
+                          <p className="text-[20px] font-bold text-[#855300] dark:text-primary-container">
+                            {activeProduct.price?.toLocaleString("vi-VN")}đ
+                          </p>
+                          <span className="text-[12px] font-medium bg-[#ffcdae]/30 text-[#855300] dark:bg-primary-container/20 dark:text-primary-container px-2.5 py-0.5 rounded-full border border-[#f59e0b]/20">
+                            Còn lại: {activeProduct.stock || 0}
+                          </span>
+                        </div>
                         <p className="text-[13px] text-zinc-500 dark:text-on-surface-variant leading-relaxed pt-2">
                           {activeProduct.description || "Chưa có mô tả chi tiết cho món ăn này."}
                         </p>
@@ -436,15 +461,14 @@ export default function Menu() {
                       )}
 
                       {/* Toppings Selection */}
-                      {activeProduct.variants?.some(v => v.variantType === 'topping' && v.isActive !== 'inactive') && (
+                      {globalToppings.length > 0 && (
                         <div className="space-y-3">
                           <div className="flex justify-between items-center">
                             <h3 className="text-[14px] font-bold text-zinc-900 dark:text-on-surface">Topping</h3>
                             <span className="text-[10px] font-bold text-zinc-500 dark:text-on-surface-variant bg-zinc-100 dark:bg-surface-container-high px-2 py-0.5 rounded">Tùy chọn</span>
                           </div>
                           <div className="space-y-2">
-                            {activeProduct.variants
-                              .filter(v => v.variantType === 'topping' && v.isActive !== 'inactive')
+                            {globalToppings
                               .map((topping) => {
                                 const isChecked = selectedToppings.some(t => t._id === topping._id);
                                 return (
@@ -463,7 +487,7 @@ export default function Menu() {
                                       <span className="text-[14px] font-medium text-zinc-800 dark:text-on-surface">{topping.name}</span>
                                     </div>
                                     <span className="text-[13px] font-bold text-[#855300] dark:text-primary-container">
-                                      +{topping.priceAdjustment?.toLocaleString("vi-VN")}đ
+                                      +{topping.price?.toLocaleString("vi-VN")}đ
                                     </span>
                                     <input 
                                       type="checkbox"
@@ -505,22 +529,23 @@ export default function Menu() {
                       <span className="w-8 text-center font-bold text-[14px] text-zinc-800 dark:text-on-surface">{quantity}</span>
                       <button 
                         onClick={() => setQuantity(q => q + 1)}
-                        className="w-8 h-8 flex items-center justify-center text-[#855300] dark:text-primary-container active:scale-90 transition-transform"
+                        disabled={quantity >= (activeProduct.stock || 0)}
+                        className={`w-8 h-8 flex items-center justify-center text-[#855300] dark:text-primary-container active:scale-90 transition-transform ${quantity >= (activeProduct.stock || 0) ? 'opacity-30 cursor-not-allowed' : ''}`}
                       >
                         <span className="material-symbols-outlined text-[20px]">add</span>
                       </button>
                     </div>
                     <button 
                       onClick={handleAddToCart}
-                      disabled={activeProduct.stock <= 0}
+                      disabled={(activeProduct.stock || 0) <= 0}
                       className={`flex-1 h-12 rounded-full flex items-center justify-center gap-2 text-[15px] font-bold transition-all shadow-md ${
-                        activeProduct.stock <= 0 
+                        (activeProduct.stock || 0) <= 0 
                           ? "bg-zinc-200 dark:bg-surface-container-highest text-zinc-400 dark:text-on-surface-variant cursor-not-allowed" 
                           : "bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container active:scale-[0.98] hover:bg-[#855300]/95 dark:hover:bg-primary"
                       }`}
                     >
-                      <span>{activeProduct.stock <= 0 ? "Đã hết hàng" : "Thêm vào giỏ"}</span>
-                      {activeProduct.stock > 0 && (
+                      <span>{(activeProduct.stock || 0) <= 0 ? "Đã hết hàng" : "Thêm vào giỏ"}</span>
+                      {(activeProduct.stock || 0) > 0 && (
                         <>
                           <span className="w-1 h-1 bg-white/40 dark:bg-on-primary-container/40 rounded-full" />
                           <span>{totalPrice.toLocaleString("vi-VN")}đ</span>
