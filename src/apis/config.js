@@ -25,18 +25,21 @@ apiInstance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle errors globally (e.g. 401 Unauthorized)
 apiInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Clear local credentials on token expiration
-      localStorage.removeItem("user");
-      localStorage.removeItem("token");
-      localStorage.removeItem("accessToken");
+      const isLoginRequest = error.config?.url?.includes("/auth/customer/login") || error.config?.url?.includes("/auth/login");
       
-      // Redirect to login page
-      window.location.href = "/login";
+      if (!isLoginRequest) {
+        // Clear local credentials on token expiration
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        localStorage.removeItem("accessToken");
+        
+        // Redirect to login page
+        window.location.href = "/login";
+      }
     }
     
     if (error.code === CODE_KEY.CANCEL) {
