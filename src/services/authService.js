@@ -102,6 +102,9 @@ export const authService = {
 
   getMe: async () => {
     try {
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      if (!token) return null;
+
       const response = await apiCall(API_METHOD.GET, "/auth/me");
       if (response && response.status === 200 && response.data?.success) {
         return response.data.user || response.data.data || response.data;

@@ -88,7 +88,7 @@ export default function Account() {
             <div>
               <h2 className="font-semibold text-[22px] leading-[28px] text-[#1a1c1c] dark:text-on-surface">Cài đặt ứng dụng</h2>
               <p className="font-normal text-[14px] leading-[20px] text-[#534434] dark:text-on-surface-variant mt-1">
-                Quản lý tuỳ chọn và bảo mật của {profile?.fullName || "bạn"}.
+                Quản lý tuỳ chọn và bảo mật của {profile?.fullName || "Khách vãng lai"}.
               </p>
             </div>
           </div>
@@ -96,7 +96,7 @@ export default function Account() {
           <section className="flex flex-col gap-[8px]">
             <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] dark:text-primary-container px-1 uppercase tracking-wider">Hồ sơ cá nhân</h3>
             <div className="bg-[#ffffff] dark:bg-surface-container-high rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none overflow-hidden border border-[#d8c3ad]/30 dark:border-outline-variant/10">
-              <Link to={ROUTE_PATH.EDIT_PROFILE} className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright">
+              <Link to={profile ? ROUTE_PATH.EDIT_PROFILE : ROUTE_PATH.LOGIN} className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#ffcdae] dark:bg-primary-container/20 flex items-center justify-center text-[#7a553c] dark:text-primary-container">
                     <span className="material-symbols-outlined">person</span>
@@ -181,28 +181,37 @@ export default function Account() {
           </section>
 
           {/* Section: Security */}
-          <section className="flex flex-col gap-[8px]">
-            <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] dark:text-primary-container px-1 uppercase tracking-wider">Bảo mật & Đăng nhập</h3>
-            <div className="bg-[#ffffff] dark:bg-surface-container-high rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none overflow-hidden border border-[#d8c3ad]/30 dark:border-outline-variant/10">
-              {/* Change Password */}
-              <div className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#ede3b8] dark:bg-secondary-container/30 flex items-center justify-center text-[#4a4424] dark:text-secondary-brand">
-                    <span className="material-symbols-outlined">lock</span>
+          {profile && (
+            <section className="flex flex-col gap-[8px]">
+              <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] dark:text-primary-container px-1 uppercase tracking-wider">Bảo mật & Đăng nhập</h3>
+              <div className="bg-[#ffffff] dark:bg-surface-container-high rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none overflow-hidden border border-[#d8c3ad]/30 dark:border-outline-variant/10">
+                {/* Change Password */}
+                <div className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-[#ede3b8] dark:bg-secondary-container/30 flex items-center justify-center text-[#4a4424] dark:text-secondary-brand">
+                      <span className="material-symbols-outlined">lock</span>
+                    </div>
+                    <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] dark:text-on-surface">Thay đổi mật khẩu</span>
                   </div>
-                  <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] dark:text-on-surface">Thay đổi mật khẩu</span>
+                  <span className="material-symbols-outlined text-[#534434] dark:text-on-surface-variant text-[20px]">chevron_right</span>
                 </div>
-                <span className="material-symbols-outlined text-[#534434] dark:text-on-surface-variant text-[20px]">chevron_right</span>
               </div>
-            </div>
-          </section>
+            </section>
+          )}
 
-          {/* Logout Button */}
+          {/* Authentication Button */}
           <div className="mt-4">
-            <button onClick={handleLogout} className="w-full py-3 px-4 bg-[#ffdad6] dark:bg-error-container/20 text-[#93000a] dark:text-error font-semibold text-[14px] leading-[20px] rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none active:scale-[0.98] transition-transform flex items-center justify-center gap-2 border dark:border-error-container/50 dark:hover:bg-error-container/30">
-              <span className="material-symbols-outlined">logout</span>
-              Đăng xuất
-            </button>
+            {profile ? (
+              <button onClick={handleLogout} className="w-full py-3 px-4 bg-[#ffdad6] dark:bg-error-container/20 text-[#93000a] dark:text-error font-semibold text-[14px] leading-[20px] rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none active:scale-[0.98] transition-transform flex items-center justify-center gap-2 border dark:border-error-container/50 dark:hover:bg-error-container/30">
+                <span className="material-symbols-outlined">logout</span>
+                Đăng xuất
+              </button>
+            ) : (
+              <button onClick={() => navigate(ROUTE_PATH.LOGIN)} className="w-full py-3 px-4 bg-[#855300] dark:bg-primary text-white font-semibold text-[14px] leading-[20px] rounded-xl shadow-md active:scale-[0.98] transition-transform flex items-center justify-center gap-2">
+                <span className="material-symbols-outlined">login</span>
+                Đăng nhập
+              </button>
+            )}
           </div>
         </main>
 

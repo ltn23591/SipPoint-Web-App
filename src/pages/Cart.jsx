@@ -38,10 +38,29 @@ export default function Cart() {
 
   const updateQuantity = (index, delta) => {
     setCartItems((prev) => {
+      const itemToUpdate = prev[index];
+      if (!itemToUpdate) return prev;
+      
+      const newQty = itemToUpdate.qty + delta;
+      
+      if (delta > 0) {
+        // Calculate total quantity of this product in cart (including different variants)
+        const currentTotalQty = prev
+          .filter(item => item.productId === itemToUpdate.productId)
+          .reduce((sum, item) => sum + item.qty, 0);
+          
+        const maxStock = itemToUpdate.stock || 0;
+        
+        if (currentTotalQty + delta > maxStock) {
+          alert(`Rất tiếc! Số lượng vượt quá tồn kho (chỉ còn ${maxStock} sản phẩm).`);
+          return prev;
+        }
+      }
+      
       return prev
         .map((item, i) => {
           if (i === index) {
-            return { ...item, qty: item.qty + delta };
+            return { ...item, qty: newQty };
           }
           return item;
         })
@@ -77,6 +96,7 @@ export default function Cart() {
       productId: item.productId,
       qty: item.qty,
       variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
+      toppings: item.toppings ? item.toppings.map(t => ({ toppingId: t.toppingId || t._id })) : [],
       note: item.note || ''
     }));
 
@@ -207,7 +227,7 @@ export default function Cart() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface truncate">{item.name}</h3>
                       <p className="text-[12px] text-[#534434] dark:text-on-surface-variant">
-                        {item.variants?.map(v => v.name).join(", ") || "Mặc định"}
+                        {[...(item.variants?.map(v => v.name) || []), ...(item.toppings?.map(t => t.name) || [])].join(", ") || "Mặc định"}
                       </p>
                       <p className="text-[#855300] font-bold mt-1 text-[14px]">
                         {((item.price + (item.variantPriceSum || 0)) * item.qty).toLocaleString("vi-VN")}đ

@@ -1,9 +1,12 @@
 // File: src/components/common/SocialButtons.jsx
 import React from "react";
 import { ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router";
 import { AUTH_TEXT } from "@/constants/auth";
 
 export function SocialButtons() {
+  const navigate = useNavigate();
+
   return (
     <div className="mt-2 flex flex-col w-full">
       {/* Đường phân cách */}
@@ -29,7 +32,11 @@ export function SocialButtons() {
 
       {/* Nút Khách vãng lai */}
       <div className="mt-8 flex justify-center">
-        <button type="button" className="flex items-center gap-1 text-xs font-bold text-secondary hover:underline">
+        <button 
+          type="button" 
+          onClick={() => navigate("/menu")}
+          className="flex items-center gap-1 text-xs font-bold text-secondary hover:underline"
+        >
           {AUTH_TEXT.GUEST_LOGIN}
           <ChevronRight className="h-3 w-3" />
         </button>

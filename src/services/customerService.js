@@ -4,6 +4,9 @@ import { API_METHOD } from "@/constants/application";
 export const customerService = {
   getMyPointHistory: async () => {
     try {
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      if (!token) return [];
+      
       const response = await apiCall(API_METHOD.GET, "/customers/me/point-history");
       if (response && response.data?.success) {
         return response.data.data;
@@ -30,6 +33,9 @@ export const customerService = {
 
   getMyVouchers: async () => {
     try {
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      if (!token) return [];
+
       const response = await apiCall(API_METHOD.GET, "/customers/me/vouchers");
       if (response && response.data?.success) {
         return response.data.data;
@@ -43,6 +49,25 @@ export const customerService = {
 
   getMyOrders: async () => {
     try {
+      const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
+      if (!token) {
+        const guestOrdersStr = localStorage.getItem("guest_orders");
+        if (!guestOrdersStr) return [];
+        const guestOrderIds = JSON.parse(guestOrdersStr);
+        const orders = [];
+        for (const id of guestOrderIds) {
+          try {
+            const res = await apiCall(API_METHOD.GET, `/orders/public/${id}`);
+            if (res && res.data?.success) {
+               orders.push(res.data.data);
+            }
+          } catch(e) {
+            // ignore missing
+          }
+        }
+        return orders.sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+      }
+
       const response = await apiCall(API_METHOD.GET, "/customers/me/orders");
       if (response && response.data?.success) {
         return response.data.data;
@@ -56,7 +81,9 @@ export const customerService = {
 
   getMyOrderById: async (orderId) => {
     try {
-      const response = await apiCall(API_METHOD.GET, `/customers/me/orders/${orderId}`);
+      const token = localStorage.getItem("accessToken");
+      const endpoint = token ? `/customers/me/orders/${orderId}` : `/orders/public/${orderId}`;
+      const response = await apiCall(API_METHOD.GET, endpoint);
       if (response && response.data?.success) {
         return response.data.data;
       }
@@ -69,9 +96,20 @@ export const customerService = {
 
   createMyOrder: async (data) => {
     try {
-      const response = await apiCall(API_METHOD.POST, "/customers/me/orders", data);
+      const token = localStorage.getItem("accessToken");
+      const endpoint = token ? "/customers/me/orders" : "/orders/public";
+      const response = await apiCall(API_METHOD.POST, endpoint, data);
       if (response && response.data?.success) {
-        return response.data.data;
+        const orderData = response.data.data;
+        if (!token && orderData?._id) {
+          const guestOrdersStr = localStorage.getItem("guest_orders");
+          const guestOrders = guestOrdersStr ? JSON.parse(guestOrdersStr) : [];
+          if (!guestOrders.includes(orderData._id)) {
+            guestOrders.push(orderData._id);
+            localStorage.setItem("guest_orders", JSON.stringify(guestOrders));
+          }
+        }
+        return orderData;
       }
       throw new Error(response?.data?.message || "Đặt đơn hàng thất bại");
     } catch (error) {
