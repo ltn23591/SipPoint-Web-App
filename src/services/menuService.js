@@ -17,7 +17,7 @@ export const menuService = {
 
   getProducts: async () => {
     try {
-      const response = await apiCall(API_METHOD.GET, "/product");
+      const response = await apiCall(API_METHOD.GET, "/products");
       if (response && response.data?.success) {
         return response.data;
       }
@@ -30,7 +30,7 @@ export const menuService = {
 
   getProductById: async (id) => {
     try {
-      const response = await apiCall(API_METHOD.GET, `/product/${id}`);
+      const response = await apiCall(API_METHOD.GET, `/products/${id}`);
       if (response && response.data?.success) {
         return response.data;
       }
