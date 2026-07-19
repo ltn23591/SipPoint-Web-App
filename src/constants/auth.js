@@ -13,7 +13,6 @@ export const AUTH_TEXT = {
   PLACEHOLDER_PASSWORD: "••••••••", 
   BTN_CONTINUE: "Tiếp tục",
   BTN_GOOGLE: " Google",
-  BTN_FACEBOOK: " Facebook",
   DIVIDER_OR: "HOẶC ĐĂNG NHẬP BẰNG",
   GUEST_LOGIN: "Vào với tư cách Khách vãng lai",
   MOCK_SUCCESS: "Thao tác thành công!",

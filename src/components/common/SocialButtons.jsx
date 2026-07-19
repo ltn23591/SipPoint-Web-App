@@ -18,7 +18,7 @@ export function SocialButtons() {
         <div className="h-[1px] flex-1 bg-zinc-200"></div>
       </div>
 
-      {/* 2 Nút Mạng xã hội */}
+      {/* 1 Nút Mạng xã hội Google */}
       <div className="flex gap-3">
         <button
           type="button"
@@ -30,17 +30,6 @@ export function SocialButtons() {
         >
           <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" className="h-4 w-4" alt="Google" />
           {AUTH_TEXT.BTN_GOOGLE}
-        </button>
-        <button
-          type="button"
-          onClick={() => {
-            const apiUrl = import.meta.env.VITE_APP_API_URL || "http://localhost:5000/api/v1";
-            window.location.href = `${apiUrl}/auth/facebook`;
-          }}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white py-3 text-sm font-bold text-zinc-700 transition-all hover:bg-zinc-50"
-        >
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" className="h-4 w-4" alt="Facebook" />
-          {AUTH_TEXT.BTN_FACEBOOK}
         </button>
       </div>
 
