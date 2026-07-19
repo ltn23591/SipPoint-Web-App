@@ -1,14 +1,30 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router";
+import { Link, useParams, useSearchParams } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 
 export default function OrderTracking() {
   const { orderId } = useParams();
+  const [searchParams] = useSearchParams();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [countdown, setCountdown] = useState(272); // 4m32s = 272s default
+
+  // Khi được SePay redirect về với ?status=success, gọi API xác nhận thanh toán
+  useEffect(() => {
+    const paymentStatus = searchParams.get("status");
+    const paymentOrderId = searchParams.get("orderId") || orderId;
+    if (paymentStatus === "success" && paymentOrderId) {
+      customerService.confirmPayment(paymentOrderId)
+        .then(() => {
+          console.log("Đã xác nhận thanh toán thành công cho đơn:", paymentOrderId);
+          fetchOrderDetails(); // Tải lại thông tin đơn hàng
+        })
+        .catch((err) => console.error("Lỗi xác nhận thanh toán:", err));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Fetch order details (either specific or latest)
   const fetchOrderDetails = async () => {

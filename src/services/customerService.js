@@ -178,6 +178,20 @@ export const customerService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Lỗi tạo giao dịch SePay");
     }
+  },
+
+  // Xác nhận thanh toán sau khi SePay redirect về với status=success
+  confirmPayment: async (orderId) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/payment/sepay/confirm-payment", { orderId });
+      if (response && response.data?.success) {
+        return response.data;
+      }
+      throw new Error(response?.data?.message || "Xác nhận thanh toán thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi xác nhận thanh toán");
+    }
   }
 };
 
