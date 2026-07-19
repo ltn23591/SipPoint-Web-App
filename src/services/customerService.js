@@ -81,7 +81,7 @@ export const customerService = {
 
   getMyOrderById: async (orderId) => {
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
       const endpoint = token ? `/customers/me/orders/${orderId}` : `/orders/public/${orderId}`;
       const response = await apiCall(API_METHOD.GET, endpoint);
       if (response && response.data?.success) {
@@ -96,7 +96,7 @@ export const customerService = {
 
   createMyOrder: async (data) => {
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
       const endpoint = token ? "/customers/me/orders" : "/orders/public";
       const response = await apiCall(API_METHOD.POST, endpoint, data);
       if (response && response.data?.success) {

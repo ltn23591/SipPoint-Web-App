@@ -25,7 +25,7 @@ export default function Cart() {
 
   useEffect(() => {
     // Check login status
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
     setTimeout(() => {
       setIsLoggedIn(!!token);
     }, 0);
