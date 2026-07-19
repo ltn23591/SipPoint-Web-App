@@ -96,7 +96,6 @@ export default function Cart() {
       productId: item.productId,
       qty: item.qty,
       variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
-      toppings: item.toppings ? item.toppings.map(t => ({ toppingId: t.toppingId || t._id })) : [],
       note: item.note || ''
     }));
 
@@ -227,7 +226,7 @@ export default function Cart() {
                     <div className="flex-1 min-w-0">
                       <h3 className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface truncate">{item.name}</h3>
                       <p className="text-[12px] text-[#534434] dark:text-on-surface-variant">
-                        {[...(item.variants?.map(v => v.name) || []), ...(item.toppings?.map(t => t.name) || [])].join(", ") || "Mặc định"}
+                        {[...(item.variants?.map(v => v.name) || [])].join(", ") || "Mặc định"}
                       </p>
                       <p className="text-[#855300] font-bold mt-1 text-[14px]">
                         {((item.price + (item.variantPriceSum || 0)) * item.qty).toLocaleString("vi-VN")}đ

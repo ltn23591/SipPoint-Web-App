@@ -8,7 +8,6 @@ import BottomNavBar from "@/components/layout/BottomNavBar";
 export default function Menu() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
-  const [globalToppings, setGlobalToppings] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +29,6 @@ export default function Menu() {
   const [activeProduct, setActiveProduct] = useState(null);
   const [isSheetLoading, setIsSheetLoading] = useState(false);
   const [selectedSize, setSelectedSize] = useState(null);
-  const [selectedToppings, setSelectedToppings] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [note, setNote] = useState("");
 
@@ -38,14 +36,12 @@ export default function Menu() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        const [categoriesRes, productsRes, toppingsRes] = await Promise.all([
+        const [categoriesRes, productsRes] = await Promise.all([
           menuService.getCategories(),
           menuService.getProducts(),
-          menuService.getToppings(),
         ]);
         setCategories(categoriesRes.data || []);
         setProducts(productsRes.data || []);
-        setGlobalToppings(toppingsRes.data || []);
       } catch (error) {
         console.error(error);
         toast.error(error.message || "Lỗi tải danh mục hoặc món ăn");
@@ -76,8 +72,7 @@ export default function Menu() {
         setSelectedSize(null);
       }
       
-      // Reset toppings, số lượng, ghi chú
-      setSelectedToppings([]);
+      // Reset số lượng, ghi chú
       setQuantity(1);
       setNote("");
     } catch (error) {
@@ -94,16 +89,7 @@ export default function Menu() {
     setActiveProduct(null);
   };
 
-  const handleToppingToggle = (topping) => {
-    setSelectedToppings(prev => {
-      const exists = prev.find(t => t._id === topping._id);
-      if (exists) {
-        return prev.filter(t => t._id !== topping._id);
-      } else {
-        return [...prev, topping];
-      }
-    });
-  };
+
 
   const handleAddToCart = () => {
     const cartItem = {
@@ -115,8 +101,6 @@ export default function Menu() {
       variants: [
         ...(selectedSize ? [{ variantId: selectedSize._id, name: selectedSize.name, priceAdjustment: selectedSize.priceAdjustment }] : []),
       ],
-      toppings: selectedToppings.map(t => ({ toppingId: t._id, name: t.name, price: t.price })),
-      variantPriceSum: (selectedSize?.priceAdjustment || 0) + selectedToppings.reduce((s, t) => s + (t.price || 0), 0),
       note: note,
       stock: activeProduct.stock || 0,
     };
@@ -151,8 +135,7 @@ export default function Menu() {
     if (!activeProduct) return 0;
     const base = activeProduct.price || 0;
     const sizeAdjustment = selectedSize ? (selectedSize.priceAdjustment || 0) : 0;
-    const toppingsAdjustment = selectedToppings.reduce((sum, t) => sum + (t.price || 0), 0);
-    return base + sizeAdjustment + toppingsAdjustment;
+    return base + sizeAdjustment;
   };
 
   const totalPrice = calculateSinglePrice() * quantity;
@@ -460,47 +443,7 @@ export default function Menu() {
                         </div>
                       )}
 
-                      {/* Toppings Selection */}
-                      {globalToppings.length > 0 && (
-                        <div className="space-y-3">
-                          <div className="flex justify-between items-center">
-                            <h3 className="text-[14px] font-bold text-zinc-900 dark:text-on-surface">Topping</h3>
-                            <span className="text-[10px] font-bold text-zinc-500 dark:text-on-surface-variant bg-zinc-100 dark:bg-surface-container-high px-2 py-0.5 rounded">Tùy chọn</span>
-                          </div>
-                          <div className="space-y-2">
-                            {globalToppings
-                              .map((topping) => {
-                                const isChecked = selectedToppings.some(t => t._id === topping._id);
-                                return (
-                                  <label 
-                                    key={topping._id}
-                                    className="flex items-center justify-between p-4 bg-zinc-50 dark:bg-surface-container-low rounded-xl active:bg-zinc-100 dark:active:bg-surface-container transition-colors cursor-pointer border border-zinc-100 dark:border-surface-container-high"
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all ${
-                                        isChecked ? "border-[#855300] dark:border-primary-container bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container" : "border-zinc-300 dark:border-outline-variant"
-                                      }`}>
-                                        {isChecked && (
-                                          <span className="material-symbols-outlined text-[14px] font-bold">check</span>
-                                        )}
-                                      </div>
-                                      <span className="text-[14px] font-medium text-zinc-800 dark:text-on-surface">{topping.name}</span>
-                                    </div>
-                                    <span className="text-[13px] font-bold text-[#855300] dark:text-primary-container">
-                                      +{topping.price?.toLocaleString("vi-VN")}đ
-                                    </span>
-                                    <input 
-                                      type="checkbox"
-                                      checked={isChecked}
-                                      onChange={() => handleToppingToggle(topping)}
-                                      className="hidden" 
-                                    />
-                                  </label>
-                                );
-                              })}
-                          </div>
-                        </div>
-                      )}
+
 
                       {/* Note Field */}
                       <div className="space-y-3">

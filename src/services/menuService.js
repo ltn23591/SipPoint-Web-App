@@ -39,18 +39,5 @@ export const menuService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Lỗi lấy chi tiết món ăn");
     }
-  },
-
-  getToppings: async () => {
-    try {
-      const response = await apiCall(API_METHOD.GET, "/toppings");
-      if (response && response.data?.success) {
-        return response.data;
-      }
-      throw new Error(response?.data?.message || "Lấy topping thất bại");
-    } catch (error) {
-      const apiErrorData = error?.response?.data || error;
-      throw new Error(apiErrorData?.message || "Lỗi lấy danh sách topping");
-    }
   }
 };
