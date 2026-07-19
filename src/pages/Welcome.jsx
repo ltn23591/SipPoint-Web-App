@@ -5,6 +5,7 @@ import { ROUTE_PATH } from "@/constants/routePaths";
 export default function Welcome() {
   const navigate = useNavigate();
   const [animate, setAnimate] = useState(false);
+  const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
 
   useEffect(() => {
     // Trigger animation after component mounts
@@ -12,6 +13,14 @@ export default function Welcome() {
       setAnimate(true);
     }, 100);
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setTableName(localStorage.getItem("tableName") || "");
+    };
+    window.addEventListener("tableNameUpdated", handleUpdate);
+    return () => window.removeEventListener("tableNameUpdated", handleUpdate);
   }, []);
 
   const handleLoginClick = () => {
@@ -60,7 +69,7 @@ export default function Welcome() {
                   table_restaurant
                 </span>
                 <span className="font-semibold text-[14px] leading-none text-white dark:text-on-primary-container tracking-wide">
-                  Bàn B05
+                  {tableName ? `Bàn ${tableName}` : "Mang đi"}
                 </span>
               </div>
             </div>

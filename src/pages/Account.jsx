@@ -7,9 +7,18 @@ import BottomNavBar from "@/components/layout/BottomNavBar";
 export default function Account() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
+  const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
   
   // State quản lý trạng thái của nút Dark Mode
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setTableName(localStorage.getItem("tableName") || "");
+    };
+    window.addEventListener("tableNameUpdated", handleUpdate);
+    return () => window.removeEventListener("tableNameUpdated", handleUpdate);
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -75,7 +84,7 @@ export default function Account() {
           </div>
           <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 dark:bg-secondary-container text-[#7a553c] dark:text-on-secondary-container rounded-full shadow-sm">
             <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
-            <span className="font-semibold text-[13px]">Bàn B05</span>
+            <span className="font-semibold text-[13px]">{tableName ? `Bàn ${tableName}` : "Mang đi"}</span>
           </div>
           <Link to={ROUTE_PATH.EDIT_PROFILE} className="w-8 h-8 rounded-full overflow-hidden bg-[#e8e8e8] dark:bg-surface-container-high border-2 border-[#f59e0b] dark:border-primary-container hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors active:scale-95 duration-200 cursor-pointer">
             <img alt="User Profile" className="w-full h-full object-cover" src={profile?.avatar || "https://lh3.googleusercontent.com/aida-public/AB6AXuBjhcC1CkAjxTbgxRtdCVpolezg2wWxa2fIyWW9LtaDQycVmijepXf5-SAAMtxnEfzDuN8B1DiFnlGSh0fYbfTLnVYT6euR4pt1NpuQJMRRdalaA1BvYYn9-uk79bk5ClhYQMRQdkZAXE3aOhcQUB9C3ko4fT0lWZab7bpVTzmCte7oEjSn1VvduhrCEPPyknMB3FGQIlqeO_SUaoPsyOVut6Vczo71rBBnD46wsMaCkETu-WOA1P3P1duwFc9_l1B2uHyGe8is0j4"} />

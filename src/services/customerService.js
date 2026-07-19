@@ -153,6 +153,19 @@ export const customerService = {
     }
   },
 
+  getTableInfo: async (tableId) => {
+    try {
+      const response = await apiCall(API_METHOD.GET, `/tables/${tableId}`);
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy thông tin bàn thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy thông tin bàn");
+    }
+  },
+
   createSepayPayment: async (data) => {
     try {
       // Gọi API /payment/sepay/create 

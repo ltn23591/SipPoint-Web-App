@@ -10,6 +10,15 @@ export default function RewardPoints() {
   const [customerProfile, setCustomerProfile] = useState(null);
   const [pointHistories, setPointHistories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setTableName(localStorage.getItem("tableName") || "");
+    };
+    window.addEventListener("tableNameUpdated", handleUpdate);
+    return () => window.removeEventListener("tableNameUpdated", handleUpdate);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,7 +110,7 @@ export default function RewardPoints() {
 
           <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 dark:bg-secondary-container text-[#7a553c] dark:text-on-secondary-container rounded-full shadow-sm">
             <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
-            <span className="font-semibold text-[13px]">Bàn B05</span>
+            <span className="font-semibold text-[13px]">{tableName ? `Bàn ${tableName}` : "Mang đi"}</span>
           </div>
 
           <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200">
