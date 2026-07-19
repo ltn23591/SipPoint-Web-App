@@ -4,6 +4,7 @@ import { ROUTE_PATH } from "@/constants/routePaths";
 
 import Login from "@/pages/Login";    // Import trang Login
 import Register from "@/pages/Register"; // Import trang Register
+import ForgotPassword from "@/pages/ForgotPassword"; // Import trang ForgotPassword
 import LoginSuccess from "@/pages/LoginSuccess"; // Import trang LoginSuccess
 import VerifyOtp from "@/pages/VerifyOtp"; // Import trang VerifyOtp
 import Welcome from "@/pages/Welcome"; // Import trang Welcome
@@ -35,6 +36,10 @@ export const router = createBrowserRouter([
       { 
         path: ROUTE_PATH.LOGIN, 
         element: <Login /> 
+      },
+      { 
+        path: ROUTE_PATH.FORGOT_PASSWORD, 
+        element: <ForgotPassword /> 
       },
       { 
         path: "/login-success", 

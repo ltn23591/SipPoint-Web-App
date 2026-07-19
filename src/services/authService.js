@@ -114,5 +114,50 @@ export const authService = {
       const apiErrorData = error?.response?.data || error?.cause || error;
       throw new Error(apiErrorData?.message || "Lỗi lấy thông tin");
     }
+  },
+
+  forgotPassword: async (email) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/auth/forgot-password", { email });
+      if (response && response.status === 200 && response.data?.success) {
+        return response.data; // Includes activationToken
+      }
+      throw new Error(response?.data?.message || "Yêu cầu khôi phục mật khẩu thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      throw new Error(apiErrorData?.message || "Yêu cầu thất bại");
+    }
+  },
+
+  verifyOtpForReset: async (activationToken, otp) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/auth/verify-otp", {
+        activation_token: activationToken,
+        activation_code: otp,
+      });
+      if (response && response.status === 200 && response.data?.success) {
+        return response.data; // Includes resetToken
+      }
+      throw new Error(response?.data?.message || "Xác thực OTP thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      throw new Error(apiErrorData?.message || "Xác thực OTP thất bại");
+    }
+  },
+
+  resetPassword: async (resetToken, newPassword) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/auth/reset-password", {
+        resetToken,
+        newPassword,
+      });
+      if (response && response.status === 200 && response.data?.success) {
+        return response.data;
+      }
+      throw new Error(response?.data?.message || "Đặt lại mật khẩu thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error?.cause || error;
+      throw new Error(apiErrorData?.message || "Đặt lại mật khẩu thất bại");
+    }
   }
 };
