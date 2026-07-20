@@ -2,15 +2,50 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import BottomNavBar from "@/components/layout/BottomNavBar";
+import { customerService } from "@/services/customerService";
 
 export default function LuckyWheel() {
   const navigate = useNavigate();
   const [spinning, setSpinning] = useState(false);
-  const [freeSpins, setFreeSpins] = useState(1);
+  const [freeSpins, setFreeSpins] = useState(0);
+  const [currentPoints, setCurrentPoints] = useState(0);
   const [wheelRotation, setWheelRotation] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [prize, setPrize] = useState("");
   const [tickerText, setTickerText] = useState("Minh Tuấn vừa trúng Voucher 50%");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [prizes, setPrizes] = useState([]);
+
+  const fetchWheelInfo = async () => {
+    try {
+      // Tải cấu hình các ô phần thưởng động từ database
+      const configs = await customerService.getLuckyWheelConfigs();
+      if (configs && configs.length === 8) {
+        setPrizes(configs);
+      }
+    } catch (error) {
+      console.error("Lỗi lấy cấu hình vòng quay:", error);
+    }
+
+    try {
+      const token = localStorage.getItem("token") || localStorage.getItem("accessToken") || localStorage.getItem("ACCESS_TOKEN");
+      if (!token) {
+        setIsLoggedIn(false);
+        return;
+      }
+      setIsLoggedIn(true);
+      const info = await customerService.getLuckyWheelInfo();
+      setFreeSpins(info.luckySpins || 0);
+      setCurrentPoints(info.currentPoints || 0);
+    } catch (error) {
+      console.error("Lỗi lấy thông tin cá nhân vòng quay:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWheelInfo();
+  }, []);
 
   // Ticker animation mock
   useEffect(() => {
@@ -28,34 +63,33 @@ export default function LuckyWheel() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleSpin = () => {
-    if (spinning || freeSpins <= 0) return;
-    setSpinning(true);
-    setFreeSpins((prev) => prev - 1);
-
-    // Generate random rotation (at least 5 full rotations + random angle)
-    const randomAngle = Math.floor(Math.random() * 360);
-    const newRotation = wheelRotation + 1800 + randomAngle;
-    setWheelRotation(newRotation);
-
-    // Determine prize based on angle
-    const normalizedAngle = (360 - (newRotation % 360)) % 360;
-    let wonPrize;
-    if (normalizedAngle >= 0 && normalizedAngle < 45) wonPrize = "Free Latte";
-    else if (normalizedAngle >= 45 && normalizedAngle < 90) wonPrize = "Voucher 50%";
-    else if (normalizedAngle >= 90 && normalizedAngle < 135) wonPrize = "50 Điểm Thưởng";
-    else if (normalizedAngle >= 135 && normalizedAngle < 180) wonPrize = "Voucher 10%";
-    else if (normalizedAngle >= 180 && normalizedAngle < 225) wonPrize = "Free Cappuccino";
-    else if (normalizedAngle >= 225 && normalizedAngle < 270) wonPrize = "Voucher 30%";
-    else if (normalizedAngle >= 270 && normalizedAngle < 315) wonPrize = "Voucher 20%";
-    else wonPrize = "Ly Latte đá";
-
-    setPrize(wonPrize);
-
-    setTimeout(() => {
-      setShowModal(true);
-      setSpinning(false);
-    }, 4000);
+  const handleSpin = async (usePoints) => {
+    if (spinning || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const result = await customerService.spinLuckyWheel(usePoints);
+      setSpinning(true);
+      
+      const prizeId = result.prizeId; // 0 to 7
+      // Calculate target rotation to land on the center of that sector
+      const targetAngle = (360 - (prizeId * 45 + 22.5)) % 360;
+      
+      // Spin at least 5 rotations
+      const newRotation = wheelRotation + 1800 + targetAngle - (wheelRotation % 360);
+      setWheelRotation(newRotation);
+      setPrize(result.prizeLabel);
+      
+      setTimeout(() => {
+        setShowModal(true);
+        setSpinning(false);
+        setFreeSpins(result.luckySpins || 0);
+        setCurrentPoints(result.currentPoints || 0);
+      }, 4200);
+    } catch (error) {
+      alert(error.message || "Có lỗi xảy ra khi thực hiện quay");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseModal = () => {
@@ -148,13 +182,52 @@ export default function LuckyWheel() {
                 transform: `rotate(${wheelRotation}deg)`, 
                 transition: spinning ? "transform 4s cubic-bezier(0.15, 0, 0.15, 1)" : "none"
               }} 
-              className="w-full h-full rounded-full shadow-[0px_8px_24px_rgba(59,31,10,0.15)] dark:shadow-none bg-[#e2e2e2] dark:bg-[#201f1f] overflow-hidden flex items-center justify-center border-4 border-white/50 dark:border-[#2a2a2a]"
+              className="relative w-full h-full rounded-full shadow-[0px_8px_24px_rgba(59,31,10,0.15)] dark:shadow-none bg-[#e2e2e2] dark:bg-[#201f1f] overflow-hidden border-4 border-[#855300] dark:border-[#ffddb8]"
             >
-              <img 
-                alt="Lucky Wheel" 
-                className="w-full h-full object-contain" 
-                src="https://lh3.googleusercontent.com/aida/ADBb0uhOmuont8wZUrgRPJbbV24SGKKKIekY4Oe0CVfcHMFEX_ra0IHk57zoxFi5GPdviQ7JUks2K1bIPOL_S2ZoiIfckfpPyrrxDborVRd1cOgbim4k1rXOqC9vKgefBnJnHhdK1GYNiIx6fWoJ6JPj6RatU28MLCeiCShCdlnMAJjGdfG-jYEIRnfmNCc7P3p37lifVBRhpkpUk2zExNHi8etOCAj6K6aN1GX1tEz5Oq3P3GpkiC4ONql_" 
+              {/* Conic Gradient background */}
+              <div 
+                className="absolute inset-0"
+                style={{
+                  background: `conic-gradient(
+                    #FFF3E0 0deg 45deg,
+                    #FFE0B2 45deg 90deg,
+                    #FFCC80 90deg 135deg,
+                    #FFB74D 135deg 180deg,
+                    #FFF3E0 180deg 225deg,
+                    #FFE0B2 225deg 270deg,
+                    #FFCC80 270deg 315deg,
+                    #FFB74D 315deg 360deg
+                  )`
+                }}
               />
+              
+              {/* Dynamic Labels */}
+              {prizes.length === 0 ? (
+                <div className="absolute inset-0 flex items-center justify-center bg-amber-50/50">
+                  <span className="material-symbols-outlined text-[#855300] animate-spin text-[32px]">progress_activity</span>
+                </div>
+              ) : (
+                prizes.map((p, index) => {
+                  const angle = index * 45 + 22.5;
+                  return (
+                    <div
+                      key={p.slotIndex}
+                      className="absolute top-0 left-1/2 w-[100px] h-[150px] -ml-[50px] origin-bottom flex flex-col items-center pt-5 text-center select-none"
+                      style={{
+                        transform: `rotate(${angle}deg)`,
+                        transformOrigin: "50% 100%"
+                      }}
+                    >
+                      <span className="font-bold text-[9px] text-[#534434] max-w-[65px] break-words leading-tight">
+                        {p.label}
+                      </span>
+                      <span className="material-symbols-outlined text-[#855300] text-[12px] mt-0.5">
+                        {p.type === "VOUCHER" ? "redeem" : p.type === "POINTS" ? "stars" : "sentiment_satisfied"}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
             </div>
 
             {/* Center Cap */}
@@ -169,33 +242,55 @@ export default function LuckyWheel() {
 
           {/* Spin Control Button */}
           <div className="flex flex-col items-center gap-3 w-full max-w-[320px] mb-8">
-            <div className="bg-[#e8e8e8] dark:bg-[#2a2a2a] px-4 py-2 rounded-xl whitespace-nowrap">
-              <p className="font-semibold text-[14px] text-[#855300] dark:text-[#ffc174]">Lượt quay miễn phí: <span className="font-bold">{freeSpins}</span></p>
-            </div>
-            <button 
-              onClick={handleSpin}
-              disabled={spinning || freeSpins <= 0}
-              className="shimmer-effect w-full bg-[#f59e0b] dark:bg-[#f59e0b] text-[#613b00] dark:text-[#613b00] h-14 rounded-xl font-bold text-[18px] shadow-[0px_4px_12px_rgba(245,158,11,0.3)] dark:shadow-none active:scale-95 transition-all duration-200 disabled:opacity-50"
-            >
-              {spinning ? "Đang quay..." : "Quay ngay"}
-            </button>
+            {!isLoggedIn ? (
+              <Link
+                to={ROUTE_PATH.LOGIN}
+                className="w-full bg-[#f59e0b] text-[#613b00] h-14 rounded-xl font-bold text-[18px] flex items-center justify-center shadow-lg active:scale-95 transition-all"
+              >
+                Đăng nhập để quay thưởng
+              </Link>
+            ) : (
+              <>
+                {freeSpins > 0 ? (
+                  <button 
+                    onClick={() => handleSpin(false)}
+                    disabled={spinning}
+                    className="shimmer-effect w-full bg-[#f59e0b] text-[#613b00] h-14 rounded-xl font-bold text-[16px] shadow-md active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    {spinning ? "Đang quay..." : `Quay miễn phí (Còn ${freeSpins} lượt)`}
+                  </button>
+                ) : (
+                  <button 
+                    onClick={() => handleSpin(true)}
+                    disabled={spinning || currentPoints < 15}
+                    className="shimmer-effect w-full bg-[#855300] text-white h-14 rounded-xl font-bold text-[16px] shadow-md active:scale-95 transition-all disabled:opacity-50"
+                  >
+                    {spinning ? "Đang quay..." : `Quay bằng 15 điểm (Có ${currentPoints} điểm)`}
+                  </button>
+                )}
+                {freeSpins === 0 && currentPoints < 15 && (
+                  <p className="text-[12px] text-red-500 font-semibold text-center">
+                    Bạn không đủ điểm hoặc lượt quay miễn phí
+                  </p>
+                )}
+              </>
+            )}
             <p className="text-[12px] text-[#534434] dark:text-[#d8c3ad] text-center px-4">
-              Mỗi hóa đơn thanh toán trên 50k sẽ được nhận thêm 1 lượt quay may mắn.
+              Mỗi hóa đơn thanh toán trên 50k sẽ được nhận thêm 1 lượt quay miễn phí hoặc tiêu 15 điểm tích lũy cho mỗi lượt quay.
             </p>
           </div>
 
           {/* Prizes Grid */}
           <div className="w-full grid grid-cols-2 gap-3 mb-6">
-            <div className="bg-[#f3f3f4]/50 dark:bg-[#201f1f] p-4 rounded-xl shadow-sm dark:shadow-none border border-[#d8c3ad]/10 dark:border-[#534434]/50 flex flex-col items-start">
-              <span className="material-symbols-outlined text-[#7c563d] dark:text-[#ffc174] mb-2">redeem</span>
-              <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-[#e5e2e1]">Voucher 50%</p>
-              <p className="text-[10px] text-zinc-400 dark:text-[#d8c3ad] uppercase tracking-wider font-semibold">Giải Nhất</p>
-            </div>
-            <div className="bg-[#f3f3f4]/50 dark:bg-[#201f1f] p-4 rounded-xl shadow-sm dark:shadow-none border border-[#d8c3ad]/10 dark:border-[#534434]/50 flex flex-col items-start">
-              <span className="material-symbols-outlined text-[#7c563d] dark:text-[#ffc174] mb-2">local_cafe</span>
-              <p className="font-semibold text-[14px] text-[#1a1c1c] dark:text-[#e5e2e1]">Ly Latte miễn phí</p>
-              <p className="text-[10px] text-zinc-400 dark:text-[#d8c3ad] uppercase tracking-wider font-semibold">Giải Nhì</p>
-            </div>
+            {prizes.map((p) => (
+              <div key={p.slotIndex} className="bg-[#f3f3f4]/50 dark:bg-[#201f1f] p-4 rounded-xl shadow-sm dark:shadow-none border border-[#d8c3ad]/10 dark:border-[#534434]/50 flex flex-col items-start">
+                <span className="material-symbols-outlined text-[#7c563d] dark:text-[#ffc174] mb-2">
+                  {p.type === "VOUCHER" ? "redeem" : p.type === "POINTS" ? "stars" : "sentiment_satisfied"}
+                </span>
+                <p className="font-semibold text-[13px] text-[#1a1c1c] dark:text-[#e5e2e1] line-clamp-1">{p.label}</p>
+                <p className="text-[10px] text-zinc-400 dark:text-[#d8c3ad] uppercase tracking-wider font-semibold">Tỷ lệ: {p.probability}%</p>
+              </div>
+            ))}
             <div className="col-span-2 bg-[#ffddb8]/20 dark:bg-[#f59e0b]/10 p-4 rounded-xl shadow-sm dark:shadow-none border border-[#ffddb8]/30 dark:border-[#f59e0b]/20 flex items-center justify-between">
               <div>
                 <p className="font-bold text-[16px] text-[#2a1700] dark:text-[#ffc174]">Ưu đãi hôm nay</p>

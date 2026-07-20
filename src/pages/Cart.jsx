@@ -18,10 +18,12 @@ export default function Cart() {
     return [];
   });
   const [voucherCode, setVoucherCode] = useState("");
-  const voucherDiscount = 0;
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
+  const voucherDiscount = appliedVoucher ? appliedVoucher.discountAmount : 0;
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("CASH"); // CASH or TRANSFER
+  const [isEcoFriendly, setIsEcoFriendly] = useState(false);
 
   useEffect(() => {
     // Check login status
@@ -83,10 +85,15 @@ export default function Cart() {
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) return;
     setIsApplyingVoucher(true);
-    // TODO: Call voucher validation API
-    setTimeout(() => {
+    try {
+      const data = await customerService.validateVoucher(voucherCode, subtotal);
+      setAppliedVoucher(data);
+    } catch (error) {
+      alert(error.message || "Áp dụng voucher thất bại");
+      setAppliedVoucher(null);
+    } finally {
       setIsApplyingVoucher(false);
-    }, 500);
+    }
   };
 
   const handleCheckout = async () => {
@@ -107,6 +114,7 @@ export default function Cart() {
         items: itemsPayload,
         voucherCode: voucherCode || undefined,
         paymentMethod: paymentMethod,
+        isEcoFriendly: isEcoFriendly,
         note: "Đặt hàng từ Web"
       };
 
@@ -199,7 +207,7 @@ export default function Cart() {
           </div>
         ) : (
           <>
-            <main className="pt-20 pb-40 px-5 flex-1">
+            <main className="pt-20 pb-60 px-5 flex-1">
               {/* Reward Banner */}
               {!isLoggedIn && (
                 <div className="mb-6 bg-[#f59e0b]/20 border border-[#f59e0b]/30 rounded-xl p-4 flex items-center gap-3">
@@ -268,6 +276,28 @@ export default function Cart() {
                   </button>
                 </div>
               </section>
+
+              {/* Eco-Friendly Points Boost */}
+              {isLoggedIn && (
+                <section className="mb-6 p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/30 rounded-2xl flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="ecoFriendly"
+                    className="mt-1 w-4.5 h-4.5 text-emerald-600 border-zinc-300 rounded focus:ring-emerald-500 cursor-pointer"
+                    checked={isEcoFriendly}
+                    onChange={(e) => setIsEcoFriendly(e.target.checked)}
+                  />
+                  <div className="flex-1">
+                    <label htmlFor="ecoFriendly" className="font-bold text-[14px] text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5 cursor-pointer">
+                      <span className="material-symbols-outlined text-[18px]">forest</span>
+                      Tôi tự mang ly nước cá nhân
+                    </label>
+                    <p className="text-[12px] text-emerald-700 dark:text-emerald-400/80 mt-0.5">
+                      Không dùng ly nhựa và ống hút một lần để nhận thêm <span className="font-bold text-emerald-800 dark:text-emerald-300">+15 điểm thưởng</span>!
+                    </p>
+                  </div>
+                </section>
+              )}
 
               {/* Order Summary */}
               <section className="bg-[#f3f3f4] dark:bg-surface-container rounded-2xl p-5 space-y-3">

@@ -192,6 +192,90 @@ export const customerService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Lỗi xác nhận thanh toán");
     }
+  },
+
+  // Lấy thông tin vòng quay (lượt quay miễn phí, điểm tích lũy)
+  getLuckyWheelInfo: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/customers/me/lucky-wheel");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy thông tin vòng quay thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy thông tin vòng quay");
+    }
+  },
+
+  // Thực hiện quay vòng quay may mắn
+  spinLuckyWheel: async (usePoints) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/customers/me/lucky-wheel/spin", { usePoints });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Quay thưởng thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi thực hiện quay thưởng");
+    }
+  },
+
+  // Lấy cấu hình các giải thưởng vòng quay từ CSDL
+  getLuckyWheelConfigs: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/lucky-wheel/config");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy cấu hình vòng quay thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy cấu hình vòng quay");
+    }
+  },
+
+  // Áp dụng và tính toán tiền giảm của voucher
+  validateVoucher: async (code, orderValue) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/vouchers/validate", { code, orderValue });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Áp dụng voucher thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi áp dụng voucher");
+    }
+  },
+
+  // Lấy danh sách voucher đổi điểm
+  getRedeemableVouchers: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/vouchers/redeemable");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Lấy danh sách đổi điểm thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi lấy danh sách đổi điểm");
+    }
+  },
+
+  // Đổi điểm lấy voucher
+  redeemVoucher: async (voucherId) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, `/vouchers/${voucherId}/redeem`);
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Đổi voucher thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi đổi voucher");
+    }
   }
 };
 
