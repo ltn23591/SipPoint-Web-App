@@ -9,7 +9,6 @@ export default function OrderTracking() {
   const [searchParams] = useSearchParams();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [countdown, setCountdown] = useState(272); // 4m32s = 272s default
 
   // Khi được SePay redirect về với ?status=success, gọi API xác nhận thanh toán
   useEffect(() => {
@@ -59,21 +58,6 @@ export default function OrderTracking() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
-
-  // Countdown timer effect
-  useEffect(() => {
-    if (countdown <= 0) return;
-    const timer = setInterval(() => {
-      setCountdown((prev) => prev - 1);
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [countdown]);
-
-  const formatCountdown = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins < 10 ? "0" : ""}${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
 
   // Stepper calculations
   const getStepStatus = (stepName) => {
@@ -348,36 +332,6 @@ export default function OrderTracking() {
                 <span className="font-bold text-[18px] text-[#855300]">{order.total?.toLocaleString("vi-VN")}đ</span>
               </div>
             </section>
-
-            {/* Reward/Points Section */}
-            {order.status !== "CANCELLED" && (
-              <section className="bg-[#f59e0b]/10 rounded-2xl p-6 border-2 border-dashed border-[#f59e0b]/40 flex flex-col items-center text-center">
-                <div className="bg-white p-4 rounded-xl shadow-md mb-4 relative">
-                  {/* QR Code Placeholder */}
-                  <div className="w-40 h-40 bg-white flex items-center justify-center overflow-hidden">
-                    <img 
-                      alt="QR Code" 
-                      className="w-full h-full opacity-90" 
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${order._id}`} 
-                    />
-                  </div>
-                  <div className="absolute -top-3 -right-3 bg-[#7c563d] text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-                    MÃ ĐƠN
-                  </div>
-                </div>
-                <p className="font-semibold text-[14px] text-[#1a1c1c] mb-1">Cho nhân viên quét để nhận điểm</p>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="material-symbols-outlined text-[#855300] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
-                  <span className="font-bold text-[#855300] text-xl">+{Math.round(order.total / 1000)} điểm</span>
-                </div>
-                {countdown > 0 && (
-                  <div className="flex items-center gap-2 px-4 py-2 bg-[#f9f9f9] rounded-full shadow-sm border border-[#d8c3ad]/30">
-                    <span className="material-symbols-outlined text-[#7c563d] text-[16px]">schedule</span>
-                    <span className="font-semibold text-[#7c563d] tabular-nums text-[14px]">{formatCountdown(countdown)}</span>
-                  </div>
-                )}
-              </section>
-            )}
           </main>
         )}
 
