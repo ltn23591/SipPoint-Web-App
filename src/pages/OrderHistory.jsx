@@ -10,6 +10,7 @@ export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
+  const [activeTab, setActiveTab] = useState("ALL");
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -152,7 +153,32 @@ export default function OrderHistory() {
           </Link>
         </header>
 
-          {isLoading ? (
+        {/* Tab Filter theo Trạng thái */}
+        <div className="flex px-4 pt-3 gap-2 overflow-x-auto no-scrollbar">
+          {[
+            { id: "ALL", label: "Tất cả" },
+            { id: "PROCESSING", label: "Đang xử lý" },
+            { id: "COMPLETED", label: "Hoàn tất" },
+            { id: "CANCELLED", label: "Đã hủy" },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all active:scale-95 ${
+                  isActive
+                    ? "bg-[#855300] text-white dark:bg-primary-container dark:text-on-primary-container shadow-sm"
+                    : "bg-zinc-100 text-zinc-600 dark:bg-surface-container-high dark:text-on-surface-variant hover:bg-zinc-200"
+                }`}
+              >
+                {tab.label}
+              </button>
+            );
+          })}
+        </div>
+
+        {isLoading ? (
           <div className="flex-1 flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#855300] dark:border-primary" />
           </div>
@@ -169,8 +195,16 @@ export default function OrderHistory() {
             </Link>
           </div>
         ) : (
-          <main className="pt-4 px-4 space-y-4 flex-1">
-            {orders.map((order) => (
+          <main className="pt-3 px-4 space-y-4 flex-1">
+            {orders
+              .filter((order) => {
+                if (activeTab === "ALL") return true;
+                if (activeTab === "PROCESSING") return ["PENDING", "CONFIRMED", "PREPARING", "READY"].includes(order.status);
+                if (activeTab === "COMPLETED") return order.status === "COMPLETED";
+                if (activeTab === "CANCELLED") return order.status === "CANCELLED";
+                return true;
+              })
+              .map((order) => (
               <div 
                 key={order._id}
                 onClick={() => navigate(ROUTE_PATH.ORDER_DETAIL.replace(":orderId", order._id))}
