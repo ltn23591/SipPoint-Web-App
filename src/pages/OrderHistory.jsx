@@ -217,13 +217,15 @@ export default function OrderHistory() {
                         {order.total?.toLocaleString("vi-VN")}đ
                       </span>
                     </div>
-                    <button
-                      onClick={(e) => handleReorder(order, e)}
-                      className="px-3 py-1.5 bg-[#855300] hover:bg-[#855300]/90 text-white dark:bg-primary-container dark:text-on-primary-container rounded-full font-bold text-[12px] flex items-center gap-1 active:scale-95 transition-all shadow-sm shrink-0"
-                    >
-                      <span className="material-symbols-outlined text-[15px]">refresh</span>
-                      Đặt lại
-                    </button>
+                    {order.status === "COMPLETED" && (
+                      <button
+                        onClick={(e) => handleReorder(order, e)}
+                        className="px-3 py-1.5 bg-[#855300] hover:bg-[#855300]/90 text-white dark:bg-primary-container dark:text-on-primary-container rounded-full font-bold text-[12px] flex items-center gap-1 active:scale-95 transition-all shadow-sm shrink-0"
+                      >
+                        <span className="material-symbols-outlined text-[15px]">refresh</span>
+                        Đặt lại
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

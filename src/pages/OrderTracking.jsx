@@ -381,16 +381,18 @@ export default function OrderTracking() {
               </div>
             </section>
 
-            {/* Reorder Action Button */}
-            <div className="pt-2">
-              <button
-                onClick={handleReorder}
-                className="w-full py-3.5 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container font-bold text-[15px] rounded-2xl shadow-md active:scale-98 transition-all flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined text-[20px]">refresh</span>
-                <span>Đặt lại đơn hàng này</span>
-              </button>
-            </div>
+            {/* Reorder Action Button - Only show when COMPLETED */}
+            {order.status === "COMPLETED" && (
+              <div className="pt-2">
+                <button
+                  onClick={handleReorder}
+                  className="w-full py-3.5 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container font-bold text-[15px] rounded-2xl shadow-md active:scale-98 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[20px]">refresh</span>
+                  <span>Đặt lại đơn hàng này</span>
+                </button>
+              </div>
+            )}
           </main>
         )}
 
