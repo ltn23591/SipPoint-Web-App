@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, Loader2, Lock, Mail, Smartphone, User } from "lucide-react";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 import { AUTH_TEXT } from "@/constants/auth";
 import { AuthCard } from "@/components/common/AuthCard";
 import { authService } from "@/services/authService";

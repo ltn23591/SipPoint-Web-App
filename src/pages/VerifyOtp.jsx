@@ -3,7 +3,7 @@ import { FaUnlock } from 'react-icons/fa';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router';
 import { ArrowLeft, Coffee, Leaf, Smile } from 'lucide-react';
-import { toast } from 'react-toastify';
+import { toast } from "sonner";
 import { authService } from '@/services/authService';
 
 export default function VerifyOtp() {

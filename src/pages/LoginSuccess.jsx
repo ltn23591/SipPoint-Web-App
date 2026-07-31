@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export default function LoginSuccess() {
   const navigate = useNavigate();

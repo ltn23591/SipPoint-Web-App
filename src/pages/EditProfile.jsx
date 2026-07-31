@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
-import { toast } from "react-toastify";
+import { toast } from "sonner";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -55,20 +55,10 @@ export default function EditProfile() {
       const url = uploadResult.secure_url || uploadResult.url;
 
       setFormData((prev) => ({ ...prev, avatar: url }));
-      toast.update(toastId, {
-        render: "Tải ảnh đại diện lên thành công!",
-        type: "success",
-        isLoading: false,
-        autoClose: 2000
-      });
+      toast.success("Tải ảnh đại diện lên thành công!", { id: toastId });
     } catch (err) {
       console.error(err);
-      toast.update(toastId, {
-        render: err.message || "Tải ảnh đại diện thất bại!",
-        type: "error",
-        isLoading: false,
-        autoClose: 3000
-      });
+      toast.error(err.message || "Tải ảnh đại diện thất bại!", { id: toastId });
     } finally {
       setIsUploading(false);
     }
@@ -77,7 +67,7 @@ export default function EditProfile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isUploading) {
-      toast.warn("Vui lòng đợi ảnh tải lên hoàn tất!");
+      toast.warning("Vui lòng đợi ảnh tải lên hoàn tất!");
       return;
     }
     setIsLoading(true);
