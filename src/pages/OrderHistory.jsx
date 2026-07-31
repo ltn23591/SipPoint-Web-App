@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
@@ -17,6 +18,53 @@ export default function OrderHistory() {
     window.addEventListener("tableNameUpdated", handleUpdate);
     return () => window.removeEventListener("tableNameUpdated", handleUpdate);
   }, []);
+
+  const handleReorder = (order, e) => {
+    if (e) e.stopPropagation();
+    if (!order || !order.items || order.items.length === 0) return;
+
+    const savedCart = localStorage.getItem("sippoint_cart");
+    const cart = savedCart ? JSON.parse(savedCart) : [];
+
+    let totalQtyAdded = 0;
+    order.items.forEach((item) => {
+      const prodId = typeof item.productId === "object" ? item.productId?._id : (item.productId || item._id);
+      if (!prodId) return;
+
+      const cartItem = {
+        productId: prodId,
+        name: item.name,
+        image: item.productId?.image || item.image || "",
+        price: item.unitPrice || item.price || 0,
+        qty: item.qty || 1,
+        variants: item.variants ? item.variants.map((v) => ({
+          variantId: v.variantId || v._id,
+          name: v.name,
+          priceAdjustment: v.priceAdjustment || 0,
+        })) : [],
+        note: item.note || "",
+        stock: item.productId?.stock || 99,
+      };
+
+      const existingIdx = cart.findIndex(
+        (c) =>
+          c.productId === cartItem.productId &&
+          JSON.stringify(c.variants) === JSON.stringify(cartItem.variants) &&
+          c.note === cartItem.note
+      );
+
+      if (existingIdx >= 0) {
+        cart[existingIdx].qty += cartItem.qty;
+      } else {
+        cart.push(cartItem);
+      }
+      totalQtyAdded += cartItem.qty;
+    });
+
+    localStorage.setItem("sippoint_cart", JSON.stringify(cart));
+    toast.success(`Đã thêm ${totalQtyAdded} sản phẩm vào giỏ hàng!`);
+    navigate(ROUTE_PATH.CART);
+  };
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -158,15 +206,24 @@ export default function OrderHistory() {
                   ))}
                 </div>
 
-                <div className="flex justify-between items-center mt-1">
+                <div className="flex justify-between items-center mt-3 pt-3 border-t border-zinc-100 dark:border-outline-variant/20">
                   <span className="text-[12px] text-zinc-400 dark:text-on-surface-variant">
                     {order.tableId?.name ? `Bàn ${order.tableId.name}` : "Mang đi"}
                   </span>
-                  <div className="text-right">
-                    <span className="text-[12px] text-zinc-400 dark:text-on-surface-variant">Tổng thanh toán: </span>
-                    <span className="font-bold text-[15px] text-[#855300] dark:text-primary ml-1">
-                      {order.total?.toLocaleString("vi-VN")}đ
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <span className="text-[11px] text-zinc-400 dark:text-on-surface-variant">Tổng: </span>
+                      <span className="font-bold text-[14px] text-[#855300] dark:text-primary">
+                        {order.total?.toLocaleString("vi-VN")}đ
+                      </span>
+                    </div>
+                    <button
+                      onClick={(e) => handleReorder(order, e)}
+                      className="px-3 py-1.5 bg-[#855300] hover:bg-[#855300]/90 text-white dark:bg-primary-container dark:text-on-primary-container rounded-full font-bold text-[12px] flex items-center gap-1 active:scale-95 transition-all shadow-sm shrink-0"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">refresh</span>
+                      Đặt lại
+                    </button>
                   </div>
                 </div>
               </div>

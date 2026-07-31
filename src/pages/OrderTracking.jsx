@@ -1,14 +1,62 @@
 import { useState, useEffect } from "react";
-import { Link, useParams, useSearchParams } from "react-router";
+import { Link, useParams, useSearchParams, useNavigate } from "react-router";
+import { toast } from "react-toastify";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 
 export default function OrderTracking() {
+  const navigate = useNavigate();
   const { orderId } = useParams();
   const [searchParams] = useSearchParams();
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const handleReorder = () => {
+    if (!order || !order.items || order.items.length === 0) return;
+
+    const savedCart = localStorage.getItem("sippoint_cart");
+    const cart = savedCart ? JSON.parse(savedCart) : [];
+
+    let totalQtyAdded = 0;
+    order.items.forEach((item) => {
+      const prodId = typeof item.productId === "object" ? item.productId?._id : (item.productId || item._id);
+      if (!prodId) return;
+
+      const cartItem = {
+        productId: prodId,
+        name: item.name,
+        image: item.productId?.image || item.image || "",
+        price: item.unitPrice || item.price || 0,
+        qty: item.qty || 1,
+        variants: item.variants ? item.variants.map((v) => ({
+          variantId: v.variantId || v._id,
+          name: v.name,
+          priceAdjustment: v.priceAdjustment || 0,
+        })) : [],
+        note: item.note || "",
+        stock: item.productId?.stock || 99,
+      };
+
+      const existingIdx = cart.findIndex(
+        (c) =>
+          c.productId === cartItem.productId &&
+          JSON.stringify(c.variants) === JSON.stringify(cartItem.variants) &&
+          c.note === cartItem.note
+      );
+
+      if (existingIdx >= 0) {
+        cart[existingIdx].qty += cartItem.qty;
+      } else {
+        cart.push(cartItem);
+      }
+      totalQtyAdded += cartItem.qty;
+    });
+
+    localStorage.setItem("sippoint_cart", JSON.stringify(cart));
+    toast.success(`Đã thêm ${totalQtyAdded} sản phẩm vào giỏ hàng!`);
+    navigate(ROUTE_PATH.CART);
+  };
 
   // Khi được SePay redirect về với ?status=success, gọi API xác nhận thanh toán
   useEffect(() => {
@@ -332,6 +380,17 @@ export default function OrderTracking() {
                 <span className="font-bold text-[18px] text-[#855300]">{order.total?.toLocaleString("vi-VN")}đ</span>
               </div>
             </section>
+
+            {/* Reorder Action Button */}
+            <div className="pt-2">
+              <button
+                onClick={handleReorder}
+                className="w-full py-3.5 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container font-bold text-[15px] rounded-2xl shadow-md active:scale-98 transition-all flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-[20px]">refresh</span>
+                <span>Đặt lại đơn hàng này</span>
+              </button>
+            </div>
           </main>
         )}
 
