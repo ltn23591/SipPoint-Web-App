@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
+import { OrderStatusBadge } from "@/components/common/OrderStatusBadge";
 
 export default function OrderHistory() {
   const navigate = useNavigate();
@@ -225,9 +226,7 @@ export default function OrderHistory() {
                       })}
                     </p>
                   </div>
-                  <span className={`text-[11px] px-2.5 py-1 rounded-full font-semibold ${getStatusBadgeClass(order.status)}`}>
-                    {getStatusText(order.status)}
-                  </span>
+                  <OrderStatusBadge status={order.status} />
                 </div>
 
                 {/* Items preview list */}

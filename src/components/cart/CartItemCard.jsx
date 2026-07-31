@@ -1,4 +1,5 @@
 import React from "react";
+import { QuantityStepper } from "@/components/common/QuantityStepper";
 import { Link } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 
@@ -55,23 +56,13 @@ export default function CartItemCard({ item, index, onUpdateQuantity, onRemove }
           </span>
 
           {/* Quantity Stepper */}
-          <div className="flex items-center bg-zinc-100 dark:bg-surface-container-high rounded-full h-8 px-1">
-            <button
-              onClick={() => onUpdateQuantity(index, -1)}
-              className="w-6 h-6 flex items-center justify-center text-[#855300] dark:text-primary active:scale-90 transition-transform"
-            >
-              <span className="material-symbols-outlined text-[16px]">remove</span>
-            </button>
-            <span className="w-6 text-center font-bold text-[12px] text-zinc-800 dark:text-on-surface">
-              {item.qty}
-            </span>
-            <button
-              onClick={() => onUpdateQuantity(index, 1)}
-              className="w-6 h-6 flex items-center justify-center text-[#855300] dark:text-primary active:scale-90 transition-transform"
-            >
-              <span className="material-symbols-outlined text-[16px]">add</span>
-            </button>
-          </div>
+          <QuantityStepper
+            size="sm"
+            quantity={item.qty}
+            maxStock={item.stock || 99}
+            onDecrease={() => onUpdateQuantity(index, -1)}
+            onIncrease={() => onUpdateQuantity(index, 1)}
+          />
         </div>
       </div>
     </div>

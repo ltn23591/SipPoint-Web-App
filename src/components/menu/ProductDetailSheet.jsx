@@ -1,4 +1,5 @@
 import React from "react";
+import { QuantityStepper } from "@/components/common/QuantityStepper";
 
 export default function ProductDetailSheet({
   isOpen,
@@ -142,28 +143,13 @@ export default function ProductDetailSheet({
 
             {/* Sticky Bottom Action */}
             <div className="absolute bottom-0 left-0 w-full bg-white dark:bg-surface p-5 flex items-center gap-4 shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] border-t border-zinc-100 dark:border-surface-container-high z-[90]">
-              {/* Stepper */}
-              <div className="flex items-center bg-zinc-100 dark:bg-surface-container rounded-full h-12 px-2">
-                <button
-                  onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                  disabled={quantity <= 1}
-                  className="w-8 h-8 flex items-center justify-center text-[#855300] dark:text-primary-container active:scale-90 disabled:opacity-30 transition-transform"
-                >
-                  <span className="material-symbols-outlined text-[20px]">remove</span>
-                </button>
-                <span className="w-8 text-center font-bold text-[14px] text-zinc-800 dark:text-on-surface">
-                  {quantity}
-                </span>
-                <button
-                  onClick={() => setQuantity((q) => q + 1)}
-                  disabled={quantity >= (product.stock || 0)}
-                  className={`w-8 h-8 flex items-center justify-center text-[#855300] dark:text-primary-container active:scale-90 transition-transform ${
-                    quantity >= (product.stock || 0) ? "opacity-30 cursor-not-allowed" : ""
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[20px]">add</span>
-                </button>
-              </div>
+              {/* Stepper Component */}
+              <QuantityStepper
+                quantity={quantity}
+                maxStock={product.stock || 0}
+                onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
+                onIncrease={() => setQuantity((q) => q + 1)}
+              />
 
               <button
                 onClick={onAddToCart}
