@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
+import CartItemCard from "@/features/cart/components/CartItemCard";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -329,29 +330,13 @@ export default function Cart() {
                 <h2 className="font-semibold text-[20px] text-[#1a1c1c] mb-2">Sản phẩm đã chọn</h2>
 
                 {cartItems.map((item, index) => (
-                  <div key={index} className="bg-white dark:bg-surface-container-high p-4 rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none border border-zinc-100 dark:border-outline-variant/10 flex gap-4 items-center">
-                    <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-[#e8e8e8]">
-                      <img className="w-full h-full object-cover" src={item.image || "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=200&auto=format&fit=crop"} alt={item.name} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-[14px] text-[#1a1c1c] dark:text-on-surface truncate">{item.name}</h3>
-                      <p className="text-[12px] text-[#534434] dark:text-on-surface-variant">
-                        {[...(item.variants?.map(v => v.name) || [])].join(", ") || "Mặc định"}
-                      </p>
-                      <p className="text-[#855300] font-bold mt-1 text-[14px]">
-                        {((item.price + (item.variantPriceSum || 0)) * item.qty).toLocaleString("vi-VN")}đ
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 bg-[#eeeeee] dark:bg-surface-container rounded-full py-1 px-1">
-                      <button onClick={() => updateQuantity(index, -1)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow-sm active:scale-90 transition-transform">
-                        <span className="material-symbols-outlined text-sm">remove</span>
-                      </button>
-                      <span className="font-bold text-[14px] px-2">{item.qty}</span>
-                      <button onClick={() => updateQuantity(index, 1)} className="w-8 h-8 flex items-center justify-center rounded-full bg-[#855300] text-white shadow-sm active:scale-90 transition-transform">
-                        <span className="material-symbols-outlined text-sm">add</span>
-                      </button>
-                    </div>
-                  </div>
+                  <CartItemCard
+                    key={index}
+                    item={item}
+                    index={index}
+                    onUpdateQuantity={updateQuantity}
+                    onRemove={(i) => setCartItems((prev) => prev.filter((_, idx) => idx !== i))}
+                  />
                 ))}
               </section>
 

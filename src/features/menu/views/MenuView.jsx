@@ -5,7 +5,8 @@ import { menuService } from "@/services/menuService";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import NotificationSheet from "@/components/common/NotificationSheet";
-import ProductDetailSheet from "@/components/menu/ProductDetailSheet";
+import ProductDetailSheet from "@/features/menu/components/ProductDetailSheet";
+import { HeaderBar } from "@/components/layout/HeaderBar";
 
 export default function Menu() {
   const [categories, setCategories] = useState([]);
@@ -189,39 +190,13 @@ export default function Menu() {
           }
         `}} />
 
-        {/* Top AppBar */}
-        <header className="sticky top-0 left-0 w-full z-10 flex justify-between items-center px-4 h-16 bg-white/95 dark:bg-surface/90 backdrop-blur-md shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none dark:border-b dark:border-white/5">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#855300] dark:text-brand-cream text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>
-              coffee
-            </span>
-            <span className="font-bold text-[18px] leading-none text-[#855300] dark:text-brand-cream tracking-wide">
-              SipPoint
-            </span>
-          </div>
-          {/* Table Chip */}
-          <div className="flex items-center gap-1.5 px-3 py-1 bg-[#ffcdae]/50 dark:bg-secondary-container text-[#7a553c] dark:text-on-secondary-container rounded-full shadow-sm">
-            <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
-            <span className="font-semibold text-[13px]">{tableName ? `Bàn ${tableName}` : "Mang đi"}</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <button
-              onClick={() => setIsNotiOpen(true)}
-              className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
-              title="Thông báo"
-            >
-              <span className="material-symbols-outlined text-[#534434] dark:text-on-surface">notifications</span>
-            </button>
-            <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200">
-              <span className="material-symbols-outlined text-[#534434] dark:text-on-surface">shopping_bag</span>
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center font-bold">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
-          </div>
-        </header>
+        {/* Top AppBar Component */}
+        <HeaderBar
+          title="SipPoint"
+          tableName={tableName}
+          cartCount={cartCount}
+          onOpenCart={() => window.location.href = ROUTE_PATH.CART}
+        />
 
         <main className="pt-4 px-4 flex-1">
           {/* Search & Filter Section */}

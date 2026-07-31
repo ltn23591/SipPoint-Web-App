@@ -2,24 +2,26 @@ import { createBrowserRouter } from "react-router";
 import { AppLayout } from "@/components/common/AppLayout";
 import { ROUTE_PATH } from "@/constants/routePaths";
 
-import Login from "@/pages/Login";    // Import trang Login
-import Register from "@/pages/Register"; // Import trang Register
-import ForgotPassword from "@/pages/ForgotPassword"; // Import trang ForgotPassword
-import LoginSuccess from "@/pages/LoginSuccess"; // Import trang LoginSuccess
-import VerifyOtp from "@/pages/VerifyOtp"; // Import trang VerifyOtp
-import Welcome from "@/pages/Welcome"; // Import trang Welcome
-import Menu from "@/pages/Menu"; // Import trang Menu
-import RewardPoints from "@/pages/RewardPoints"; // Import trang RewardPoints
-import Account from "@/pages/Account";
-import EditProfile from "@/pages/EditProfile";
-import MyVouchers from "@/pages/MyVouchers";
-import OrderTracking from "@/pages/OrderTracking";
-import OrderHistory from "@/pages/OrderHistory";
-import LuckyWheel from "@/pages/LuckyWheel";
-import Cart from "@/pages/Cart";
-import NotFound from "@/pages/NotFound";
+import LoginView from "@/features/auth/views/LoginView";
+import RegisterView from "@/features/auth/views/RegisterView";
+import ForgotPasswordView from "@/features/auth/views/ForgotPasswordView";
+import LoginSuccessView from "@/features/auth/views/LoginSuccessView";
+import VerifyOtpView from "@/features/auth/views/VerifyOtpView";
 
+import WelcomeView from "@/pages/WelcomeView";
+import NotFoundView from "@/pages/NotFoundView";
 
+import MenuView from "@/features/menu/views/MenuView";
+import CartView from "@/features/cart/views/CartView";
+import OrderHistoryView from "@/features/orders/views/OrderHistoryView";
+import OrderTrackingView from "@/features/orders/views/OrderTrackingView";
+
+import RewardPointsView from "@/features/rewards/views/RewardPointsView";
+import LuckyWheelView from "@/features/rewards/views/LuckyWheelView";
+import MyVouchersView from "@/features/rewards/views/MyVouchersView";
+
+import AccountView from "@/features/profile/views/AccountView";
+import EditProfileView from "@/features/profile/views/EditProfileView";
 
 export const router = createBrowserRouter([
   {
@@ -27,77 +29,76 @@ export const router = createBrowserRouter([
     children: [
       {
         path: ROUTE_PATH.HOME,
-        element: <Welcome />
+        element: <WelcomeView />
       },
       { 
         path: ROUTE_PATH.WELCOME, 
-        element: <Welcome /> 
+        element: <WelcomeView /> 
       },
       { 
         path: ROUTE_PATH.LOGIN, 
-        element: <Login /> 
+        element: <LoginView /> 
       },
       { 
         path: ROUTE_PATH.FORGOT_PASSWORD, 
-        element: <ForgotPassword /> 
+        element: <ForgotPasswordView /> 
       },
       { 
         path: "/login-success", 
-        element: <LoginSuccess /> 
+        element: <LoginSuccessView /> 
       },
       { 
         path: ROUTE_PATH.REGISTER,
-        element: <Register /> 
+        element: <RegisterView /> 
       },
       { 
         path: ROUTE_PATH.VERIFY_OTP, 
-        element: <VerifyOtp /> 
+        element: <VerifyOtpView /> 
       },
       { 
         path: ROUTE_PATH.MENU, 
-        element: <Menu /> 
+        element: <MenuView /> 
       },
       { 
         path: ROUTE_PATH.NOT_FOUND, 
-        element: <NotFound /> 
+        element: <NotFoundView /> 
       },
       {
         path: ROUTE_PATH.REWARDS,
-        element: <RewardPoints />
+        element: <RewardPointsView />
       },
       {
         path: ROUTE_PATH.ACCOUNT,
-        element: <Account />
+        element: <AccountView />
       },
       {
         path: ROUTE_PATH.EDIT_PROFILE,
-        element: <EditProfile />
+        element: <EditProfileView />
       },
       {
         path: ROUTE_PATH.VOUCHERS,
-        element: <MyVouchers />
+        element: <MyVouchersView />
       },
       {
         path: ROUTE_PATH.ORDERS,
-        element: <OrderHistory />
+        element: <OrderHistoryView />
       },
       {
         path: ROUTE_PATH.ORDER_DETAIL,
-        element: <OrderTracking />
+        element: <OrderTrackingView />
       },
       {
         path: ROUTE_PATH.ORDER_TRACKING,
-        element: <OrderTracking />
+        element: <OrderTrackingView />
       },
       {
         path: ROUTE_PATH.LUCKY_WHEEL,
-        element: <LuckyWheel />
+        element: <LuckyWheelView />
       },
       {
         path: ROUTE_PATH.CART,
-        element: <Cart />
+        element: <CartView />
       },
     ]
   }
 ]);
-
