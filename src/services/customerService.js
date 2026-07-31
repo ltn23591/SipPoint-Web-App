@@ -192,6 +192,19 @@ export const customerService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Lỗi xác nhận thanh toán");
     }
+  },
+
+  validateCart: async (items) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/products/validate-cart", { items });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      return { valid: true, validItems: items, invalidItems: [] };
+    } catch (error) {
+      console.warn("Lỗi kiểm tra giỏ hàng:", error);
+      return { valid: true, validItems: items, invalidItems: [] };
+    }
   }
 };
 

@@ -22,6 +22,32 @@ export default function Cart() {
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("CASH"); // CASH or TRANSFER
+  const [removedAlerts, setRemovedAlerts] = useState([]);
+
+  const validateCartItems = async (items) => {
+    if (!items || items.length === 0) return true;
+    try {
+      const itemsPayload = items.map(item => ({
+        productId: item.productId,
+        name: item.name,
+        qty: item.qty
+      }));
+      const res = await customerService.validateCart(itemsPayload);
+      if (res && res.invalidItems && res.invalidItems.length > 0) {
+        const invalidProductIds = new Set(res.invalidItems.map(i => i.productId));
+        const messages = res.invalidItems.map(i => i.message || `Món "${i.name}" hiện đã ngừng bán.`);
+        
+        const updatedCart = items.filter(i => !invalidProductIds.has(i.productId));
+        setCartItems(updatedCart);
+        localStorage.setItem("sippoint_cart", JSON.stringify(updatedCart));
+        setRemovedAlerts(messages);
+        return false;
+      }
+    } catch (e) {
+      console.warn("Lỗi kiểm tra giỏ hàng:", e);
+    }
+    return true;
+  };
 
   useEffect(() => {
     // Check login status
@@ -29,6 +55,19 @@ export default function Cart() {
     setTimeout(() => {
       setIsLoggedIn(!!token);
     }, 0);
+
+    // Validate cart on mount
+    const savedCart = localStorage.getItem("sippoint_cart");
+    if (savedCart) {
+      try {
+        const parsed = JSON.parse(savedCart);
+        if (parsed.length > 0) {
+          validateCartItems(parsed);
+        }
+      } catch (e) {
+        // ignore parse error
+      }
+    }
   }, []);
 
   // Persist cart to localStorage whenever it changes
@@ -92,15 +131,22 @@ export default function Cart() {
   const handleCheckout = async () => {
     if (cartItems.length === 0) return;
 
-    const itemsPayload = cartItems.map(item => ({
-      productId: item.productId,
-      qty: item.qty,
-      variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
-      note: item.note || ''
-    }));
-
     setIsSubmitting(true);
     try {
+      // Re-validate cart items right before checkout
+      const isValid = await validateCartItems(cartItems);
+      if (!isValid) {
+        setIsSubmitting(false);
+        return;
+      }
+
+      const itemsPayload = cartItems.map(item => ({
+        productId: item.productId,
+        qty: item.qty,
+        variants: item.variants ? item.variants.map(v => ({ variantId: v.variantId })) : [],
+        note: item.note || ''
+      }));
+
       const tableId = localStorage.getItem("tableId");
       
       const payload = {
@@ -200,6 +246,21 @@ export default function Cart() {
         ) : (
           <>
             <main className="pt-20 pb-40 px-5 flex-1">
+              {/* Removed Items Alert Banner */}
+              {removedAlerts.length > 0 && (
+                <div className="mb-4 bg-red-500/10 border border-red-500/30 rounded-xl p-4 flex flex-col gap-2 transition-all animate-fadeIn">
+                  <div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-bold text-[14px]">
+                    <span className="material-symbols-outlined text-red-600">error</span>
+                    <span>Cập nhật giỏ hàng</span>
+                  </div>
+                  {removedAlerts.map((msg, idx) => (
+                    <p key={idx} className="text-[13px] text-red-600 dark:text-red-300 font-medium">
+                      • {msg} Hệ thống đã tự động loại bỏ món này khỏi giỏ hàng.
+                    </p>
+                  ))}
+                </div>
+              )}
+
               {/* Reward Banner */}
               {!isLoggedIn && (
                 <div className="mb-6 bg-[#f59e0b]/20 border border-[#f59e0b]/30 rounded-xl p-4 flex items-center gap-3">
