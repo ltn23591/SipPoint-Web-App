@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { menuService } from "@/services/menuService";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import BottomNavBar from "@/components/layout/BottomNavBar";
+import NotificationSheet from "@/components/common/NotificationSheet";
 
 export default function Menu() {
   const [categories, setCategories] = useState([]);
@@ -12,6 +13,7 @@ export default function Menu() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
+  const [isNotiOpen, setIsNotiOpen] = useState(false);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -201,14 +203,23 @@ export default function Menu() {
             <span className="material-symbols-outlined text-[18px]">table_restaurant</span>
             <span className="font-semibold text-[13px]">{tableName ? `Bàn ${tableName}` : "Mang đi"}</span>
           </div>
-          <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200">
-            <span className="material-symbols-outlined text-[#534434] dark:text-on-surface">shopping_bag</span>
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center font-bold">
-                {cartCount}
-              </span>
-            )}
-          </Link>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsNotiOpen(true)}
+              className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
+              title="Thông báo"
+            >
+              <span className="material-symbols-outlined text-[#534434] dark:text-on-surface">notifications</span>
+            </button>
+            <Link to={ROUTE_PATH.CART} className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-zinc-100 dark:hover:bg-surface-container-high transition-colors active:scale-95 duration-200">
+              <span className="material-symbols-outlined text-[#534434] dark:text-on-surface">shopping_bag</span>
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full text-[10px] w-5 h-5 flex items-center justify-center font-bold">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+          </div>
         </header>
 
         <main className="pt-4 px-4 flex-1">
@@ -510,6 +521,8 @@ export default function Menu() {
             </div>
           </>
         )}
+        {/* Notification Sheet */}
+        <NotificationSheet open={isNotiOpen} onClose={() => setIsNotiOpen(false)} />
       </div>
     </div>
   );

@@ -205,6 +205,22 @@ export const customerService = {
       console.warn("Lỗi kiểm tra giỏ hàng:", error);
       return { valid: true, validItems: items, invalidItems: [] };
     }
+  },
+
+  getNotifications: async () => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/notification/search", {
+        status: "active",
+        pageSize: 20,
+      });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      return [];
+    } catch (error) {
+      console.warn("Lỗi lấy thông báo:", error);
+      return [];
+    }
   }
 };
 

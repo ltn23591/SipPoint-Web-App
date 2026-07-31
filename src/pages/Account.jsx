@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
+import NotificationSheet from "@/components/common/NotificationSheet";
 
 export default function Account() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
+  const [isNotiOpen, setIsNotiOpen] = useState(false);
   
   // State quản lý trạng thái của nút Dark Mode
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -150,26 +152,19 @@ export default function Account() {
                 </div>
               </div>
 
-              {/* Notification Toggle */}
-              <div className="flex items-center justify-between p-4 border-b border-[#d8c3ad]/20 dark:border-outline-variant/10 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors">
+              {/* Notification Row */}
+              <div
+                onClick={() => setIsNotiOpen(true)}
+                className="flex items-center justify-between p-4 border-b border-[#d8c3ad]/20 dark:border-outline-variant/10 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright"
+              >
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-[#ffcdae] dark:bg-primary-container/20 flex items-center justify-center text-[#7a553c] dark:text-primary-container">
                     <span className="material-symbols-outlined">notifications</span>
                   </div>
                   <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] dark:text-on-surface">Thông báo</span>
                 </div>
-                <div className="relative inline-block w-12 mr-2 align-middle select-none">
-                  <input 
-                    defaultChecked 
-                    className="peer sr-only" 
-                    id="noti-toggle" 
-                    type="checkbox" 
-                  />
-                  <label 
-                    className="block w-12 h-6 rounded-full bg-[#e8e8e8] dark:bg-surface-container cursor-pointer transition-colors duration-300 peer-checked:bg-[#f59e0b] dark:peer-checked:bg-[#f59e0b]" 
-                    htmlFor="noti-toggle"
-                  ></label>
-                  <span className="absolute left-0.5 top-0.5 bg-white w-5 h-5 rounded-full transition-transform duration-300 peer-checked:translate-x-6 shadow-sm border border-zinc-200 dark:border-zinc-700 pointer-events-none"></span>
+                <div className="flex items-center gap-2 text-[#534434] dark:text-on-surface-variant">
+                  <span className="material-symbols-outlined text-[20px]">chevron_right</span>
                 </div>
               </div>
 
@@ -226,6 +221,9 @@ export default function Account() {
 
         {/* Bottom Navigation Bar */}
         <BottomNavBar activeTab="ACCOUNT" />
+
+        {/* Notification Bottom Sheet */}
+        <NotificationSheet open={isNotiOpen} onClose={() => setIsNotiOpen(false)} />
       </div>
     </div>
   );
