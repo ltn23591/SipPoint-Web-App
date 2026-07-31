@@ -10,6 +10,7 @@ export default function RewardPoints() {
   const containerRef = useRef(null);
   const [customerProfile, setCustomerProfile] = useState(null);
   const [pointHistories, setPointHistories] = useState([]);
+  const [banners, setBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRedeemOpen, setIsRedeemOpen] = useState(false);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
@@ -25,12 +26,14 @@ export default function RewardPoints() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const [profile, history] = await Promise.all([
+      const [profile, history, bannerList] = await Promise.all([
         authService.getMe(),
-        customerService.getMyPointHistory()
+        customerService.getMyPointHistory(),
+        customerService.getBanners(),
       ]);
       setCustomerProfile(profile);
       setPointHistories(history);
+      setBanners(bannerList || []);
     } catch (error) {
       console.error("Lỗi tải dữ liệu điểm:", error);
     } finally {
@@ -173,12 +176,35 @@ export default function RewardPoints() {
           </section>
 
           {/* Dynamic Offer Banner */}
-          <section className="relative rounded-xl overflow-hidden h-28 flex items-center">
-            <img className="absolute inset-0 w-full h-full object-cover" alt="Banner" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAImyKbnfWPMenv7rz05P77FNtDyCFootwyRPMCIm4pAZx_9ud_-d_WCtJlG9au6jc4lvifVd9llc_oPNXXs4jgYCfiusK95P1ESKWOFVlawqNniEcrNS2fhQu7t4IlAW35b66RqKM33enJuZt1YmZHsccZtUd0nFZnkmYgFw_02V2YjwXXjLCzNfrTjZn-KVB8JBcPhG_tYa-20E6aSAbJUDXh4sZtAU-uTsakDY_5Dwn8Fv8QRNasN0qGvQ8X5D9wuDZe3NkZ" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#ffcdae]/90 via-[#ffcdae]/40 to-transparent"></div>
-            <div className="relative z-10 px-6 max-w-[60%]">
-              <p className="font-semibold text-[20px] leading-[28px] text-[#7a553c] dark:text-on-surface leading-tight">Nhân đôi điểm thưởng tuần này!</p>
-            </div>
+          <section className="space-y-3">
+            {(banners.length > 0
+              ? banners
+              : [
+                  {
+                    _id: "default_b",
+                    title: "Nhân đôi điểm thưởng tuần này!",
+                    image:
+                      "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?q=80&w=800&auto=format&fit=crop",
+                  },
+                ]
+            ).map((b) => (
+              <div
+                key={b._id}
+                className="relative rounded-xl overflow-hidden h-28 flex items-center shadow-sm border border-zinc-100 dark:border-white/5 cursor-pointer active:scale-[0.99] transition-transform"
+                onClick={() => {
+                  if (b.link) {
+                    if (b.link.startsWith("http")) window.open(b.link, "_blank");
+                    else window.location.href = b.link;
+                  }
+                }}
+              >
+                <img className="absolute inset-0 w-full h-full object-cover" alt={b.title} src={b.image} />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent"></div>
+                <div className="relative z-10 px-5 max-w-[80%] text-white">
+                  <p className="font-bold text-[17px] leading-snug drop-shadow-md">{b.title}</p>
+                </div>
+              </div>
+            ))}
           </section>
 
           {/* Transaction List */}

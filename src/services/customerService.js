@@ -302,6 +302,19 @@ export const customerService = {
       console.warn("Lỗi xác nhận thanh toán:", error);
       return null;
     }
+  },
+
+  getBanners: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/banners/public");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      return [];
+    } catch (error) {
+      console.warn("Lỗi lấy danh sách banner:", error);
+      return [];
+    }
   }
 };
 
