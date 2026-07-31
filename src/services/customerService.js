@@ -250,6 +250,32 @@ export const customerService = {
       console.warn("Lỗi lấy cấu hình cửa hàng:", error);
       return null;
     }
+  },
+
+  getRedeemableVouchers: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/vouchers/redeemable");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      return [];
+    } catch (error) {
+      console.warn("Lỗi lấy danh sách voucher đổi điểm:", error);
+      return [];
+    }
+  },
+
+  redeemVoucher: async (voucherId) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, `/vouchers/${voucherId}/redeem`);
+      if (response && response.data?.success) {
+        return response.data;
+      }
+      throw new Error(response?.data?.message || "Đổi quà thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Đổi quà thất bại");
+    }
   }
 };
 

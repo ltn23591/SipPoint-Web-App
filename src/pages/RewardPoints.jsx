@@ -4,12 +4,14 @@ import { ROUTE_PATH } from "@/constants/routePaths";
 import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
+import RedeemGiftsSheet from "@/components/common/RedeemGiftsSheet";
 
 export default function RewardPoints() {
   const containerRef = useRef(null);
   const [customerProfile, setCustomerProfile] = useState(null);
   const [pointHistories, setPointHistories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRedeemOpen, setIsRedeemOpen] = useState(false);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
 
   useEffect(() => {
@@ -20,22 +22,23 @@ export default function RewardPoints() {
     return () => window.removeEventListener("tableNameUpdated", handleUpdate);
   }, []);
 
+  const fetchData = async () => {
+    try {
+      setIsLoading(true);
+      const [profile, history] = await Promise.all([
+        authService.getMe(),
+        customerService.getMyPointHistory()
+      ]);
+      setCustomerProfile(profile);
+      setPointHistories(history);
+    } catch (error) {
+      console.error("Lỗi tải dữ liệu điểm:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setIsLoading(true);
-        const [profile, history] = await Promise.all([
-          authService.getMe(),
-          customerService.getMyPointHistory()
-        ]);
-        setCustomerProfile(profile);
-        setPointHistories(history);
-      } catch (error) {
-        console.error("Lỗi tải dữ liệu điểm:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
@@ -148,7 +151,10 @@ export default function RewardPoints() {
 
           {/* Quick Actions: Asymmetric Bento Grid */}
           <section className="grid grid-cols-2 gap-[16px]">
-            <div className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-4 flex flex-col justify-between h-32 border border-[#d8c3ad]/10 dark:border-outline-variant/10">
+            <div
+              onClick={() => setIsRedeemOpen(true)}
+              className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-4 flex flex-col justify-between h-32 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest"
+            >
               <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-[#ffddb8]/30 dark:bg-secondary-container/30 shrink-0">
                 <span className="material-symbols-outlined text-[#855300] dark:text-primary-container">card_giftcard</span>
               </div>
@@ -216,6 +222,14 @@ export default function RewardPoints() {
 
         {/* Bottom Navigation Bar */}
         <BottomNavBar activeTab="REWARDS" />
+
+        {/* Redeem Gifts Bottom Sheet */}
+        <RedeemGiftsSheet
+          open={isRedeemOpen}
+          onClose={() => setIsRedeemOpen(false)}
+          currentPoints={customerProfile?.currentPoints || 0}
+          onRedeemSuccess={fetchData}
+        />
       </div>
     </div>
   );
