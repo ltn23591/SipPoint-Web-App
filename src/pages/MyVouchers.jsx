@@ -142,7 +142,17 @@ export default function MyVouchers() {
                       <span className={`font-semibold text-[12px] ${v.isUsed ? "text-[#867461] dark:text-on-surface-variant font-normal" : "text-[#ba1a1a] dark:text-error"}`}>
                         {v.isUsed ? "Đã sử dụng" : `HSD: ${new Date(v.expiryDate).toLocaleDateString("vi-VN")}`}
                       </span>
-                      <button disabled={v.isUsed} className={`px-4 py-1.5 rounded-full font-semibold text-[12px] shadow-md active:scale-95 transition-transform ${v.isUsed ? "bg-[#e2e2e2] dark:bg-surface-container text-[#534434] dark:text-on-surface-variant cursor-not-allowed shadow-none" : "bg-[#f59e0b] dark:bg-primary-container text-[#613b00] dark:text-on-primary-container"}`}>
+                      <button
+                        disabled={v.isUsed}
+                        onClick={() => {
+                          const codeToUse = v.voucherId?.code || v.code;
+                          if (codeToUse) {
+                            localStorage.setItem("applied_voucher_code", codeToUse);
+                          }
+                          window.location.href = ROUTE_PATH.CART;
+                        }}
+                        className={`px-4 py-1.5 rounded-full font-semibold text-[12px] shadow-md active:scale-95 transition-transform ${v.isUsed ? "bg-[#e2e2e2] dark:bg-surface-container text-[#534434] dark:text-on-surface-variant cursor-not-allowed shadow-none" : "bg-[#f59e0b] dark:bg-primary-container text-[#613b00] dark:text-on-primary-container"}`}
+                      >
                         {v.isUsed ? "Đã dùng" : "Dùng ngay"}
                       </button>
                     </div>

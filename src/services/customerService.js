@@ -221,6 +221,22 @@ export const customerService = {
       console.warn("Lỗi lấy thông báo:", error);
       return [];
     }
+  },
+
+  validateVoucher: async (code, orderValue) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/vouchers/validate", {
+        code,
+        orderValue,
+      });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Mã giảm giá không hợp lệ");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Mã giảm giá không hợp lệ");
+    }
   }
 };
 

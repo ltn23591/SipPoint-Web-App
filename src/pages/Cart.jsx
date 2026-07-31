@@ -18,8 +18,9 @@ export default function Cart() {
     return [];
   });
   const [voucherCode, setVoucherCode] = useState("");
-  const voucherDiscount = 0;
+  const [appliedVoucher, setAppliedVoucher] = useState(null);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
+  const [voucherError, setVoucherError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("CASH"); // CASH or TRANSFER
   const [removedAlerts, setRemovedAlerts] = useState([]);
@@ -56,6 +57,13 @@ export default function Cart() {
       setIsLoggedIn(!!token);
     }, 0);
 
+    // Check saved voucher from MyVouchers page
+    const savedVoucherCode = localStorage.getItem("applied_voucher_code");
+    if (savedVoucherCode) {
+      setVoucherCode(savedVoucherCode);
+      localStorage.removeItem("applied_voucher_code");
+    }
+
     // Validate cart on mount
     const savedCart = localStorage.getItem("sippoint_cart");
     if (savedCart) {
@@ -70,6 +78,19 @@ export default function Cart() {
     }
   }, []);
 
+  // Auto re-validate applied voucher when subtotal changes
+  useEffect(() => {
+    if (appliedVoucher && subtotal > 0) {
+      customerService
+        .validateVoucher(appliedVoucher.code, subtotal)
+        .then((res) => setAppliedVoucher(res))
+        .catch((err) => {
+          setAppliedVoucher(null);
+          setVoucherError(err.message || "Đơn hàng chưa đủ điều kiện dùng mã");
+        });
+    }
+  }, [subtotal]);
+
   // Persist cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("sippoint_cart", JSON.stringify(cartItems));
@@ -83,7 +104,6 @@ export default function Cart() {
       const newQty = itemToUpdate.qty + delta;
       
       if (delta > 0) {
-        // Calculate total quantity of this product in cart (including different variants)
         const currentTotalQty = prev
           .filter(item => item.productId === itemToUpdate.productId)
           .reduce((sum, item) => sum + item.qty, 0);
@@ -116,16 +136,30 @@ export default function Cart() {
     return sum + itemPrice * item.qty;
   }, 0);
 
-  const shippingFee = 0; // Free for dine-in
-  const total = subtotal - voucherDiscount + shippingFee;
+  const voucherDiscount = appliedVoucher ? (appliedVoucher.discountAmount || 0) : 0;
+  const shippingFee = 0;
+  const total = Math.max(0, subtotal - voucherDiscount + shippingFee);
 
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) return;
     setIsApplyingVoucher(true);
-    // TODO: Call voucher validation API
-    setTimeout(() => {
+    setVoucherError("");
+    try {
+      const res = await customerService.validateVoucher(voucherCode.trim().toUpperCase(), subtotal);
+      setAppliedVoucher(res);
+      setVoucherError("");
+    } catch (error) {
+      setAppliedVoucher(null);
+      setVoucherError(error.message || "Mã giảm giá không hợp lệ");
+    } finally {
       setIsApplyingVoucher(false);
-    }, 500);
+    }
+  };
+
+  const handleRemoveVoucher = () => {
+    setAppliedVoucher(null);
+    setVoucherCode("");
+    setVoucherError("");
   };
 
   const handleCheckout = async () => {
@@ -308,26 +342,60 @@ export default function Cart() {
 
               {/* Voucher Field */}
               <section className="mb-6">
-                <h2 className="font-semibold text-[20px] text-[#1a1c1c] mb-3">Mã giảm giá</h2>
-                <div className="flex gap-2">
-                  <div className="relative flex-1">
-                    <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#534434]">confirmation_number</span>
-                    <input
-                      className="w-full rounded-xl py-3 pl-10 pr-4 text-[14px] bg-[#ffcdae]/30 dark:bg-surface-container dark:text-on-surface placeholder:text-[#534434]/60 dark:placeholder:text-on-surface-variant focus:ring-2 focus:ring-[#855300]/20 dark:focus:ring-primary-container outline-none"
-                      placeholder="Nhập mã khuyến mãi"
-                      type="text"
-                      value={voucherCode}
-                      onChange={(e) => setVoucherCode(e.target.value)}
-                    />
+                <h2 className="font-semibold text-[18px] text-[#1a1c1c] dark:text-on-surface mb-2">Mã giảm giá</h2>
+                
+                {appliedVoucher ? (
+                  <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3.5 flex items-center justify-between">
+                    <div className="flex items-center gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-600 text-[22px]">verified</span>
+                      <div>
+                        <p className="font-bold text-[14px] text-emerald-800 dark:text-emerald-300">
+                          {appliedVoucher.code}
+                        </p>
+                        <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-medium">
+                          {appliedVoucher.title || `Giảm ${appliedVoucher.discountAmount?.toLocaleString('vi-VN')}đ`}
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleRemoveVoucher}
+                      className="text-xs text-red-600 dark:text-red-400 font-bold px-3 py-1 bg-white dark:bg-surface-container rounded-full border border-red-200 dark:border-red-800 shadow-sm active:scale-95 transition-transform"
+                    >
+                      Bỏ mã
+                    </button>
                   </div>
-                  <button
-                    onClick={handleApplyVoucher}
-                    disabled={isApplyingVoucher}
-                    className="bg-[#7c563d] text-white px-6 rounded-xl font-semibold text-[14px] active:scale-95 transition-transform disabled:opacity-50"
-                  >
-                    {isApplyingVoucher ? "..." : "Áp dụng"}
-                  </button>
-                </div>
+                ) : (
+                  <div className="flex flex-col gap-1.5">
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[#534434] dark:text-on-surface-variant">confirmation_number</span>
+                        <input
+                          className="w-full rounded-xl py-3 pl-10 pr-4 text-[14px] bg-[#ffcdae]/30 dark:bg-surface-container dark:text-on-surface placeholder:text-[#534434]/60 dark:placeholder:text-on-surface-variant focus:ring-2 focus:ring-[#855300]/20 dark:focus:ring-primary-container outline-none uppercase font-semibold"
+                          placeholder="Nhập mã khuyến mãi"
+                          type="text"
+                          value={voucherCode}
+                          onChange={(e) => {
+                            setVoucherCode(e.target.value);
+                            if (voucherError) setVoucherError("");
+                          }}
+                        />
+                      </div>
+                      <button
+                        onClick={handleApplyVoucher}
+                        disabled={isApplyingVoucher || !voucherCode.trim()}
+                        className="bg-[#7c563d] dark:bg-primary-container text-white dark:text-on-primary-container px-6 rounded-xl font-semibold text-[14px] active:scale-95 transition-transform disabled:opacity-50"
+                      >
+                        {isApplyingVoucher ? "..." : "Áp dụng"}
+                      </button>
+                    </div>
+                    {voucherError && (
+                      <p className="text-xs text-red-600 dark:text-red-400 font-medium pl-1 flex items-center gap-1">
+                        <span className="material-symbols-outlined text-[14px]">error</span>
+                        {voucherError}
+                      </p>
+                    )}
+                  </div>
+                )}
               </section>
 
               {/* Order Summary */}
