@@ -145,6 +145,9 @@ export default function MyVouchers() {
                       <button
                         disabled={v.isUsed}
                         onClick={() => {
+                          if (v._id) {
+                            localStorage.setItem("applied_customer_voucher_id", v._id);
+                          }
                           const codeToUse = v.voucherId?.code || v.code;
                           if (codeToUse) {
                             localStorage.setItem("applied_voucher_code", codeToUse);

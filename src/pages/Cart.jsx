@@ -19,6 +19,7 @@ export default function Cart() {
   });
   const [voucherCode, setVoucherCode] = useState("");
   const [appliedVoucher, setAppliedVoucher] = useState(null);
+  const [customerVoucherId, setCustomerVoucherId] = useState(null);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [voucherError, setVoucherError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,7 +68,12 @@ export default function Cart() {
     }, 0);
 
     // Check saved voucher from MyVouchers page
+    const savedCustomerVoucherId = localStorage.getItem("applied_customer_voucher_id");
     const savedVoucherCode = localStorage.getItem("applied_voucher_code");
+    if (savedCustomerVoucherId) {
+      setCustomerVoucherId(savedCustomerVoucherId);
+      localStorage.removeItem("applied_customer_voucher_id");
+    }
     if (savedVoucherCode) {
       setVoucherCode(savedVoucherCode);
       localStorage.removeItem("applied_voucher_code");
@@ -186,6 +192,7 @@ export default function Cart() {
       const payload = {
         items: itemsPayload,
         voucherCode: voucherCode || undefined,
+        customerVoucherId: customerVoucherId || undefined,
         paymentMethod: paymentMethod,
         note: "Đặt hàng từ Web"
       };
