@@ -229,7 +229,6 @@ export default function Cart() {
         });
 
         if (sepayData && sepayData.checkoutURL && sepayData.checkoutFormfields) {
-          // Tạo một form ẩn và tự động submit (vì SePay yêu cầu POST request)
           const form = document.createElement("form");
           form.method = "POST";
           form.action = sepayData.checkoutURL;
@@ -244,7 +243,7 @@ export default function Cart() {
 
           document.body.appendChild(form);
           form.submit();
-          return; // Dừng lại ở đây vì form đang được submit
+          return;
         }
       }
       
