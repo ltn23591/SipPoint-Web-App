@@ -237,6 +237,19 @@ export const customerService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Mã giảm giá không hợp lệ");
     }
+  },
+
+  getStoreConfig: async () => {
+    try {
+      const response = await apiCall(API_METHOD.GET, "/store/config");
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      return null;
+    } catch (error) {
+      console.warn("Lỗi lấy cấu hình cửa hàng:", error);
+      return null;
+    }
   }
 };
 

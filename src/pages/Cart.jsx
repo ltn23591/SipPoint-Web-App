@@ -24,6 +24,7 @@ export default function Cart() {
   const [voucherError, setVoucherError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("CASH"); // CASH or TRANSFER
+  const [activePaymentMethods, setActivePaymentMethods] = useState(["CASH", "TRANSFER"]);
   const [removedAlerts, setRemovedAlerts] = useState([]);
 
   const validateCartItems = async (items) => {
@@ -66,6 +67,14 @@ export default function Cart() {
     setTimeout(() => {
       setIsLoggedIn(!!token);
     }, 0);
+
+    // Fetch store config to get enabled payment methods
+    customerService.getStoreConfig().then((cfg) => {
+      if (cfg && Array.isArray(cfg.paymentMethods) && cfg.paymentMethods.length > 0) {
+        setActivePaymentMethods(cfg.paymentMethods);
+        setPaymentMethod((prev) => (cfg.paymentMethods.includes(prev) ? prev : cfg.paymentMethods[0]));
+      }
+    });
 
     // Check saved voucher from MyVouchers page
     const savedCustomerVoucherId = localStorage.getItem("applied_customer_voucher_id");
@@ -434,12 +443,17 @@ export default function Cart() {
                     {paymentMethod === "CASH" ? "Tiền mặt" : "Chuyển khoản / Quét QR"}
                   </p>
                 </div>
-                <button
-                  onClick={() => setPaymentMethod(prev => prev === "CASH" ? "TRANSFER" : "CASH")}
-                  className="text-[#855300] font-bold text-[12px]"
-                >
-                  Thay đổi
-                </button>
+                {activePaymentMethods.length > 1 && (
+                  <button
+                    onClick={() => {
+                      const nextIndex = (activePaymentMethods.indexOf(paymentMethod) + 1) % activePaymentMethods.length;
+                      setPaymentMethod(activePaymentMethods[nextIndex]);
+                    }}
+                    className="text-[#855300] dark:text-primary-container font-bold text-[12px]"
+                  >
+                    Thay đổi
+                  </button>
+                )}
               </section>
             </main>
 
