@@ -5,6 +5,7 @@ import { menuService } from "@/services/menuService";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import NotificationSheet from "@/components/common/NotificationSheet";
+import ProductDetailSheet from "@/components/menu/ProductDetailSheet";
 
 export default function Menu() {
   const [categories, setCategories] = useState([]);
@@ -370,157 +371,21 @@ export default function Menu() {
         {/* Bottom Navigation Bar */}
         <BottomNavBar activeTab="MENU" />
 
-        {/* Bottom Sheet Detail Modal */}
-        {isSheetOpen && (
-          <>
-            {/* Scrim Overlay */}
-            <div 
-              onClick={handleCloseDetail}
-              className="fixed inset-0 bg-black/40 dark:bg-black/60 z-[60] scrim-transition opacity-100 animate-fade-in"
-            />
-            {/* Modal Sheet container */}
-            <div className="fixed inset-x-0 bottom-0 max-w-md mx-auto z-[70] bg-white dark:bg-surface rounded-t-[28px] bottom-sheet-transition transform translate-y-0 max-h-[90vh] flex flex-col shadow-[0px_-8px_24px_rgba(59,31,10,0.1)] dark:shadow-none animate-slide-up">
-              {/* Handlebar */}
-              <div className="w-full flex justify-center py-3">
-                <div className="w-8 h-1.5 bg-zinc-200 dark:bg-outline-variant rounded-full" />
-              </div>
-              
-              {/* Close Button overlay */}
-              <div className="absolute top-4 right-4 z-[80]">
-                <button 
-                  onClick={handleCloseDetail}
-                  className="w-10 h-10 flex items-center justify-center bg-white/80 dark:bg-surface-container-highest/80 backdrop-blur-sm rounded-full text-zinc-800 dark:text-on-surface shadow-sm active:scale-90 transition-transform"
-                >
-                  <span className="material-symbols-outlined">close</span>
-                </button>
-              </div>
+        {/* Product Detail Sheet Component */}
+        <ProductDetailSheet
+          isOpen={isSheetOpen}
+          isLoading={isSheetLoading}
+          product={activeProduct}
+          selectedSize={selectedSize}
+          setSelectedSize={setSelectedSize}
+          quantity={quantity}
+          setQuantity={setQuantity}
+          note={note}
+          setNote={setNote}
+          onAddToCart={handleAddToCart}
+          onClose={handleCloseDetail}
+        />
 
-              {isSheetLoading || !activeProduct ? (
-                <div className="flex-1 flex flex-col items-center justify-center py-24">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#855300] dark:border-primary-container" />
-                  <span className="text-sm text-zinc-500 dark:text-on-surface-variant mt-2">Đang tải chi tiết món ăn...</span>
-                </div>
-              ) : (
-                <>
-                  <div className="overflow-y-auto hide-scrollbar flex-1 pb-32">
-                    {/* Hero Image */}
-                    <div className="relative w-full aspect-[4/3] bg-zinc-50 dark:bg-surface-container-low">
-                      {activeProduct.image ? (
-                        <img 
-                          className="w-full h-full object-cover" 
-                          src={activeProduct.image}
-                          alt={activeProduct.name} 
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center opacity-30 text-zinc-500 dark:text-on-surface">
-                          <span className="material-symbols-outlined text-[64px]">
-                            local_cafe
-                          </span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="px-5 pt-5 space-y-6">
-                      {/* Title & Description */}
-                      <div className="space-y-1">
-                        <h2 className="text-[22px] font-bold text-zinc-900 dark:text-on-surface leading-tight">
-                          {activeProduct.name}
-                        </h2>
-                        <div className="flex items-center gap-3">
-                          <p className="text-[20px] font-bold text-[#855300] dark:text-primary-container">
-                            {activeProduct.price?.toLocaleString("vi-VN")}đ
-                          </p>
-                          <span className="text-[12px] font-medium bg-[#ffcdae]/30 text-[#855300] dark:bg-primary-container/20 dark:text-primary-container px-2.5 py-0.5 rounded-full border border-[#f59e0b]/20">
-                            Còn lại: {activeProduct.stock || 0}
-                          </span>
-                        </div>
-                        <p className="text-[13px] text-zinc-500 dark:text-on-surface-variant leading-relaxed pt-2">
-                          {activeProduct.description || "Chưa có mô tả chi tiết cho món ăn này."}
-                        </p>
-                      </div>
-
-                      {/* Size Selection */}
-                      {activeProduct.variants?.some(v => v.variantType === 'size' && v.isActive !== 'inactive') && (
-                        <div className="space-y-3">
-                          <h3 className="text-[14px] font-bold text-zinc-900 dark:text-on-surface">Chọn size</h3>
-                          <div className="flex gap-3">
-                            {activeProduct.variants
-                              .filter(v => v.variantType === 'size' && v.isActive !== 'inactive')
-                              .map((size) => (
-                                <button
-                                  key={size._id}
-                                  onClick={() => setSelectedSize(size)}
-                                  className={`flex-1 py-2.5 rounded-full border-2 text-[13px] font-bold transition-all active:scale-95 ${
-                                    selectedSize?._id === size._id
-                                      ? "border-[#f59e0b] dark:border-primary-container bg-[#ffcdae]/30 dark:bg-primary-container/20 text-[#7a553c] dark:text-primary-container"
-                                      : "border-zinc-200 dark:border-outline-variant bg-transparent text-zinc-600 dark:text-on-surface-variant hover:border-[#f59e0b]/40 dark:hover:border-primary-container/40"
-                                  }`}
-                                >
-                                  {size.name} {size.priceAdjustment > 0 && `(+${size.priceAdjustment / 1000}k)`}
-                                </button>
-                              ))}
-                          </div>
-                        </div>
-                      )}
-
-
-
-                      {/* Note Field */}
-                      <div className="space-y-3">
-                        <h3 className="text-[14px] font-bold text-zinc-900 dark:text-on-surface">Ghi chú cho quán...</h3>
-                        <textarea 
-                          value={note}
-                          onChange={(e) => setNote(e.target.value)}
-                          className="w-full bg-zinc-50 dark:bg-surface-container-lowest border border-zinc-100 dark:border-outline-variant rounded-xl p-4 text-[14px] text-zinc-800 dark:text-on-surface placeholder:text-zinc-400 dark:placeholder:text-on-surface-variant focus:ring-2 focus:ring-[#f59e0b]/20 dark:focus:ring-primary-container/50 outline-none min-h-[80px] resize-none" 
-                          placeholder="Ví dụ: Ít đá, nhiều kem muối..."
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Sticky Bottom Action */}
-                  <div className="absolute bottom-0 left-0 w-full bg-white dark:bg-surface p-5 flex items-center gap-4 shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] border-t border-zinc-100 dark:border-surface-container-high z-[90]">
-                    {/* Stepper */}
-                    <div className="flex items-center bg-zinc-100 dark:bg-surface-container rounded-full h-12 px-2">
-                      <button 
-                        onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                        disabled={quantity <= 1}
-                        className="w-8 h-8 flex items-center justify-center text-[#855300] dark:text-primary-container active:scale-90 disabled:opacity-30 transition-transform"
-                      >
-                        <span className="material-symbols-outlined text-[20px]">remove</span>
-                      </button>
-                      <span className="w-8 text-center font-bold text-[14px] text-zinc-800 dark:text-on-surface">{quantity}</span>
-                      <button 
-                        onClick={() => setQuantity(q => q + 1)}
-                        disabled={quantity >= (activeProduct.stock || 0)}
-                        className={`w-8 h-8 flex items-center justify-center text-[#855300] dark:text-primary-container active:scale-90 transition-transform ${quantity >= (activeProduct.stock || 0) ? 'opacity-30 cursor-not-allowed' : ''}`}
-                      >
-                        <span className="material-symbols-outlined text-[20px]">add</span>
-                      </button>
-                    </div>
-                    <button 
-                      onClick={handleAddToCart}
-                      disabled={(activeProduct.stock || 0) <= 0}
-                      className={`flex-1 h-12 rounded-full flex items-center justify-center gap-2 text-[15px] font-bold transition-all shadow-md ${
-                        (activeProduct.stock || 0) <= 0 
-                          ? "bg-zinc-200 dark:bg-surface-container-highest text-zinc-400 dark:text-on-surface-variant cursor-not-allowed" 
-                          : "bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container active:scale-[0.98] hover:bg-[#855300]/95 dark:hover:bg-primary"
-                      }`}
-                    >
-                      <span>{(activeProduct.stock || 0) <= 0 ? "Đã hết hàng" : "Thêm vào giỏ"}</span>
-                      {(activeProduct.stock || 0) > 0 && (
-                        <>
-                          <span className="w-1 h-1 bg-white/40 dark:bg-on-primary-container/40 rounded-full" />
-                          <span>{totalPrice.toLocaleString("vi-VN")}đ</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </>
-              )}
-            </div>
-          </>
-        )}
         {/* Notification Sheet */}
         <NotificationSheet open={isNotiOpen} onClose={() => setIsNotiOpen(false)} />
       </div>
