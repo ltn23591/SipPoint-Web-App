@@ -50,6 +50,15 @@ export default function Cart() {
     return true;
   };
 
+  const subtotal = cartItems.reduce((sum, item) => {
+    const itemPrice = (item.price || 0) + (item.variantPriceSum || 0);
+    return sum + itemPrice * item.qty;
+  }, 0);
+
+  const voucherDiscount = appliedVoucher ? (appliedVoucher.discountAmount || 0) : 0;
+  const shippingFee = 0;
+  const total = Math.max(0, subtotal - voucherDiscount + shippingFee);
+
   useEffect(() => {
     // Check login status
     const token = localStorage.getItem("token") || localStorage.getItem("accessToken");
@@ -130,15 +139,6 @@ export default function Cart() {
   const clearCart = () => {
     setCartItems([]);
   };
-
-  const subtotal = cartItems.reduce((sum, item) => {
-    const itemPrice = (item.price || 0) + (item.variantPriceSum || 0);
-    return sum + itemPrice * item.qty;
-  }, 0);
-
-  const voucherDiscount = appliedVoucher ? (appliedVoucher.discountAmount || 0) : 0;
-  const shippingFee = 0;
-  const total = Math.max(0, subtotal - voucherDiscount + shippingFee);
 
   const handleApplyVoucher = async () => {
     if (!voucherCode.trim()) return;
