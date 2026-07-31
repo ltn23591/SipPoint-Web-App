@@ -65,10 +65,13 @@ const apiCall = async (
   baseUrl = null,
   options = {}
 ) => {
+  const isBodyMethod = ["POST", "PUT", "PATCH"].includes(String(method).toUpperCase());
+  const payloadData = isBodyMethod && (data === null || data === undefined) ? {} : data;
+
   return apiInstance({
     method,
     url: endpoint,
-    data,
+    data: payloadData,
     headers: customHeaders,
     ...(baseUrl ? { baseURL: baseUrl } : {}),
     ...options,

@@ -267,7 +267,7 @@ export const customerService = {
 
   redeemVoucher: async (voucherId) => {
     try {
-      const response = await apiCall(API_METHOD.POST, `/vouchers/${voucherId}/redeem`);
+      const response = await apiCall(API_METHOD.POST, `/vouchers/${voucherId}/redeem`, {});
       if (response && response.data?.success) {
         return response.data;
       }
