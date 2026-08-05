@@ -196,6 +196,7 @@ export default function Menu() {
           tableName={tableName}
           cartCount={cartCount}
           onOpenCart={() => window.location.href = ROUTE_PATH.CART}
+          onOpenNoti={() => setIsNotiOpen(true)}
         />
 
         <main className="pt-4 px-4 flex-1">
