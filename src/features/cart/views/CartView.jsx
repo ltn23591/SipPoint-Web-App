@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import CartItemCard from "@/features/cart/components/CartItemCard";
@@ -136,7 +137,7 @@ export default function Cart() {
         const maxStock = itemToUpdate.stock || 0;
         
         if (currentTotalQty + delta > maxStock) {
-          alert(`Rất tiếc! Số lượng vượt quá tồn kho (chỉ còn ${maxStock} sản phẩm).`);
+          toast.error(`Rất tiếc! Số lượng vượt quá khả năng phục vụ (chỉ còn ${maxStock}).`);
           return prev;
         }
       }
@@ -250,7 +251,7 @@ export default function Cart() {
       
       navigate(ROUTE_PATH.ORDER_DETAIL.replace(":orderId", orderId));
     } catch (error) {
-      alert(error.message || "Đặt món thất bại, vui lòng thử lại.");
+      toast.error(error.message || "Đặt món thất bại, vui lòng thử lại.");
     } finally {
       setIsSubmitting(false);
     }

@@ -39,5 +39,27 @@ export const menuService = {
       const apiErrorData = error?.response?.data || error;
       throw new Error(apiErrorData?.message || "Lỗi lấy chi tiết món ăn");
     }
+  },
+
+  getAvailability: async (productIds = []) => {
+    try {
+      const ids = Array.isArray(productIds) ? productIds.join(",") : productIds;
+      if (!ids) return [];
+      const response = await apiCall(
+        API_METHOD.GET,
+        `/recipes/availability`,
+        null,
+        null,
+        null,
+        { params: { productIds: ids } }
+      );
+      if (response && response.data?.success) {
+        return response.data.data || [];
+      }
+      return [];
+    } catch (error) {
+      console.warn("Lỗi lấy khả năng phục vụ:", error?.message);
+      return [];
+    }
   }
 };
