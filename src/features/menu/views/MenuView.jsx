@@ -11,6 +11,7 @@ import { HeaderBar } from "@/components/layout/HeaderBar";
 export default function Menu() {
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
+  const [availability, setAvailability] = useState({});
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +55,14 @@ export default function Menu() {
           menuService.getProducts(),
         ]);
         setCategories(categoriesRes.data || []);
-        setProducts(productsRes.data || []);
+        const productList = productsRes.data || [];
+        setProducts(productList);
+
+        const ids = productList.map((p) => p._id);
+        const availList = await menuService.getAvailability(ids);
+        const map = {};
+        for (const a of availList) map[a.productId] = a;
+        setAvailability(map);
       } catch (error) {
         console.error(error);
         toast.error(error.message || "Lỗi tải danh mục hoặc món ăn");
@@ -64,6 +72,17 @@ export default function Menu() {
     };
     fetchData();
   }, []);
+
+  const isOut = (p) => {
+    const a = availability[p._id];
+    if (a?.hasRecipe) return a.makeable <= 0;
+    return p.stockStatus === "out_of_stock" || (p.stock ?? 0) <= 0;
+  };
+  const remainingOf = (p) => {
+    const a = availability[p._id];
+    if (a?.hasRecipe) return a.makeable;
+    return p.stock ?? 0;
+  };
 
   const handleCategoryClick = (id) => {
     setSelectedCategory(id);
@@ -115,17 +134,17 @@ export default function Menu() {
         ...(selectedSize ? [{ variantId: selectedSize._id, name: selectedSize.name, priceAdjustment: selectedSize.priceAdjustment }] : []),
       ],
       note: note,
-      stock: activeProduct.stock || 0,
+      stock: remainingOf(activeProduct),
     };
 
     const savedCart = localStorage.getItem("sippoint_cart");
     const cart = savedCart ? JSON.parse(savedCart) : [];
-    
-    const currentStock = activeProduct.stock || 0;
+
+    const currentStock = remainingOf(activeProduct);
     const totalQtyInCart = cart.filter(c => c.productId === cartItem.productId).reduce((sum, c) => sum + c.qty, 0);
 
     if (totalQtyInCart + quantity > currentStock) {
-      toast.error(`Rất tiếc! Số lượng vượt quá tồn kho (chỉ còn ${currentStock} sản phẩm).`);
+      toast.error(`Rất tiếc! Số lượng vượt quá khả năng phục vụ (chỉ còn ${currentStock}).`);
       return;
     }
 
@@ -286,10 +305,10 @@ export default function Menu() {
                 <div
                   key={p._id}
                   onClick={() => {
-                    if (p.stock > 0) handleOpenDetail(p._id);
+                    if (!isOut(p)) handleOpenDetail(p._id);
                   }}
                   className={`bg-white dark:bg-surface-container-high rounded-2xl overflow-hidden shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-lg border border-zinc-100 dark:border-none flex flex-col transition-shadow ${
-                    p.stock <= 0 ? 'opacity-75' : 'cursor-pointer hover:shadow-md dark:hover:bg-surface-bright'
+                    isOut(p) ? 'opacity-75' : 'cursor-pointer hover:shadow-md dark:hover:bg-surface-bright'
                   }`}
                 >
                   <div className="relative h-32 bg-zinc-50 dark:bg-surface-container-low">
@@ -306,7 +325,7 @@ export default function Menu() {
                         </span>
                       </div>
                     )}
-                    {p.stock <= 0 && (
+                    {isOut(p) && (
                       <span className="absolute top-2 left-2 px-2 py-0.5 bg-red-600 dark:bg-error-container text-white dark:text-on-error-container text-[10px] font-bold rounded shadow-sm">
                         Hết hàng
                       </span>
@@ -320,22 +339,22 @@ export default function Menu() {
                       <p className="text-[14px] text-[#855300] dark:text-primary-container font-bold">
                         {p.price.toLocaleString("vi-VN")}đ
                       </p>
-                      {(p.stock || 0) > 0 && (
-                        <span className="text-[11px] font-medium text-zinc-500 bg-zinc-100 dark:bg-surface-container-highest px-1.5 py-0.5 rounded">
-                          Còn: {p.stock}
+                      {!isOut(p) && remainingOf(p) <= 20 && (
+                        <span className="text-[11px] font-medium text-amber-700 bg-amber-100 dark:bg-surface-container-highest px-1.5 py-0.5 rounded">
+                          Sắp hết: {remainingOf(p)}
                         </span>
                       )}
                     </div>
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
-                        if (p.stock > 0) handleOpenDetail(p._id);
+                        if (!isOut(p)) handleOpenDetail(p._id);
                       }}
-                      disabled={p.stock <= 0}
+                      disabled={isOut(p)}
                       className="mt-auto w-full py-2 bg-[#855300] dark:bg-primary-container text-white dark:text-on-primary-container rounded-xl text-[13px] font-semibold active:scale-95 transition-transform flex items-center justify-center gap-1 hover:bg-[#855300]/95 disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100"
                     >
                       <span className="material-symbols-outlined text-[18px]">add</span>
-                      {p.stock <= 0 ? "Hết" : "Thêm"}
+                      {isOut(p) ? "Hết" : "Thêm"}
                     </button>
                   </div>
                 </div>
@@ -344,10 +363,8 @@ export default function Menu() {
           )}
         </main>
 
-        {/* Bottom Navigation Bar */}
         <BottomNavBar activeTab="MENU" />
 
-        {/* Product Detail Sheet Component */}
         <ProductDetailSheet
           isOpen={isSheetOpen}
           isLoading={isSheetLoading}
@@ -358,6 +375,8 @@ export default function Menu() {
           setQuantity={setQuantity}
           note={note}
           setNote={setNote}
+          maxQty={activeProduct ? remainingOf(activeProduct) : 0}
+          available={activeProduct ? !isOut(activeProduct) : false}
           onAddToCart={handleAddToCart}
           onClose={handleCloseDetail}
         />
