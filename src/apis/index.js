@@ -1,6 +1,7 @@
 import apiCall from "./config";
 import { API_METHOD } from "@/constants/application";
 
+
 // Lead / liên hệ từ trang landing. Endpoint là placeholder — chỉnh theo backend thực tế.
 export const ContactApi = {
   submit: (payload) => {
