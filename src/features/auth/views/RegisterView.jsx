@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ArrowRight, Loader2, Lock, Mail, Smartphone, User } from "lucide-react";
 import { toast } from "sonner";
-import { AUTH_TEXT } from "@/constants/auth";
+import { AUTH_TEXT, GENDER_OPTIONS } from "@/constants/auth";
 import { AuthCard } from "@/components/common/AuthCard";
 import { authService } from "@/services/authService";
 import { SocialButtons } from "@/components/common/SocialButtons"; // Import component chung
@@ -10,7 +10,7 @@ import { SocialButtons } from "@/components/common/SocialButtons"; // Import com
 export default function Register() {
   const navigate = useNavigate();
   // Thêm email vào state
-  const [formData, setFormData] = useState({ fullname: "", email: "", phone: "", password: "" });
+  const [formData, setFormData] = useState({ fullname: "", email: "", phone: "", password: "", gender: "" });
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async (e) => {
@@ -64,6 +64,28 @@ export default function Register() {
           <div className="relative flex items-center">
             <Smartphone className="absolute left-3 h-5 w-5 text-zinc-400 dark:text-on-surface-variant" />
             <input required type="tel" disabled={isLoading} className="w-full rounded-xl bg-[#FDFBF7] dark:bg-surface-container dark:text-on-surface py-3 pl-10 pr-4 text-sm font-medium outline-none ring-1 ring-transparent focus:ring-primary dark:focus:ring-primary disabled:opacity-50" placeholder={AUTH_TEXT.PLACEHOLDER_PHONE} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+          </div>
+        </div>
+
+        {/* Giới tính */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-sm font-bold text-[#1a1c1c] dark:text-on-surface">{AUTH_TEXT.LABEL_GENDER}</label>
+          <div className="flex w-full rounded-xl bg-zinc-100 dark:bg-surface-container p-1">
+            {GENDER_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                type="button"
+                disabled={isLoading}
+                onClick={() => setFormData({ ...formData, gender: opt.value })}
+                className={`flex-1 rounded-lg py-2 text-center text-sm font-semibold transition-all disabled:opacity-50 ${
+                  formData.gender === opt.value
+                    ? "bg-secondary text-white shadow-sm"
+                    : "text-zinc-500 dark:text-on-surface-variant hover:text-zinc-700 dark:hover:text-on-surface"
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
           </div>
         </div>
 

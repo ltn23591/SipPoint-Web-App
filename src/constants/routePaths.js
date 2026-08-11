@@ -15,6 +15,7 @@ export const ROUTE_PATH = {
   ORDER_DETAIL: "/orders/:orderId",
   ORDER_TRACKING: "/order-tracking",
   LUCKY_WHEEL: "/lucky-wheel",
+  LUCKY_WHEEL_DETAIL: "/lucky-wheel/:gameId",
   CART: "/cart",
 };
 

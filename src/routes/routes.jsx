@@ -18,6 +18,7 @@ import OrderTrackingView from "@/features/orders/views/OrderTrackingView";
 
 import RewardPointsView from "@/features/rewards/views/RewardPointsView";
 import LuckyWheelView from "@/features/rewards/views/LuckyWheelView";
+import LuckyWheelDetailView from "@/features/rewards/views/LuckyWheelDetailView";
 import MyVouchersView from "@/features/rewards/views/MyVouchersView";
 
 import AccountView from "@/features/profile/views/AccountView";
@@ -94,6 +95,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTE_PATH.LUCKY_WHEEL,
         element: <LuckyWheelView />
+      },
+      {
+        path: ROUTE_PATH.LUCKY_WHEEL_DETAIL,
+        element: <LuckyWheelDetailView />
       },
       {
         path: ROUTE_PATH.CART,

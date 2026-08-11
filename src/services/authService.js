@@ -40,6 +40,7 @@ export const authService = {
         email: userData.email,
         phone: userData.phone,
         password: userData.password,
+        gender: userData.gender || undefined,
       };
 
       const response = await apiCall(API_METHOD.POST, "/auth/customer/register", payload);
