@@ -166,7 +166,7 @@ export default function RewardPoints() {
             <div className="grid grid-rows-2 gap-[16px]">
               <Link to={ROUTE_PATH.LUCKY_WHEEL} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
                 <span className="material-symbols-outlined text-[#7c563d] dark:text-primary-container">toys</span>
-                <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c] dark:text-on-surface">Vòng quay</p>
+                <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c] dark:text-on-surface">Trò chơi</p>
               </Link>
               <Link to={ROUTE_PATH.VOUCHERS} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
                 <span className="material-symbols-outlined text-[#7c563d] dark:text-primary-container">confirmation_number</span>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
+import { GENDER_OPTIONS } from "@/constants/auth";
 import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
 import { toast } from "sonner";
@@ -12,7 +13,8 @@ export default function EditProfile() {
     phone: "",
     email: "",
     dateOfBirth: "",
-    avatar: ""
+    avatar: "",
+    gender: ""
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -27,7 +29,8 @@ export default function EditProfile() {
           phone: data.phone || "",
           email: data.email || "",
           dateOfBirth: data.dateOfBirth ? data.dateOfBirth.split("T")[0] : "",
-          avatar: data.avatar || ""
+          avatar: data.avatar || "",
+          gender: data.gender || ""
         });
       } catch (err) {
         console.error(err);
@@ -78,7 +81,8 @@ export default function EditProfile() {
         phone: formData.phone,
         email: formData.email,
         dateOfBirth: formData.dateOfBirth,
-        avatar: formData.avatar
+        avatar: formData.avatar,
+        gender: formData.gender || null
       });
       toast.success("Cập nhật thông tin thành công!");
       setTimeout(() => navigate(ROUTE_PATH.ACCOUNT), 1000);
@@ -186,6 +190,27 @@ export default function EditProfile() {
                   <span className="material-symbols-outlined text-[#867461] dark:text-outline">calendar_today</span>
                 </div>
                 <input className="w-full h-12 pl-10 pr-4 bg-[#ede3b8]/50 dark:bg-surface-container-high border border-transparent dark:border-none rounded-xl text-[#1a1c1c] dark:text-on-surface font-normal text-[16px] focus:ring-2 focus:ring-[#f59e0b] dark:focus:ring-primary focus:bg-[#e2e2e2] dark:focus:bg-surface-container-highest transition-colors text-[#534434] dark:text-on-surface" id="dob" name="dateOfBirth" type="date" value={formData.dateOfBirth} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Gender */}
+            <div className="flex flex-col gap-1">
+              <label className="font-semibold text-[14px] leading-[20px] text-[#7c563d] dark:text-on-surface-variant pl-1">Giới tính</label>
+              <div className="flex w-full rounded-xl bg-[#ede3b8]/50 dark:bg-surface-container-high p-1">
+                {GENDER_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => setFormData((prev) => ({ ...prev, gender: opt.value }))}
+                    className={`flex-1 rounded-lg py-2.5 text-center text-sm font-semibold transition-all ${
+                      formData.gender === opt.value
+                        ? "bg-[#f59e0b] dark:bg-primary text-[#613b00] dark:text-on-primary shadow-sm"
+                        : "text-[#7c563d] dark:text-on-surface-variant hover:text-[#534434] dark:hover:text-on-surface"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
               </div>
             </div>
           </form>

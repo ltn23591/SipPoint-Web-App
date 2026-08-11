@@ -81,13 +81,22 @@ export default function Cart() {
     // Check saved voucher from MyVouchers page
     const savedCustomerVoucherId = localStorage.getItem("applied_customer_voucher_id");
     const savedVoucherCode = localStorage.getItem("applied_voucher_code");
+    localStorage.removeItem("applied_customer_voucher_id");
+    localStorage.removeItem("applied_voucher_code");
+
     if (savedCustomerVoucherId) {
+      // Voucher từ ví: chỉ dùng customerVoucherId để đặt hàng (BE chỉ cho áp dụng 1 loại
+      // voucher/đơn). savedVoucherCode ở đây chỉ để xem trước mức giảm giá qua validateVoucher,
+      // KHÔNG set vào voucherCode - tránh gửi đồng thời cả 2 field lên BE.
       setCustomerVoucherId(savedCustomerVoucherId);
-      localStorage.removeItem("applied_customer_voucher_id");
-    }
-    if (savedVoucherCode) {
+      if (savedVoucherCode) {
+        customerService
+          .validateVoucher(savedVoucherCode, subtotal)
+          .then((res) => setAppliedVoucher(res))
+          .catch(() => {});
+      }
+    } else if (savedVoucherCode) {
       setVoucherCode(savedVoucherCode);
-      localStorage.removeItem("applied_voucher_code");
     }
 
     // Validate cart on mount
@@ -176,6 +185,7 @@ export default function Cart() {
   const handleRemoveVoucher = () => {
     setAppliedVoucher(null);
     setVoucherCode("");
+    setCustomerVoucherId(null);
     setVoucherError("");
   };
 
@@ -200,9 +210,11 @@ export default function Cart() {
 
       const tableId = localStorage.getItem("tableId");
       
+      // BE chỉ cho áp dụng 1 loại voucher/đơn - ưu tiên customerVoucherId (voucher trong ví)
+      // nếu cả 2 vô tình cùng có giá trị, tránh lặp lại lỗi "Chỉ được áp dụng một loại voucher".
       const payload = {
         items: itemsPayload,
-        voucherCode: voucherCode || undefined,
+        voucherCode: customerVoucherId ? undefined : (voucherCode || undefined),
         customerVoucherId: customerVoucherId || undefined,
         paymentMethod: paymentMethod,
         note: "Đặt hàng từ Web"

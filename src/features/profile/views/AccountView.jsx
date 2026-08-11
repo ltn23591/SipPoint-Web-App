@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
+import { GENDER_LABEL } from "@/constants/auth";
 import { authService } from "@/services/authService";
+import { formatDate, formatNumber, formatVND } from "@/helpers/format";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import NotificationSheet from "@/components/common/NotificationSheet";
 
@@ -95,6 +97,97 @@ export default function Account() {
 
         {/* Main Content Canvas */}
         <main className="px-[20px] pt-[16px] pb-[24px] flex flex-col gap-[24px]">
+          {/* Profile Card - dữ liệu thật từ /auth/me */}
+          {profile ? (
+            <section className="relative overflow-hidden rounded-xl bg-[#613f27] p-5 text-white shadow-[0px_8px_24px_rgba(59,31,10,0.1)]">
+              <div className="absolute -top-12 -right-12 w-40 h-40 bg-[#855300] opacity-20 rounded-full blur-3xl"></div>
+              <div className="relative z-10 flex items-center gap-4">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[#f59e0b] shrink-0 bg-white/10 flex items-center justify-center">
+                  {profile.avatar ? (
+                    <img src={profile.avatar} alt={profile.fullName} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="material-symbols-outlined text-[28px]">person</span>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5">
+                    <p className="font-bold text-[18px] truncate">{profile.fullName || "Khách hàng"}</p>
+                    {profile.isVerified && (
+                      <span
+                        className="material-symbols-outlined text-[#4ade80] text-[16px]"
+                        style={{ fontVariationSettings: "'FILL' 1" }}
+                        title="Đã xác thực"
+                      >
+                        verified
+                      </span>
+                    )}
+                  </div>
+                  <span className="inline-block mt-1 bg-[#f59e0b]/20 text-[#f59e0b] px-2.5 py-0.5 rounded-full font-medium text-[11px]">
+                    Hạng {profile.tierId?.name || "Thành viên"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="relative z-10 mt-4 space-y-1.5 text-[13px] text-white/80">
+                {profile.phone && (
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">call</span>
+                    {profile.phone}
+                  </div>
+                )}
+                {profile.email && (
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">mail</span>
+                    {profile.email}
+                  </div>
+                )}
+                {profile.gender && GENDER_LABEL[profile.gender] && (
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">wc</span>
+                    {GENDER_LABEL[profile.gender]}
+                  </div>
+                )}
+                {profile.createdAt && (
+                  <div className="flex items-center gap-2">
+                    <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+                    Thành viên từ {formatDate(profile.createdAt)}
+                  </div>
+                )}
+              </div>
+
+              <div className="relative z-10 mt-4 grid grid-cols-2 gap-3 pt-4 border-t border-white/10">
+                <div>
+                  <p className="font-bold text-[18px] leading-none">{formatNumber(profile.currentPoints)}</p>
+                  <p className="text-[11px] text-white/70 mt-1">Điểm hiện tại</p>
+                </div>
+                <div>
+                  <p className="font-bold text-[18px] leading-none">{formatVND(profile.totalSpent)}</p>
+                  <p className="text-[11px] text-white/70 mt-1">Tổng chi tiêu</p>
+                </div>
+                <div>
+                  <p className="font-bold text-[18px] leading-none">{profile.orderCount ?? 0}</p>
+                  <p className="text-[11px] text-white/70 mt-1">Đơn hàng</p>
+                </div>
+                <div>
+                  <p className="font-bold text-[18px] leading-none">{profile.redeemCount ?? 0}</p>
+                  <p className="text-[11px] text-white/70 mt-1">Lần đổi quà</p>
+                </div>
+              </div>
+            </section>
+          ) : (
+            <section className="rounded-xl bg-[#ffffff] dark:bg-surface-container-high p-5 text-center border border-[#d8c3ad]/30 dark:border-outline-variant/10">
+              <p className="text-[14px] text-[#534434] dark:text-on-surface-variant mb-3">
+                Đăng nhập để xem thông tin tài khoản của bạn.
+              </p>
+              <button
+                onClick={() => navigate(ROUTE_PATH.LOGIN)}
+                className="px-5 py-2 bg-[#855300] dark:bg-primary text-white font-semibold text-[14px] rounded-xl active:scale-95 transition-transform"
+              >
+                Đăng nhập
+              </button>
+            </section>
+          )}
+
           <div className="py-2 flex items-center justify-between">
             <div>
               <h2 className="font-semibold text-[22px] leading-[28px] text-[#1a1c1c] dark:text-on-surface">Cài đặt ứng dụng</h2>
