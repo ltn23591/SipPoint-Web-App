@@ -122,13 +122,16 @@ export default function MyVouchers() {
             <div className="text-center text-[#534434] dark:text-on-surface-variant mt-10 text-[14px]">Chưa có voucher nào.</div>
           ) : (
             <div className="flex flex-col gap-4">
-              {filteredVouchers.map((v) => (
-                <div key={v._id} className={`bg-white dark:bg-surface-container-high rounded-lg shadow-sm overflow-hidden flex flex-row h-36 border border-[#e2e2e2] dark:border-outline-variant/10 ticket-cutout ${v.isUsed ? "opacity-60 grayscale" : ""}`}>
-                  <div className={`w-1/3 h-full relative border-r border-dashed border-[#d8c3ad] dark:border-outline-variant/20 flex items-center justify-center ${v.isUsed ? "bg-[#dadada] dark:bg-surface-container" : "bg-[#bab189]/30 dark:bg-primary-container/10"}`}>
-                    <div className={`w-16 h-16 flex items-center justify-center ${v.isUsed ? "opacity-50" : ""}`}>
+              {filteredVouchers.map((v) => {
+                const isPaused = !v.isUsed && (!v.voucherId || v.voucherId.isActive !== "active");
+                const isDisabled = v.isUsed || isPaused;
+                return (
+                <div key={v._id} className={`bg-white dark:bg-surface-container-high rounded-lg shadow-sm overflow-hidden flex flex-row h-36 border border-[#e2e2e2] dark:border-outline-variant/10 ticket-cutout ${isDisabled ? "opacity-60 grayscale" : ""}`}>
+                  <div className={`w-1/3 h-full relative border-r border-dashed border-[#d8c3ad] dark:border-outline-variant/20 flex items-center justify-center ${isDisabled ? "bg-[#dadada] dark:bg-surface-container" : "bg-[#bab189]/30 dark:bg-primary-container/10"}`}>
+                    <div className={`w-16 h-16 flex items-center justify-center ${isDisabled ? "opacity-50" : ""}`}>
                       <img
                         className="w-full h-full object-contain"
-                        src={v.isUsed ? "https://lh3.googleusercontent.com/aida-public/AB6AXuAM2WjJ8_v__Pl0NiOVMDoG2vwbajYzpefrVhFB91tACiuVtULiYaOeeZ6swbMdOJN-Sbu4sa7-IX3Iyf432dTemQeocPglWIxslDNxKGM7rAcqLqwhRVzH7bZVzSknQSSiPGJsnhJ3DmV0fU_P5OsvqXE949r5qN4rKm7MgQ78Mmz11_gyC0FgsLxn9COaVlgcgeTTNzQYEZI_yIaxBLJMYi0g3WuY5SGEPKMjbAaWI0GhnJX530J1U2dgI1qEDq_d3hmKSsqAxuk" : "https://lh3.googleusercontent.com/aida-public/AB6AXuDuFWXXoAovkTRtrhNshRTacV_kDIYM0gEvT33N-LBu3WyeZgF6UjZ-Mh2NiWYKXEbrC7uHYj5CyamN0skTxL7EtatG2bcQTc0VyBaEd8MviCovfFyKoigp_l0z11Zia8JhZqvYiUZFiALrOTW5CzPuh7g6KnbgQ2ZUS3RqdBQEHR8RBsjDG8tuniRmPfItZdxv5KUBRqHTBWRbk4_XJKddsPZ8HjNEMWsnB-3l3jjgLMBHoBmDgmtDlV2kNT44j2oWKn20YDN4NMI"}
+                        src={isDisabled ? "https://lh3.googleusercontent.com/aida-public/AB6AXuAM2WjJ8_v__Pl0NiOVMDoG2vwbajYzpefrVhFB91tACiuVtULiYaOeeZ6swbMdOJN-Sbu4sa7-IX3Iyf432dTemQeocPglWIxslDNxKGM7rAcqLqwhRVzH7bZVzSknQSSiPGJsnhJ3DmV0fU_P5OsvqXE949r5qN4rKm7MgQ78Mmz11_gyC0FgsLxn9COaVlgcgeTTNzQYEZI_yIaxBLJMYi0g3WuY5SGEPKMjbAaWI0GhnJX530J1U2dgI1qEDq_d3hmKSsqAxuk" : "https://lh3.googleusercontent.com/aida-public/AB6AXuDuFWXXoAovkTRtrhNshRTacV_kDIYM0gEvT33N-LBu3WyeZgF6UjZ-Mh2NiWYKXEbrC7uHYj5CyamN0skTxL7EtatG2bcQTc0VyBaEd8MviCovfFyKoigp_l0z11Zia8JhZqvYiUZFiALrOTW5CzPuh7g6KnbgQ2ZUS3RqdBQEHR8RBsjDG8tuniRmPfItZdxv5KUBRqHTBWRbk4_XJKddsPZ8HjNEMWsnB-3l3jjgLMBHoBmDgmtDlV2kNT44j2oWKn20YDN4NMI"}
                         alt="Voucher"
                       />
                     </div>
@@ -139,11 +142,11 @@ export default function MyVouchers() {
                       <p className="font-normal text-[13px] text-[#534434] dark:text-on-surface-variant line-clamp-2 mt-1">{v.voucherId?.description || "Áp dụng cho đơn từ 100.000đ. Không áp dụng cùng CTKM khác."}</p>
                     </div>
                     <div className="flex items-center justify-between mt-2">
-                      <span className={`font-semibold text-[12px] ${v.isUsed ? "text-[#867461] dark:text-on-surface-variant font-normal" : "text-[#ba1a1a] dark:text-error"}`}>
-                        {v.isUsed ? "Đã sử dụng" : `HSD: ${new Date(v.expiryDate).toLocaleDateString("vi-VN")}`}
+                      <span className={`font-semibold text-[12px] ${isDisabled ? "text-[#867461] dark:text-on-surface-variant font-normal" : "text-[#ba1a1a] dark:text-error"}`}>
+                        {v.isUsed ? "Đã sử dụng" : isPaused ? "Tạm ngưng" : `HSD: ${new Date(v.expiryDate).toLocaleDateString("vi-VN")}`}
                       </span>
                       <button
-                        disabled={v.isUsed}
+                        disabled={isDisabled}
                         onClick={() => {
                           if (v._id) {
                             localStorage.setItem("applied_customer_voucher_id", v._id);
@@ -154,14 +157,15 @@ export default function MyVouchers() {
                           }
                           window.location.href = ROUTE_PATH.CART;
                         }}
-                        className={`px-4 py-1.5 rounded-full font-semibold text-[12px] shadow-md active:scale-95 transition-transform ${v.isUsed ? "bg-[#e2e2e2] dark:bg-surface-container text-[#534434] dark:text-on-surface-variant cursor-not-allowed shadow-none" : "bg-[#f59e0b] dark:bg-primary-container text-[#613b00] dark:text-on-primary-container"}`}
+                        className={`px-4 py-1.5 rounded-full font-semibold text-[12px] shadow-md active:scale-95 transition-transform ${isDisabled ? "bg-[#e2e2e2] dark:bg-surface-container text-[#534434] dark:text-on-surface-variant cursor-not-allowed shadow-none" : "bg-[#f59e0b] dark:bg-primary-container text-[#613b00] dark:text-on-primary-container"}`}
                       >
-                        {v.isUsed ? "Đã dùng" : "Dùng ngay"}
+                        {v.isUsed ? "Đã dùng" : isPaused ? "Tạm ngưng" : "Dùng ngay"}
                       </button>
                     </div>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </main>
