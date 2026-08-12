@@ -92,7 +92,7 @@ export default function ProductDetailSheet({
                           : "bg-red-100 text-red-700 border-red-200 dark:bg-error-container dark:text-on-error-container"
                       }`}
                     >
-                      {canOrder ? `Còn phục vụ: ${effectiveMax}` : "Đã hết hàng"}
+                      {canOrder ? "Còn hàng" : "Đã hết hàng"}
                     </span>
                   </div>
                   <p className="text-[13px] text-zinc-500 dark:text-on-surface-variant leading-relaxed pt-2">

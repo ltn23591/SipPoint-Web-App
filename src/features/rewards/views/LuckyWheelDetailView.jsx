@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
+import { toast } from "sonner";
 import { gameService } from "@/services/gameService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 
@@ -30,6 +31,7 @@ export default function LuckyWheelDetailView() {
   const [rotation, setRotation] = useState(0);
   const [showResultModal, setShowResultModal] = useState(false);
   const [prizeResult, setPrizeResult] = useState(null);
+  const [exchanging, setExchanging] = useState(false);
 
   const fetchGame = async () => {
     try {
@@ -82,6 +84,20 @@ export default function LuckyWheelDetailView() {
   const closeResultModal = () => {
     setShowResultModal(false);
     setRotation((prev) => prev % 360);
+  };
+
+  const handleExchangeTurn = async () => {
+    if (exchanging) return;
+    setExchanging(true);
+    try {
+      const res = await gameService.exchangeTurn(gameId);
+      setGame((prev) => (prev ? { ...prev, remainingTurns: res.remainingTurns } : prev));
+      toast.success(`Đã dùng ${res.pointsSpent} điểm để đổi 1 lượt chơi.`);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      setExchanging(false);
+    }
   };
 
   if (isLoading) {
@@ -195,6 +211,15 @@ export default function LuckyWheelDetailView() {
             >
               {spinning ? "Đang quay..." : (game.remainingTurns ?? 0) <= 0 ? "Bạn đã hết lượt chơi" : "Quay ngay"}
             </button>
+            {(game.remainingTurns ?? 0) <= 0 && game.isExchangeTurnEnabled ? (
+              <button
+                onClick={handleExchangeTurn}
+                disabled={exchanging}
+                className="w-full border border-[#f59e0b] text-[#855300] dark:text-[#ffc174] dark:border-[#ffc174] h-12 rounded-xl font-semibold text-[14px] active:scale-95 transition-all duration-200 disabled:opacity-50"
+              >
+                {exchanging ? "Đang xử lý..." : `Dùng ${game.turnRewardAmount ?? 0} điểm đổi 1 lượt chơi`}
+              </button>
+            ) : null}
           </div>
 
           {/* Reward info (trừ ô lời chúc) */}

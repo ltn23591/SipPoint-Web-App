@@ -239,6 +239,25 @@ export const customerService = {
     }
   },
 
+  // Preview mức giảm của 1 voucher cụ thể trong ví (theo customerVoucherId) - dùng ở giỏ
+  // hàng để cảnh báo thật (đơn tối thiểu, khung giờ campaign...) trước khi đặt đơn, thay vì
+  // chỉ kiểm tra chung chung qua validateVoucher(code).
+  validateWalletVoucher: async (customerVoucherId, orderValue) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/vouchers/validate-wallet", {
+        customerVoucherId,
+        orderValue,
+      });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Voucher không hợp lệ hoặc chưa đủ điều kiện áp dụng");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Voucher không hợp lệ hoặc chưa đủ điều kiện áp dụng");
+    }
+  },
+
   getStoreConfig: async () => {
     try {
       const response = await apiCall(API_METHOD.GET, "/store/config");

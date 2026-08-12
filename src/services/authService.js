@@ -101,6 +101,8 @@ export const authService = {
     window.dispatchEvent(new Event("authChange"));
   },
 
+  isLoggedIn: () => !!(localStorage.getItem("token") || localStorage.getItem("accessToken")),
+
   getMe: async () => {
     try {
       const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
