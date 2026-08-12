@@ -1,8 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router';
 import { ROUTE_PATH } from '@/constants/routePaths';
+import { authService } from '@/services/authService';
+import LoginRequiredModal from '@/components/common/LoginRequiredModal';
 
 export default function BottomNavBar({ activeTab }) {
+  const [showLoginRequired, setShowLoginRequired] = useState(false);
+
+  const handleRewardsClick = (e) => {
+    if (!authService.isLoggedIn()) {
+      e.preventDefault();
+      setShowLoginRequired(true);
+    }
+  };
+
   const getTabClass = (tabName) => {
     return activeTab === tabName
       ? "flex flex-col items-center justify-center bg-[#ffcdae]/50 dark:bg-secondary-container text-[#7a553c] dark:text-on-secondary-container rounded-xl px-4 py-1.5 active:scale-90 transition-transform duration-150"
@@ -27,7 +38,7 @@ export default function BottomNavBar({ activeTab }) {
         <span className="material-symbols-outlined" style={getIconStyle('TRACKING')}>coffee_maker</span>
         <span className="text-[10px] font-semibold mt-0.5">Trạng thái</span>
       </Link>
-      <Link to={ROUTE_PATH.REWARDS} className={getTabClass('REWARDS')}>
+      <Link to={ROUTE_PATH.REWARDS} onClick={handleRewardsClick} className={getTabClass('REWARDS')}>
         <span className="material-symbols-outlined" style={getIconStyle('REWARDS')}>redeem</span>
         <span className="text-[10px] font-semibold mt-0.5">Điểm thưởng</span>
       </Link>
@@ -35,6 +46,8 @@ export default function BottomNavBar({ activeTab }) {
         <span className="material-symbols-outlined" style={getIconStyle('ACCOUNT')}>person</span>
         <span className="text-[10px] font-semibold mt-0.5">Tài khoản</span>
       </Link>
+
+      <LoginRequiredModal open={showLoginRequired} onClose={() => setShowLoginRequired(false)} />
     </nav>
   );
 }

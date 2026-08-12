@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import CartItemCard from "@/features/cart/components/CartItemCard";
+import SelectVoucherSheet from "@/components/common/SelectVoucherSheet";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ export default function Cart() {
   const [customerVoucherId, setCustomerVoucherId] = useState(null);
   const [isApplyingVoucher, setIsApplyingVoucher] = useState(false);
   const [voucherError, setVoucherError] = useState("");
+  const [showVoucherSheet, setShowVoucherSheet] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("CASH"); // CASH or TRANSFER
   const [activePaymentMethods, setActivePaymentMethods] = useState(["CASH", "TRANSFER"]);
@@ -38,16 +40,32 @@ export default function Cart() {
         qty: item.qty
       }));
       const res = await customerService.validateCart(itemsPayload);
-      if (res && res.invalidItems && res.invalidItems.length > 0) {
-        const invalidProductIds = new Set(res.invalidItems.map(i => i.productId));
+      const invalidProductIds = new Set((res?.invalidItems || []).map(i => i.productId));
+      const imageByProductId = new Map((res?.validItems || []).map(i => [i.productId, i.image]));
+
+      let changed = invalidProductIds.size > 0;
+      const updatedCart = items
+        .filter(i => !invalidProductIds.has(i.productId))
+        .map(i => {
+          const freshImage = imageByProductId.get(i.productId);
+          if (freshImage && freshImage !== i.image) {
+            changed = true;
+            return { ...i, image: freshImage };
+          }
+          return i;
+        });
+
+      if (invalidProductIds.size > 0) {
         const messages = res.invalidItems.map(i => i.message || `Món "${i.name}" hiện đã ngừng bán.`);
-        
-        const updatedCart = items.filter(i => !invalidProductIds.has(i.productId));
+        setRemovedAlerts(messages);
+      }
+
+      if (changed) {
         setCartItems(updatedCart);
         localStorage.setItem("sippoint_cart", JSON.stringify(updatedCart));
-        setRemovedAlerts(messages);
-        return false;
       }
+
+      return invalidProductIds.size === 0;
     } catch (e) {
       console.warn("Lỗi kiểm tra giỏ hàng:", e);
     }
@@ -62,6 +80,23 @@ export default function Cart() {
   const voucherDiscount = appliedVoucher ? (appliedVoucher.discountAmount || 0) : 0;
   const shippingFee = 0;
   const total = Math.max(0, subtotal - voucherDiscount + shippingFee);
+
+  const applyWalletVoucher = async (v) => {
+    setIsApplyingVoucher(true);
+    setVoucherError("");
+    setVoucherCode("");
+    try {
+      const res = await customerService.validateWalletVoucher(v._id, subtotal);
+      setCustomerVoucherId(v._id);
+      setAppliedVoucher(res);
+    } catch (error) {
+      setCustomerVoucherId(null);
+      setAppliedVoucher(null);
+      setVoucherError(error.message || "Voucher không hợp lệ hoặc chưa đủ điều kiện áp dụng");
+    } finally {
+      setIsApplyingVoucher(false);
+    }
+  };
 
   useEffect(() => {
     // Check login status
@@ -85,18 +120,9 @@ export default function Cart() {
     localStorage.removeItem("applied_voucher_code");
 
     if (savedCustomerVoucherId) {
-      // Voucher từ ví: chỉ dùng customerVoucherId để đặt hàng (BE chỉ cho áp dụng 1 loại
-      // voucher/đơn). savedVoucherCode ở đây chỉ để xem trước mức giảm giá qua validateVoucher,
-      // KHÔNG set vào voucherCode - tránh gửi đồng thời cả 2 field lên BE.
-      setCustomerVoucherId(savedCustomerVoucherId);
-      if (savedVoucherCode) {
-        customerService
-          .validateVoucher(savedVoucherCode, subtotal)
-          .then((res) => setAppliedVoucher(res))
-          .catch(() => {});
-      }
+      setTimeout(() => applyWalletVoucher({ _id: savedCustomerVoucherId }), 0);
     } else if (savedVoucherCode) {
-      setVoucherCode(savedVoucherCode);
+      setTimeout(() => setVoucherCode(savedVoucherCode), 0);
     }
 
     // Validate cart on mount
@@ -105,25 +131,28 @@ export default function Cart() {
       try {
         const parsed = JSON.parse(savedCart);
         if (parsed.length > 0) {
-          validateCartItems(parsed);
+          setTimeout(() => validateCartItems(parsed), 0);
         }
-      } catch (e) {
+      } catch {
         // ignore parse error
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Auto re-validate applied voucher when subtotal changes
   useEffect(() => {
-    if (appliedVoucher && subtotal > 0) {
-      customerService
-        .validateVoucher(appliedVoucher.code, subtotal)
-        .then((res) => setAppliedVoucher(res))
-        .catch((err) => {
-          setAppliedVoucher(null);
-          setVoucherError(err.message || "Đơn hàng chưa đủ điều kiện dùng mã");
-        });
-    }
+    if (!appliedVoucher || subtotal <= 0) return;
+    const revalidate = customerVoucherId
+      ? customerService.validateWalletVoucher(customerVoucherId, subtotal)
+      : customerService.validateVoucher(appliedVoucher.code, subtotal);
+    revalidate
+      .then((res) => setAppliedVoucher(res))
+      .catch((err) => {
+        setAppliedVoucher(null);
+        setCustomerVoucherId(null);
+        setVoucherError(err.message || "Đơn hàng chưa đủ điều kiện dùng mã");
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subtotal]);
 
   // Persist cart to localStorage whenever it changes
@@ -170,6 +199,7 @@ export default function Cart() {
     if (!voucherCode.trim()) return;
     setIsApplyingVoucher(true);
     setVoucherError("");
+    setCustomerVoucherId(null);
     try {
       const res = await customerService.validateVoucher(voucherCode.trim().toUpperCase(), subtotal);
       setAppliedVoucher(res);
@@ -407,6 +437,12 @@ export default function Cart() {
                         {voucherError}
                       </p>
                     )}
+                    <button
+                      onClick={() => setShowVoucherSheet(true)}
+                      className="self-start text-[13px] font-semibold text-[#855300] dark:text-primary-container flex items-center gap-1 pl-1 mt-0.5 active:opacity-70"
+                    >
+                      Chọn voucher trong ví
+                    </button>
                   </div>
                 )}
               </section>
@@ -480,6 +516,13 @@ export default function Cart() {
           </>
         )}
       </div>
+
+      <SelectVoucherSheet
+        open={showVoucherSheet}
+        onClose={() => setShowVoucherSheet(false)}
+        subtotal={subtotal}
+        onSelect={applyWalletVoucher}
+      />
     </div>
   );
 }

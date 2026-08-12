@@ -5,6 +5,7 @@ import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import RedeemGiftsSheet from "@/components/common/RedeemGiftsSheet";
+import LoginRequiredModal from "@/components/common/LoginRequiredModal";
 
 export default function RewardPoints() {
   const containerRef = useRef(null);
@@ -13,7 +14,20 @@ export default function RewardPoints() {
   const [banners, setBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRedeemOpen, setIsRedeemOpen] = useState(false);
+  const [showLoginRequired, setShowLoginRequired] = useState(false);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
+
+  // Đổi quà/Trò chơi/Ví voucher đều cần đăng nhập - chặn ngay lúc bấm thay vì để khách
+  // vào trang rồi mới thấy dữ liệu rỗng/hỏng không rõ lý do (không có route guard chung
+  // nên khách vẫn có thể vào thẳng /rewards qua URL mà chưa đăng nhập).
+  const requireLogin = (action) => (e) => {
+    if (!authService.isLoggedIn()) {
+      e?.preventDefault?.();
+      setShowLoginRequired(true);
+      return;
+    }
+    action?.();
+  };
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -155,7 +169,7 @@ export default function RewardPoints() {
           {/* Quick Actions: Asymmetric Bento Grid */}
           <section className="grid grid-cols-2 gap-[16px]">
             <div
-              onClick={() => setIsRedeemOpen(true)}
+              onClick={requireLogin(() => setIsRedeemOpen(true))}
               className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-4 flex flex-col justify-between h-32 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest"
             >
               <div className="w-10 h-10 flex items-center justify-center rounded-lg bg-[#ffddb8]/30 dark:bg-secondary-container/30 shrink-0">
@@ -164,11 +178,11 @@ export default function RewardPoints() {
               <p className="font-semibold text-[14px] leading-[20px] text-[#1a1c1c] dark:text-on-surface">Đổi quà</p>
             </div>
             <div className="grid grid-rows-2 gap-[16px]">
-              <Link to={ROUTE_PATH.LUCKY_WHEEL} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
+              <Link to={ROUTE_PATH.LUCKY_WHEEL} onClick={requireLogin()} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
                 <span className="material-symbols-outlined text-[#7c563d] dark:text-primary-container">toys</span>
                 <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c] dark:text-on-surface">Trò chơi</p>
               </Link>
-              <Link to={ROUTE_PATH.VOUCHERS} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
+              <Link to={ROUTE_PATH.VOUCHERS} onClick={requireLogin()} className="bento-card bg-[#ffffff] dark:bg-surface-container-high rounded-xl p-3 flex items-center gap-3 border border-[#d8c3ad]/10 dark:border-outline-variant/10 cursor-pointer hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest">
                 <span className="material-symbols-outlined text-[#7c563d] dark:text-primary-container">confirmation_number</span>
                 <p className="font-medium text-[12px] leading-[16px] text-[#1a1c1c] dark:text-on-surface">Voucher của tôi</p>
               </Link>
@@ -256,6 +270,8 @@ export default function RewardPoints() {
           currentPoints={customerProfile?.currentPoints || 0}
           onRedeemSuccess={fetchData}
         />
+
+        <LoginRequiredModal open={showLoginRequired} onClose={() => setShowLoginRequired(false)} />
       </div>
     </div>
   );

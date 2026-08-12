@@ -5,12 +5,12 @@ import { ROUTE_PATH } from "@/constants/routePaths";
 
 export default function CartItemCard({ item, index, onUpdateQuantity, onRemove }) {
   const itemPrice = (item.price || 0) + (item.variantPriceSum || 0);
+  const hasValidImage = typeof item.image === "string" && item.image.startsWith("http");
 
   return (
     <div className="bg-white dark:bg-surface-container rounded-2xl p-4 shadow-[0px_4px_12px_rgba(59,31,10,0.04)] dark:shadow-none border border-zinc-100 dark:border-outline-variant/30 flex gap-4 transition-all">
-      {/* Thumbnail */}
       <div className="w-20 h-20 rounded-xl bg-zinc-100 dark:bg-surface-container-high overflow-hidden shrink-0 relative">
-        {item.image ? (
+        {hasValidImage ? (
           <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-zinc-400">

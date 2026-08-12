@@ -354,14 +354,21 @@ export default function OrderTracking() {
                 <span className="text-[12px] text-[#534434]">{order.items?.length || 0} món</span>
               </div>
               <div className="space-y-4">
-                {order.items?.map((item, idx) => (
+                {order.items?.map((item, idx) => {
+                  const itemImage = item.productId?.image;
+                  const hasValidImage = typeof itemImage === "string" && itemImage.startsWith("http");
+                  return (
                   <div key={item._id || idx} className="flex gap-4">
-                    <div className="w-16 h-16 rounded-lg bg-[#e8e8e8] overflow-hidden shrink-0">
-                      <img 
-                        className="w-full h-full object-cover" 
-                        src={item.productId?.image || "https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=200&auto=format&fit=crop"} 
-                        alt={item.name} 
-                      />
+                    <div className="w-16 h-16 rounded-lg bg-[#e8e8e8] overflow-hidden shrink-0 flex items-center justify-center">
+                      {hasValidImage ? (
+                        <img
+                          className="w-full h-full object-cover"
+                          src={itemImage}
+                          alt={item.name}
+                        />
+                      ) : (
+                        <span className="material-symbols-outlined text-zinc-400 text-[28px]">local_cafe</span>
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="flex justify-between">
@@ -373,7 +380,8 @@ export default function OrderTracking() {
                       </p>
                     </div>
                   </div>
-                ))}
+                  );
+                })}
               </div>
               <div className="mt-4 pt-4 border-t border-[#d8c3ad]/20 flex justify-between items-center">
                 <span className="font-semibold text-[14px] text-[#1a1c1c]">Tổng cộng</span>
