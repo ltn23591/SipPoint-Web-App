@@ -4,6 +4,7 @@ import { CODE_KEY } from "@/constants/application";
 const VITE_APP_API_URL = import.meta.env.VITE_APP_API_URL || "https://sippoint-be.onrender.com/api/v1";
 const REQUEST_TIMEOUT = 15000;
 
+
 // Create unified axios instance
 const apiInstance = axios.create({
   baseURL: VITE_APP_API_URL,
