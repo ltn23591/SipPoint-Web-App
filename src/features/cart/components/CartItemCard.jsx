@@ -4,7 +4,10 @@ import { Link } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 
 export default function CartItemCard({ item, index, onUpdateQuantity, onRemove }) {
-  const itemPrice = (item.price || 0) + (item.variantPriceSum || 0);
+  const variantPriceSum = typeof item.variantPriceSum === "number"
+    ? item.variantPriceSum
+    : (Array.isArray(item.variants) ? item.variants.reduce((sum, v) => sum + (v.priceAdjustment || 0), 0) : 0);
+  const itemPrice = (item.price || 0) + variantPriceSum;
   const hasValidImage = typeof item.image === "string" && item.image.startsWith("http");
 
   return (

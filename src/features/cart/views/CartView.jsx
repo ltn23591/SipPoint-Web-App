@@ -73,7 +73,10 @@ export default function Cart() {
   };
 
   const subtotal = cartItems.reduce((sum, item) => {
-    const itemPrice = (item.price || 0) + (item.variantPriceSum || 0);
+    const variantPriceSum = typeof item.variantPriceSum === "number"
+      ? item.variantPriceSum
+      : (Array.isArray(item.variants) ? item.variants.reduce((vSum, v) => vSum + (v.priceAdjustment || 0), 0) : 0);
+    const itemPrice = (item.price || 0) + variantPriceSum;
     return sum + itemPrice * item.qty;
   }, 0);
 

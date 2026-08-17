@@ -124,11 +124,13 @@ export default function Menu() {
 
 
   const handleAddToCart = () => {
+    const sizeAdjustment = selectedSize ? (selectedSize.priceAdjustment || 0) : 0;
     const cartItem = {
       productId: activeProduct._id,
       name: activeProduct.name,
       image: activeProduct.image,
       price: activeProduct.price,
+      variantPriceSum: sizeAdjustment,
       qty: quantity,
       variants: [
         ...(selectedSize ? [{ variantId: selectedSize._id, name: selectedSize.name, priceAdjustment: selectedSize.priceAdjustment }] : []),

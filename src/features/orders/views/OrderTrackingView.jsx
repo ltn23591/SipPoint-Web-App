@@ -23,11 +23,13 @@ export default function OrderTracking() {
       const prodId = typeof item.productId === "object" ? item.productId?._id : (item.productId || item._id);
       if (!prodId) return;
 
+      const variantPriceSum = item.variants ? item.variants.reduce((sum, v) => sum + (v.priceAdjustment || 0), 0) : 0;
       const cartItem = {
         productId: prodId,
         name: item.name,
         image: item.productId?.image || item.image || "",
         price: item.unitPrice || item.price || 0,
+        variantPriceSum,
         qty: item.qty || 1,
         variants: item.variants ? item.variants.map((v) => ({
           variantId: v.variantId || v._id,
