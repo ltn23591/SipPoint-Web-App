@@ -71,3 +71,4 @@ export default function CartItemCard({ item, index, onUpdateQuantity, onRemove }
     </div>
   );
 }
+
