@@ -5,6 +5,7 @@ import { authService } from "@/services/authService";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import RedeemGiftsSheet from "@/components/common/RedeemGiftsSheet";
+import PointHistorySheet from "@/components/common/PointHistorySheet";
 import LoginRequiredModal from "@/components/common/LoginRequiredModal";
 
 export default function RewardPoints() {
@@ -14,6 +15,7 @@ export default function RewardPoints() {
   const [banners, setBanners] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRedeemOpen, setIsRedeemOpen] = useState(false);
+  const [isHistorySheetOpen, setIsHistorySheetOpen] = useState(false);
   const [showLoginRequired, setShowLoginRequired] = useState(false);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
 
@@ -40,13 +42,16 @@ export default function RewardPoints() {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const [profile, history, bannerList] = await Promise.all([
+      const [profile, historyRes, bannerList] = await Promise.all([
         authService.getMe(),
-        customerService.getMyPointHistory(),
+        customerService.getMyPointHistory({ limit: 5 }),
         customerService.getBanners(),
       ]);
       setCustomerProfile(profile);
-      setPointHistories(history);
+      const list = Array.isArray(historyRes)
+        ? historyRes
+        : historyRes?.pointHistories || [];
+      setPointHistories(list);
       setBanners(bannerList || []);
     } catch (error) {
       console.error("Lỗi tải dữ liệu điểm:", error);
@@ -225,7 +230,12 @@ export default function RewardPoints() {
           <section className="flex flex-col gap-[16px] mb-8">
             <div className="flex justify-between items-center">
               <h2 className="font-semibold text-[20px] leading-[28px] text-[#1a1c1c] dark:text-on-surface">Lịch sử điểm</h2>
-              <button className="text-[#855300] dark:text-primary-container font-semibold text-[14px] leading-[20px] hover:underline transition-all">Xem tất cả</button>
+              <button
+                onClick={requireLogin(() => setIsHistorySheetOpen(true))}
+                className="text-[#855300] dark:text-primary-container font-semibold text-[14px] leading-[20px] hover:underline transition-all"
+              >
+                Xem tất cả
+              </button>
             </div>
             <div className="space-y-[8px]">
               {isLoading ? (
@@ -235,7 +245,7 @@ export default function RewardPoints() {
               ) : pointHistories.length === 0 ? (
                 <p className="text-center text-[#534434] dark:text-on-surface-variant text-sm py-4">Chưa có lịch sử điểm.</p>
               ) : (
-                pointHistories.map((tx) => (
+                pointHistories.slice(0, 5).map((tx) => (
                   <div key={tx._id} className="flex items-center justify-between p-4 rounded-xl bg-[#f3f3f4]/50 dark:bg-surface-container border border-[#d8c3ad]/10 dark:border-outline-variant/10">
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center ${tx.pointsChange > 0 ? 'bg-[#f59e0b]/10 dark:bg-primary-container/20' : 'bg-[#ffdad6]/20 dark:bg-error-container/20'}`}>
@@ -269,6 +279,12 @@ export default function RewardPoints() {
           onClose={() => setIsRedeemOpen(false)}
           currentPoints={customerProfile?.currentPoints || 0}
           onRedeemSuccess={fetchData}
+        />
+
+        {/* Full Point History Bottom Sheet */}
+        <PointHistorySheet
+          open={isHistorySheetOpen}
+          onClose={() => setIsHistorySheetOpen(false)}
         />
 
         <LoginRequiredModal open={showLoginRequired} onClose={() => setShowLoginRequired(false)} />

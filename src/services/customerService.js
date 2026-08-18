@@ -2,12 +2,14 @@ import apiCall from "@/apis/config";
 import { API_METHOD } from "@/constants/application";
 
 export const customerService = {
-  getMyPointHistory: async () => {
+  getMyPointHistory: async (params = {}) => {
     try {
       const token = localStorage.getItem("accessToken") || localStorage.getItem("token");
       if (!token) return [];
       
-      const response = await apiCall(API_METHOD.GET, "/customers/me/point-history");
+      const queryParams = new URLSearchParams(params).toString();
+      const endpoint = `/customers/me/point-history${queryParams ? `?${queryParams}` : ""}`;
+      const response = await apiCall(API_METHOD.GET, endpoint);
       if (response && response.data?.success) {
         return response.data.data;
       }

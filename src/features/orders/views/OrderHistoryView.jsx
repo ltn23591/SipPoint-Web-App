@@ -5,6 +5,7 @@ import { ROUTE_PATH } from "@/constants/routePaths";
 import { customerService } from "@/services/customerService";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import { OrderStatusBadge } from "@/components/common/OrderStatusBadge";
+import PaymentReceiptSheet from "@/components/common/PaymentReceiptSheet";
 
 export default function OrderHistory() {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ export default function OrderHistory() {
   const [isLoading, setIsLoading] = useState(true);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
   const [activeTab, setActiveTab] = useState("ALL");
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -252,15 +255,29 @@ export default function OrderHistory() {
                         {order.total?.toLocaleString("vi-VN")}đ
                       </span>
                     </div>
-                    {order.status === "COMPLETED" && (
+                    <div className="flex items-center gap-2">
                       <button
-                        onClick={(e) => handleReorder(order, e)}
-                        className="px-3 py-1.5 bg-[#855300] hover:bg-[#855300]/90 text-white dark:bg-primary-container dark:text-on-primary-container rounded-full font-bold text-[12px] flex items-center gap-1 active:scale-95 transition-all shadow-sm shrink-0"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedOrderId(order._id);
+                          setIsReceiptOpen(true);
+                        }}
+                        className="px-3 py-1.5 bg-zinc-100 dark:bg-surface-container-high hover:bg-zinc-200 text-zinc-700 dark:text-on-surface rounded-full font-bold text-[12px] flex items-center gap-1 active:scale-95 transition-all shrink-0"
                       >
-                        <span className="material-symbols-outlined text-[15px]">refresh</span>
-                        Đặt lại
+                        <span className="material-symbols-outlined text-[15px]">receipt_long</span>
+                        Hóa đơn
                       </button>
-                    )}
+
+                      {order.status === "COMPLETED" && (
+                        <button
+                          onClick={(e) => handleReorder(order, e)}
+                          className="px-3 py-1.5 bg-[#855300] hover:bg-[#855300]/90 text-white dark:bg-primary-container dark:text-on-primary-container rounded-full font-bold text-[12px] flex items-center gap-1 active:scale-95 transition-all shadow-sm shrink-0"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">refresh</span>
+                          Đặt lại
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -269,6 +286,13 @@ export default function OrderHistory() {
         )}
 
         <BottomNavBar activeTab="ORDERS" />
+
+        {/* Payment Receipt Bottom Sheet */}
+        <PaymentReceiptSheet
+          open={isReceiptOpen}
+          onClose={() => setIsReceiptOpen(false)}
+          orderId={selectedOrderId}
+        />
       </div>
     </div>
   );

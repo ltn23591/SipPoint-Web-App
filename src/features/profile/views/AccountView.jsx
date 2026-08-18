@@ -6,12 +6,14 @@ import { authService } from "@/services/authService";
 import { formatDate, formatNumber, formatVND } from "@/helpers/format";
 import BottomNavBar from "@/components/layout/BottomNavBar";
 import NotificationSheet from "@/components/common/NotificationSheet";
+import PointHistorySheet from "@/components/common/PointHistorySheet";
 
 export default function Account() {
   const navigate = useNavigate();
   const [profile, setProfile] = useState(null);
   const [tableName, setTableName] = useState(() => localStorage.getItem("tableName") || "");
   const [isNotiOpen, setIsNotiOpen] = useState(false);
+  const [isPointHistoryOpen, setIsPointHistoryOpen] = useState(false);
   
   // State quản lý trạng thái của nút Dark Mode
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -212,6 +214,44 @@ export default function Account() {
             </div>
           </section>
 
+          {/* Section: History & Transactions */}
+          <section className="flex flex-col gap-[8px]">
+            <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] dark:text-primary-container px-1 uppercase tracking-wider">Lịch sử & Giao dịch</h3>
+            <div className="bg-[#ffffff] dark:bg-surface-container-high rounded-xl shadow-[0px_4px_12px_rgba(59,31,10,0.06)] dark:shadow-none overflow-hidden border border-[#d8c3ad]/30 dark:border-outline-variant/10">
+              <div
+                onClick={() => {
+                  if (!authService.isLoggedIn()) {
+                    navigate(ROUTE_PATH.LOGIN);
+                  } else {
+                    setIsPointHistoryOpen(true);
+                  }
+                }}
+                className="flex items-center justify-between p-4 border-b border-[#d8c3ad]/20 dark:border-outline-variant/10 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#ffcdae] dark:bg-primary-container/20 flex items-center justify-center text-[#7a553c] dark:text-primary-container">
+                    <span className="material-symbols-outlined">history</span>
+                  </div>
+                  <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] dark:text-on-surface">Lịch sử giao dịch điểm</span>
+                </div>
+                <span className="material-symbols-outlined text-[#534434] dark:text-on-surface-variant text-[20px]">chevron_right</span>
+              </div>
+
+              <Link
+                to={ROUTE_PATH.ORDERS}
+                className="flex items-center justify-between p-4 hover:bg-[#f3f3f4] dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:bg-[#e8e8e8] dark:active:bg-surface-bright"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#ffcdae] dark:bg-primary-container/20 flex items-center justify-center text-[#7a553c] dark:text-primary-container">
+                    <span className="material-symbols-outlined">receipt_long</span>
+                  </div>
+                  <span className="font-normal text-[16px] leading-[24px] text-[#1a1c1c] dark:text-on-surface">Lịch sử đơn hàng</span>
+                </div>
+                <span className="material-symbols-outlined text-[#534434] dark:text-on-surface-variant text-[20px]">chevron_right</span>
+              </Link>
+            </div>
+          </section>
+
           {/* Section: Preferences */}
           <section className="flex flex-col gap-[8px]">
             <h3 className="font-semibold text-[14px] leading-[20px] text-[#7c563d] dark:text-primary-container px-1 uppercase tracking-wider">Tuỳ chỉnh</h3>
@@ -317,6 +357,12 @@ export default function Account() {
 
         {/* Notification Bottom Sheet */}
         <NotificationSheet open={isNotiOpen} onClose={() => setIsNotiOpen(false)} />
+
+        {/* Full Point History Bottom Sheet */}
+        <PointHistorySheet
+          open={isPointHistoryOpen}
+          onClose={() => setIsPointHistoryOpen(false)}
+        />
       </div>
     </div>
   );
