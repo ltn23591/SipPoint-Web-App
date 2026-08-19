@@ -18,8 +18,8 @@
 - **Thực đơn linh hoạt**: Tìm kiếm sản phẩm theo danh mục, chọn biến thể Size (M/L), chọn Toppings đi kèm và nhập ghi chú cá nhân hóa cho barista.
 - **Giỏ hàng & Checkout mượt mà**: Quản lý giỏ hàng tức thì với state management tối ưu.
 
-### 2. 💳 Thanh toán Đa dạng & VietQR Tự động
-- **Thanh toán VietQR động**: Sinh mã QR chuẩn VietQR tự động có sẵn mã đơn hàng và số tiền.
+### 2. 💳 Thanh toán Đa dạng & SePay Tự động
+- **Thanh toán Chuyển khoản SePay**: Chuyển khoản ngân hàng tự động đối soát qua SePay IPN.
 - **Xác nhận thanh toán tự động**: Tích hợp cổng **SePay Webhook** ở Backend, tự động xác nhận đơn hàng `PAID` tức thì khi nhận tiền ngân hàng.
 - **Thanh toán Tiền mặt**: Tùy chọn thanh toán tại quẹt thu ngân.
 

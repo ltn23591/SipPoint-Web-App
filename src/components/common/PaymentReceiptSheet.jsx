@@ -22,7 +22,6 @@ export default function PaymentReceiptSheet({ open, onClose, orderId }) {
 
   const isPaid = order?.isPaid || order?.status === "COMPLETED";
   const isTransfer = order?.paymentMethod === "TRANSFER";
-  const qrUrl = order?.paymentQrUrl || (order ? `https://img.vietqr.io/image/VCB-1030501667-compact.png?amount=${order.total}&addInfo=${order.code}` : "");
 
   return (
     <>
@@ -121,9 +120,9 @@ export default function PaymentReceiptSheet({ open, onClose, orderId }) {
                 </span>
                 <span className="font-semibold text-zinc-800 dark:text-on-surface flex items-center gap-1">
                   <span className="material-symbols-outlined text-[16px] text-[#855300]">
-                    {isTransfer ? "qr_code" : "payments"}
+                    {isTransfer ? "account_balance" : "payments"}
                   </span>
-                  {isTransfer ? "Chuyển khoản QR Ngân hàng" : "Tiền mặt"}
+                  {isTransfer ? "Chuyển khoản Ngân hàng (SePay)" : "Tiền mặt"}
                 </span>
               </div>
 
@@ -181,18 +180,16 @@ export default function PaymentReceiptSheet({ open, onClose, orderId }) {
                 </div>
               </div>
 
-              {/* VietQR section if unpaid transfer */}
+              {/* Transfer section if unpaid transfer */}
               {isTransfer && !isPaid && (
                 <div className="p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 flex flex-col items-center text-center gap-2">
                   <p className="font-bold text-xs text-amber-900 dark:text-amber-400">
-                    Quét mã VietQR để thanh toán đơn hàng
+                    Thanh toán chuyển khoản qua ngân hàng
                   </p>
-                  <img
-                    src={qrUrl}
-                    alt="VietQR"
-                    className="w-48 h-48 object-contain rounded-xl border bg-white p-2 shadow-sm"
-                  />
-                  <p className="text-[11px] text-amber-700 dark:text-amber-300">
+                  <p className="text-[12px] text-amber-800 dark:text-amber-300">
+                    Hệ thống tự động đối soát qua SePay IPN khi nhận được tiền.
+                  </p>
+                  <p className="text-[11px] text-amber-700 dark:text-amber-300 mt-1">
                     Nội dung chuyển khoản: <strong className="font-mono text-amber-900 dark:text-amber-200">{order.code}</strong>
                   </p>
                 </div>
