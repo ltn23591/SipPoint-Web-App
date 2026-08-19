@@ -1,4 +1,4 @@
-# 📱 SipPoint - Customer Web App (Landing Page)
+# 📱 SipPoint - Customer Web App 
 
 [![React](https://img.shields.io/badge/React-v19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-v6-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
