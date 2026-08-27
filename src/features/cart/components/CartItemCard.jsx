@@ -65,6 +65,7 @@ export default function CartItemCard({ item, index, onUpdateQuantity, onRemove }
             maxStock={item.stock || 99}
             onDecrease={() => onUpdateQuantity(index, -1)}
             onIncrease={() => onUpdateQuantity(index, 1)}
+            onChangeQuantity={(newQty) => onUpdateQuantity(index, newQty, true)}
           />
         </div>
       </div>

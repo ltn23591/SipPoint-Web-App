@@ -163,19 +163,23 @@ export default function Cart() {
     localStorage.setItem("sippoint_cart", JSON.stringify(cartItems));
   }, [cartItems]);
 
-  const updateQuantity = (index, delta) => {
+  const updateQuantity = (index, value, isAbsolute = false) => {
     setCartItems((prev) => {
       const itemToUpdate = prev[index];
       if (!itemToUpdate) return prev;
       
-      const newQty = itemToUpdate.qty + delta;
+      const newQty = isAbsolute ? value : itemToUpdate.qty + value;
+      if (newQty <= 0) {
+        return prev.filter((_, i) => i !== index);
+      }
       
+      const delta = isAbsolute ? newQty - itemToUpdate.qty : value;
       if (delta > 0) {
         const currentTotalQty = prev
           .filter(item => item.productId === itemToUpdate.productId)
           .reduce((sum, item) => sum + item.qty, 0);
           
-        const maxStock = itemToUpdate.stock || 0;
+        const maxStock = itemToUpdate.stock || 99;
         
         if (currentTotalQty + delta > maxStock) {
           toast.error(`Rất tiếc! Số lượng vượt quá khả năng phục vụ (chỉ còn ${maxStock}).`);
@@ -183,14 +187,12 @@ export default function Cart() {
         }
       }
       
-      return prev
-        .map((item, i) => {
-          if (i === index) {
-            return { ...item, qty: newQty };
-          }
-          return item;
-        })
-        .filter((item) => item.qty > 0);
+      return prev.map((item, i) => {
+        if (i === index) {
+          return { ...item, qty: newQty };
+        }
+        return item;
+      });
     });
   };
 

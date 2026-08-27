@@ -153,6 +153,7 @@ export default function ProductDetailSheet({
                 maxStock={effectiveMax}
                 onDecrease={() => setQuantity((q) => Math.max(1, q - 1))}
                 onIncrease={() => setQuantity((q) => q + 1)}
+                onChangeQuantity={(q) => setQuantity(q)}
               />
 
               <button
