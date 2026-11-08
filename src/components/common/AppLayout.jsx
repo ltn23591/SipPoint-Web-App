@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useSearchParams } from "react-router";
 import { ChatbotAI } from "@/components/common/ChatbotAI";
+import { TableAssistButton } from "@/components/common/TableAssistButton";
 import { customerService } from "@/services/customerService";
 import { SocketProvider } from "@/contexts/SocketContext";
 
@@ -35,6 +36,7 @@ export function AppLayout() {
   return (
     <SocketProvider>
       <Outlet />
+      <TableAssistButton />
       <ChatbotAI />
     </SocketProvider>
   );

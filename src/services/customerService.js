@@ -323,6 +323,69 @@ export const customerService = {
       console.warn("Lỗi lấy danh sách banner:", error);
       return [];
     }
-  }
+  },
+
+  cancelOrder: async (orderId, reason) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, `/orders/public/${orderId}/cancel`, {
+        reason,
+      });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Không thể hủy đơn hàng");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi khi hủy đơn hàng");
+    }
+  },
+
+  requestTableAssistance: async ({ tableId, tableName, requestType, note }) => {
+    try {
+      const endpoint = tableId ? `/tables/${tableId}/assist` : "/tables/assist";
+      const response = await apiCall(API_METHOD.POST, endpoint, {
+        tableId,
+        tableName,
+        requestType,
+        note,
+      });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Không thể gửi yêu cầu hỗ trợ");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi khi gửi yêu cầu hỗ trợ tại bàn");
+    }
+  },
+
+  submitOrderFeedback: async ({ orderId, rating, comment }) => {
+    try {
+      const response = await apiCall(API_METHOD.POST, "/feedback/public", {
+        orderId,
+        rating,
+        comment,
+      });
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      throw new Error(response?.data?.message || "Gửi đánh giá thất bại");
+    } catch (error) {
+      const apiErrorData = error?.response?.data || error;
+      throw new Error(apiErrorData?.message || "Lỗi khi gửi đánh giá đơn hàng");
+    }
+  },
+
+  getOrderFeedback: async (orderId) => {
+    try {
+      const response = await apiCall(API_METHOD.GET, `/feedback/order/${orderId}`);
+      if (response && response.data?.success) {
+        return response.data.data;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  },
 };
 

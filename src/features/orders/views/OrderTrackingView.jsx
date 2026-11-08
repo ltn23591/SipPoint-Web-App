@@ -12,6 +12,31 @@ export default function OrderTracking() {
   const [order, setOrder] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Hủy đơn hàng khi đang PENDING
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState("Đặt nhầm món / số lượng");
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  // Đánh giá đơn hàng khi đã COMPLETED
+  const [feedback, setFeedback] = useState(null);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState("");
+  const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
+
+  const CANCEL_REASONS = [
+    "Đặt nhầm món / số lượng",
+    "Muốn áp dụng lại mã khuyến mãi",
+    "Đổi ý / bận đột xuất",
+    "Thời gian chờ lâu",
+  ];
+
+  const FEEDBACK_TAGS = [
+    "Đồ uống rất ngon ☕",
+    "Pha chế nhanh ⚡",
+    "Nhân viên nhiệt tình 💯",
+    "Đóng gói cẩn thận 📦",
+  ];
+
   const handleReorder = () => {
     if (!order || !order.items || order.items.length === 0) return;
 
@@ -108,6 +133,52 @@ export default function OrderTracking() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
+
+  useEffect(() => {
+    if (order?._id && order.status === "COMPLETED") {
+      customerService.getOrderFeedback(order._id).then((fb) => {
+        if (fb) setFeedback(fb);
+      });
+    }
+  }, [order?._id, order?.status]);
+
+  const handleCancelOrder = async () => {
+    if (!order?._id) return;
+    setIsCancelling(true);
+    try {
+      const updated = await customerService.cancelOrder(order._id, cancelReason);
+      setOrder(updated);
+      setIsCancelOpen(false);
+      toast.success("Đã hủy đơn hàng thành công.");
+    } catch (error) {
+      toast.error(error.message || "Không thể hủy đơn hàng");
+    } finally {
+      setIsCancelling(false);
+    }
+  };
+
+  const handleSubmitFeedback = async (e) => {
+    e.preventDefault();
+    if (!order?._id) return;
+    setIsSubmittingFeedback(true);
+    try {
+      const created = await customerService.submitOrderFeedback({
+        orderId: order._id,
+        rating,
+        comment,
+      });
+      setFeedback(created);
+      toast.success(
+        created?.bonusPointsAwarded
+          ? `Cảm ơn bạn đã đánh giá! Bạn được cộng +${created.bonusPointsAwarded} điểm thưởng 🎉`
+          : "Cảm ơn bạn đã gửi đánh giá cho SipPoint!"
+      );
+    } catch (error) {
+      toast.error(error.message || "Gửi đánh giá thất bại");
+    } finally {
+      setIsSubmittingFeedback(false);
+    }
+  };
 
   // Stepper calculations
   const getStepStatus = (stepName) => {
@@ -393,6 +464,133 @@ export default function OrderTracking() {
               </div>
             </section>
 
+            {/* Cancel Action Button - Only show when PENDING and not paid */}
+            {order.status === "PENDING" && !order.isPaid && (
+              <div className="pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsCancelOpen(true)}
+                  className="w-full py-3 border border-[#ba1a1a]/30 bg-[#ba1a1a]/5 text-[#ba1a1a] font-bold text-[14px] rounded-2xl hover:bg-[#ba1a1a]/10 active:scale-98 transition-all flex items-center justify-center gap-2"
+                >
+                  <span className="material-symbols-outlined text-[18px]">cancel</span>
+                  <span>Hủy đơn hàng</span>
+                </button>
+              </div>
+            )}
+
+            {/* Order Rating & Feedback Section - Show when COMPLETED */}
+            {order.status === "COMPLETED" && (
+              <section className="bg-white rounded-xl p-5 shadow-[0px_4px_12px_rgba(59,31,10,0.06)] space-y-4">
+                {feedback ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-bold text-[16px] text-[#1a1c1c]">Đánh giá của bạn</h3>
+                        <p className="text-[12px] text-[#534434]">Cảm ơn bạn đã chia sẻ trải nghiệm cùng SipPoint</p>
+                      </div>
+                      {feedback.bonusPointsAwarded > 0 && (
+                        <span className="px-2.5 py-1 rounded-full bg-amber-100 text-[#855300] font-bold text-[11px]">
+                          +{feedback.bonusPointsAwarded} điểm
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`material-symbols-outlined text-[22px] ${
+                            star <= feedback.rating ? "text-[#f59e0b]" : "text-zinc-300"
+                          }`}
+                          style={{ fontVariationSettings: star <= feedback.rating ? "'FILL' 1" : "'FILL' 0" }}
+                        >
+                          star
+                        </span>
+                      ))}
+                      <span className="ml-2 text-xs font-semibold text-[#855300]">
+                        {feedback.rating}/5 sao
+                      </span>
+                    </div>
+                    {feedback.comment && (
+                      <p className="text-[13px] text-[#1a1c1c] bg-[#f9f9f9] p-3 rounded-xl">
+                        &ldquo;{feedback.comment}&rdquo;
+                      </p>
+                    )}
+                    {feedback.adminReply && (
+                      <div className="bg-amber-50/80 border border-amber-200/70 rounded-xl p-3 space-y-1">
+                        <p className="text-[11px] font-bold text-[#855300]">Phản hồi từ SipPoint:</p>
+                        <p className="text-[13px] text-[#534434]">{feedback.adminReply}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmitFeedback} className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="font-bold text-[16px] text-[#1a1c1c]">Đánh giá đơn hàng</h3>
+                        <p className="text-[12px] text-[#534434]">Chia sẻ cảm nhận để nhận +5 điểm thưởng</p>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full bg-[#f59e0b]/15 text-[#855300] font-bold text-[11px]">
+                        +5 điểm
+                      </span>
+                    </div>
+
+                    <div className="flex justify-center gap-2 py-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          type="button"
+                          onClick={() => setRating(star)}
+                          className="p-1 transition-transform active:scale-90"
+                        >
+                          <span
+                            className={`material-symbols-outlined text-[32px] ${
+                              star <= rating ? "text-[#f59e0b]" : "text-zinc-300"
+                            }`}
+                            style={{ fontVariationSettings: star <= rating ? "'FILL' 1" : "'FILL' 0" }}
+                          >
+                            star
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex flex-wrap gap-1.5">
+                      {FEEDBACK_TAGS.map((tag) => (
+                        <button
+                          key={tag}
+                          type="button"
+                          onClick={() =>
+                            setComment((prev) =>
+                              prev.includes(tag) ? prev : prev ? `${prev}, ${tag}` : tag
+                            )
+                          }
+                          className="text-[11px] px-2.5 py-1 rounded-full border border-[#d8c3ad]/50 text-[#534434] hover:border-[#855300] hover:text-[#855300] transition-colors"
+                        >
+                          + {tag}
+                        </button>
+                      ))}
+                    </div>
+
+                    <textarea
+                      rows={2}
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Nhập nhận xét của bạn về hương vị đồ uống, dịch vụ..."
+                      className="w-full rounded-xl border border-[#d8c3ad]/50 p-3 text-[13px] text-[#1a1c1c] focus:border-[#855300] focus:outline-none"
+                    />
+
+                    <button
+                      type="submit"
+                      disabled={isSubmittingFeedback}
+                      className="w-full py-2.5 bg-[#f59e0b] text-[#613b00] font-bold text-[14px] rounded-xl shadow-sm hover:bg-[#f59e0b]/90 disabled:opacity-60 transition-all"
+                    >
+                      {isSubmittingFeedback ? "Đang gửi đánh giá..." : "Gửi đánh giá ngay"}
+                    </button>
+                  </form>
+                )}
+              </section>
+            )}
+
             {/* Reorder Action Button - Only show when COMPLETED */}
             {order.status === "COMPLETED" && (
               <div className="pt-2">
@@ -406,6 +604,67 @@ export default function OrderTracking() {
               </div>
             )}
           </main>
+        )}
+
+        {/* Modal xác nhận hủy đơn hàng */}
+        {isCancelOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 p-4">
+            <div className="w-full max-w-md rounded-2xl bg-white p-5 space-y-4 shadow-2xl">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold text-[16px] text-[#1a1c1c]">Xác nhận hủy đơn hàng</h3>
+                <button
+                  type="button"
+                  onClick={() => setIsCancelOpen(false)}
+                  className="p-1 text-zinc-400 hover:text-zinc-600"
+                >
+                  <span className="material-symbols-outlined text-[20px]">close</span>
+                </button>
+              </div>
+              <p className="text-[13px] text-[#534434]">
+                Vui lòng chọn hoặc nhập lý do hủy đơn <strong>#{order?.code}</strong>:
+              </p>
+              <div className="space-y-2">
+                {CANCEL_REASONS.map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setCancelReason(r)}
+                    className={`w-full text-left px-3.5 py-2.5 rounded-xl border text-[13px] font-medium transition-all ${
+                      cancelReason === r
+                        ? "border-[#ba1a1a] bg-[#ba1a1a]/5 text-[#ba1a1a]"
+                        : "border-zinc-200 text-[#1a1c1c] hover:bg-zinc-50"
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="text"
+                value={cancelReason}
+                onChange={(e) => setCancelReason(e.target.value)}
+                placeholder="Nhập lý do khác..."
+                className="w-full rounded-xl border border-zinc-200 px-3.5 py-2.5 text-[13px] text-[#1a1c1c] focus:border-[#855300] focus:outline-none"
+              />
+              <div className="flex gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsCancelOpen(false)}
+                  className="flex-1 py-2.5 rounded-xl border border-zinc-200 font-semibold text-[13px] text-zinc-600"
+                >
+                  Quay lại
+                </button>
+                <button
+                  type="button"
+                  disabled={isCancelling || !cancelReason.trim()}
+                  onClick={handleCancelOrder}
+                  className="flex-1 py-2.5 rounded-xl bg-[#ba1a1a] text-white font-bold text-[13px] disabled:opacity-60"
+                >
+                  {isCancelling ? "Đang hủy..." : "Xác nhận hủy"}
+                </button>
+              </div>
+            </div>
+          </div>
         )}
 
         <BottomNavBar activeTab="TRACKING" />
