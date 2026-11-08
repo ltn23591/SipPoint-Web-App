@@ -60,21 +60,6 @@ export default function OrderTracking() {
     navigate(ROUTE_PATH.CART);
   };
 
-  // Khi được SePay redirect về với ?status=success, gọi API xác nhận thanh toán
-  useEffect(() => {
-    const paymentStatus = searchParams.get("status");
-    const paymentOrderId = searchParams.get("orderId") || orderId;
-    if (paymentStatus === "success" && paymentOrderId) {
-      customerService.confirmPayment(paymentOrderId)
-        .then(() => {
-          console.log("Đã xác nhận thanh toán thành công cho đơn:", paymentOrderId);
-          fetchOrderDetails(); // Tải lại thông tin đơn hàng
-        })
-        .catch((err) => console.error("Lỗi xác nhận thanh toán:", err));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Fetch order details (either specific or latest)
   const fetchOrderDetails = async () => {
     try {
@@ -97,6 +82,21 @@ export default function OrderTracking() {
       setIsLoading(false);
     }
   };
+
+  // Khi được SePay redirect về với ?status=success, gọi API xác nhận thanh toán
+  useEffect(() => {
+    const paymentStatus = searchParams.get("status");
+    const paymentOrderId = searchParams.get("orderId") || orderId;
+    if (paymentStatus === "success" && paymentOrderId) {
+      customerService.confirmPayment(paymentOrderId)
+        .then(() => {
+          console.log("Đã xác nhận thanh toán thành công cho đơn:", paymentOrderId);
+          fetchOrderDetails(); // Tải lại thông tin đơn hàng
+        })
+        .catch((err) => console.error("Lỗi xác nhận thanh toán:", err));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(fetchOrderDetails, 0);
@@ -150,6 +150,8 @@ export default function OrderTracking() {
         return { icon: "check_circle", title: "Hoàn tất", desc: "Cảm ơn bạn đã ủng hộ SipPoint!" };
       case "CANCELLED":
         return { icon: "cancel", title: "Đã huỷ", desc: "Đơn hàng của bạn đã bị hủy." };
+      case "REFUNDED":
+        return { icon: "undo", title: "Đã hoàn tiền", desc: "Đơn hàng của bạn đã được hoàn trả." };
       default:
         return { icon: "local_cafe", title: "Đơn hàng", desc: "Đang cập nhật trạng thái..." };
     }
@@ -234,7 +236,7 @@ export default function OrderTracking() {
             </section>
 
             {/* Visual Stepper */}
-            {order.status !== "CANCELLED" && (
+            {order.status !== "CANCELLED" && order.status !== "REFUNDED" && (
               <section className="bg-white rounded-xl p-5 shadow-[0px_4px_12px_rgba(59,31,10,0.06)]">
                 <div className="relative space-y-6 ml-4">
                   {/* Vertical Line */}

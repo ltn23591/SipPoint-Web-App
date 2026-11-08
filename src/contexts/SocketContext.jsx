@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useRef } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { toast } from "sonner";
 import { queryClient } from "@/helpers/queryClient";
@@ -23,28 +23,53 @@ const getStatusText = (status) => {
       return "Đơn hàng của bạn đã hoàn tất 🎉";
     case "CANCELLED":
       return "Đơn hàng của bạn đã bị hủy ❌";
+    case "REFUNDED":
+      return "Đơn hàng của bạn đã được hoàn trả ↩️";
     default:
       return `Trạng thái: ${status}`;
   }
 };
 
-export const SocketProvider = ({ children }) => {
-  const socketRef = useRef(null);
+const isRelevantOrder = (updatedOrder) => {
+  if (!updatedOrder) return false;
+  const orderId = String(updatedOrder._id || updatedOrder.id || "");
+  const orderCustomerId = String(
+    updatedOrder.customerId?._id || updatedOrder.customerId || ""
+  );
 
-  if (!socketRef.current) {
+  try {
+    const userStr = localStorage.getItem("user");
+    if (userStr) {
+      const user = JSON.parse(userStr);
+      const myId = String(user?._id || user?.id || "");
+      if (myId && orderCustomerId && myId === orderCustomerId) return true;
+    }
+    const guestStr = localStorage.getItem("guest_orders");
+    if (guestStr) {
+      const guestIds = JSON.parse(guestStr);
+      if (Array.isArray(guestIds) && orderId && guestIds.includes(orderId)) return true;
+    }
+  } catch {
+    // ignore storage parse error
+  }
+
+  if (orderId && window.location.pathname.includes(orderId)) return true;
+  return false;
+};
+
+export const SocketProvider = ({ children }) => {
+  const [socketInstance] = useState(() => {
     const backendUrl = import.meta.env.VITE_APP_API_URL
       ? import.meta.env.VITE_APP_API_URL.replace("/api/v1", "")
       : "http://localhost:5000";
 
-    socketRef.current = io(backendUrl, {
+    return io(backendUrl, {
       transports: ["websocket"],
       autoConnect: true,
     });
-  }
+  });
 
   useEffect(() => {
-    const socketInstance = socketRef.current;
-
     socketInstance.on("connect", () => {
       console.log("🔌 [Socket.io Customer] Connected to server:", socketInstance.id);
     });
@@ -52,7 +77,7 @@ export const SocketProvider = ({ children }) => {
     // Lắng nghe cập nhật trạng thái đơn hàng thời gian thực
     socketInstance.on("order_status_updated", (updatedOrder) => {
       console.log("🔔 [Socket.io Customer] Order status updated:", updatedOrder);
-      if (!updatedOrder) return;
+      if (!isRelevantOrder(updatedOrder)) return;
 
       const codeStr = updatedOrder.code ? `#${updatedOrder.code}` : "của bạn";
       const statusDesc = getStatusText(updatedOrder.status);
@@ -64,6 +89,11 @@ export const SocketProvider = ({ children }) => {
         });
       } else if (updatedOrder.status === "CANCELLED") {
         toast.error(`Đơn hàng ${codeStr} đã bị HỦY`, {
+          description: statusDesc,
+          duration: 5000,
+        });
+      } else if (updatedOrder.status === "REFUNDED") {
+        toast.warning(`Đơn hàng ${codeStr} đã HOÀN TRẢ`, {
           description: statusDesc,
           duration: 5000,
         });
@@ -90,10 +120,10 @@ export const SocketProvider = ({ children }) => {
       socketInstance.off("order_status_updated");
       socketInstance.off("disconnect");
     };
-  }, []);
+  }, [socketInstance]);
 
   return (
-    <SocketContext.Provider value={socketRef.current}>
+    <SocketContext.Provider value={socketInstance}>
       {children}
     </SocketContext.Provider>
   );

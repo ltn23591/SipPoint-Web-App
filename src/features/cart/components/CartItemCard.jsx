@@ -1,7 +1,5 @@
 import React from "react";
 import { QuantityStepper } from "@/components/common/QuantityStepper";
-import { Link } from "react-router";
-import { ROUTE_PATH } from "@/constants/routePaths";
 
 export default function CartItemCard({ item, index, onUpdateQuantity, onRemove }) {
   const variantPriceSum = typeof item.variantPriceSum === "number"

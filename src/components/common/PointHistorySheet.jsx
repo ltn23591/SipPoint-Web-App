@@ -48,6 +48,7 @@ export default function PointHistorySheet({ open, onClose }) {
     if (open) {
       fetchHistories(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, activeTab]);
 
   const handleLoadMore = () => {

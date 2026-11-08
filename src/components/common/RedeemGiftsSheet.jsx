@@ -31,7 +31,7 @@ export default function RedeemGiftsSheet({ open, onClose, currentPoints = 0, onR
     setRedeemingId(v._id);
     setMessage(null);
     try {
-      const res = await customerService.redeemVoucher(v._id);
+      await customerService.redeemVoucher(v._id);
       setMessage({
         type: "success",
         text: `Đổi thành công "${v.title}"! Voucher đã được thêm vào ví của bạn.`,

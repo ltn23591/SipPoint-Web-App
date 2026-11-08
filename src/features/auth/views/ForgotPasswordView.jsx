@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router";
-import { ArrowLeft, Loader2, Mail, Lock, KeyRound, ShieldAlert } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, Lock, KeyRound } from "lucide-react";
 import { toast } from "sonner";
 import { authService } from "@/services/authService";
 import { AuthCard } from "@/components/common/AuthCard";

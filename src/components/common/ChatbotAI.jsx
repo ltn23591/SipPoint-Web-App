@@ -20,7 +20,7 @@ export function ChatbotAI() {
       try {
         const userObj = JSON.parse(userStr);
         userId = userObj._id || userObj.email || "guest";
-      } catch (e) {
+      } catch {
         // bỏ qua
       }
     }

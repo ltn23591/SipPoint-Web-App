@@ -63,7 +63,7 @@ export const customerService = {
             if (res && res.data?.success) {
                orders.push(res.data.data);
             }
-          } catch(e) {
+          } catch {
             // ignore missing
           }
         }
@@ -308,19 +308,6 @@ export const customerService = {
       return null;
     } catch (error) {
       console.warn("Lỗi kiểm tra trạng thái thanh toán:", error);
-      return null;
-    }
-  },
-
-  confirmPayment: async (orderId) => {
-    try {
-      const response = await apiCall(API_METHOD.POST, "/payment/sepay/confirm-payment", { orderId });
-      if (response && response.data?.success) {
-        return response.data.data;
-      }
-      return null;
-    } catch (error) {
-      console.warn("Lỗi xác nhận thanh toán:", error);
       return null;
     }
   },

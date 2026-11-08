@@ -366,7 +366,11 @@ export default function Cart() {
                     <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>stars</span>
                   </div>
                   <div className="flex-1">
-                    <p className="font-semibold text-[14px] text-[#613b00]">Đăng nhập để tích {Math.round(subtotal / 1000)} điểm từ đơn này</p>
+                    <p className="font-semibold text-[14px] text-[#613b00]">
+                      {Math.floor(subtotal / 10000) > 0
+                        ? `Đăng nhập để tích ${Math.floor(subtotal / 10000)} điểm từ đơn này`
+                        : "Đăng nhập để tích điểm hội viên (10.000đ = 1 điểm)"}
+                    </p>
                     <Link to={ROUTE_PATH.LOGIN} className="text-[#855300] font-bold text-[12px] mt-0.5 hover:underline">Đăng nhập ngay</Link>
                   </div>
                   <span className="material-symbols-outlined text-[#534434]">chevron_right</span>

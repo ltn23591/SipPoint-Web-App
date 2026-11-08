@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import { toast } from "sonner";
 import { menuService } from "@/services/menuService";
 import { ROUTE_PATH } from "@/constants/routePaths";
@@ -163,16 +162,6 @@ export default function Menu() {
     toast.success(`Đã thêm ${quantity} x ${activeProduct.name} vào giỏ hàng!`);
     handleCloseDetail();
   };
-
-  // Tính toán tổng giá trị thực tế của món ăn kèm biến thể
-  const calculateSinglePrice = () => {
-    if (!activeProduct) return 0;
-    const base = activeProduct.price || 0;
-    const sizeAdjustment = selectedSize ? (selectedSize.priceAdjustment || 0) : 0;
-    return base + sizeAdjustment;
-  };
-
-  const totalPrice = calculateSinglePrice() * quantity;
 
   const filteredProducts = products.filter((p) => {
     const categoryMatches =

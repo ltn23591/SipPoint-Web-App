@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { ROUTE_PATH } from "@/constants/routePaths";
 import { GENDER_OPTIONS } from "@/constants/auth";
 import { authService } from "@/services/authService";

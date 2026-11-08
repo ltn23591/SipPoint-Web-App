@@ -73,9 +73,9 @@ sequenceDiagram
 - **Vòng quay May mắn (Lucky Wheel)**: Trò chơi quay thưởng tương tác nhận voucher và điểm thưởng với hoạt họa mượt mà.
 - **Ví Voucher Cá nhân**: Quản lý tập trung toàn bộ mã giảm giá trúng thưởng hoặc đổi từ điểm.
 
-### 🤖 2.5. Trợ lý AI Tư vấn Đồ uống (`src/features/ai`)
-- **AI Chatbot Modal**: Tích hợp **Google Gemini 2.5 Flash RAG Engine**.
-- **Tư vấn thông minh**: Gợi ý món uống theo thời tiết, tâm trạng, chế độ ăn uống và thông tin thực đơn mới nhất.
+### 🤖 2.5. Trợ lý AI Tư vấn Đồ uống (`src/components/common/ChatbotAI.jsx`)
+- **AI Chatbot Modal**: Tích hợp **Google Gemini 2.5 Flash RAG Engine** (với cơ chế fallback OpenAI).
+- **Tư vấn thông minh**: Gợi ý món uống theo thời tiết, tâm trạng, chế độ ăn uống, đặt món nhanh từ chat và thông tin thực đơn mới nhất.
 
 ---
 
@@ -86,23 +86,22 @@ SipPoint-Landing-Page/
 ├── public/               # Asset tĩnh, Favicon, Web Manifest
 ├── src/
 │   ├── apis/             # Các hàm gọi API Backend (Axios Client)
-│   ├── components/       # UI Components dùng chung (Header, Navigation, Sheets)
+│   ├── components/       # UI Components dùng chung (Header, Navigation, ChatbotAI, Sheets)
 │   ├── constants/        # Route paths, ENUMs, App Constants
-│   ├── contexts/         # React Context (Theme, App Contexts)
+│   ├── contexts/         # React Context (SocketContext, Theme)
 │   ├── features/         # Cấu trúc Modules Tính năng (Feature-driven Architecture)
-│   │   ├── ai/           # AI Drink Assistant Chatbot Modal
-│   │   ├── auth/         # Đăng nhập, Đăng ký, Quên mật khẩu
-│   │   ├── cart/         # Giỏ hàng, Tính tiền, Checkout & Voucher
+│   │   ├── auth/         # Đăng nhập, Đăng ký, Quên mật khẩu, OAuth Callback
+│   │   ├── cart/         # Giỏ hàng, Tính tiền, Checkout SePay & Voucher
 │   │   ├── menu/         # Thực đơn, Chi tiết món, Chọn Size & Topping
 │   │   ├── orders/       # Danh sách đơn hàng, Realtime Tracking, Hóa đơn
 │   │   ├── profile/      # Hồ sơ khách hàng, Lịch sử tích điểm
 │   │   └── rewards/      # Vòng quay may mắn, Ví Voucher, Thẻ hội viên
-│   ├── helpers/          # Hàm tiện ích (Format currency, date time)
+│   ├── helpers/          # Hàm tiện ích (Format currency, date time, queryClient)
 │   ├── hooks/            # Custom React Hooks
-│   ├── pages/            # Page Container Components
+│   ├── pages/            # Page Container Components (WelcomeView, Home)
 │   ├── routes/           # Cấu hình Router & Protected Routes
-│   ├── services/         # Socket.io Client Connection Manager
-│   ├── stores/           # State Management (Zustand Cart & User Stores)
+│   ├── services/         # Service Tầng Nghiệp vụ (authService, customerService, gameService, menuService)
+│   ├── stores/           # State Management (Zustand UI Store)
 │   ├── App.jsx           # Root Component
 │   ├── index.css         # Import TailwindCSS v4 & Custom Utilities
 │   └── main.jsx          # Entry point

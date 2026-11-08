@@ -9,7 +9,6 @@ export function AppLayout() {
 
   useEffect(() => {
     const tableId = searchParams.get("tableId") || localStorage.getItem("tableId");
-    const zoneId = searchParams.get("zoneId") || localStorage.getItem("zoneId");
     
     const queryTableId = searchParams.get("tableId");
     const queryZoneId = searchParams.get("zoneId");
